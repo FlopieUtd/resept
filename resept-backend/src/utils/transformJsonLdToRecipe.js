@@ -21,125 +21,121 @@ export const transformJsonLdToRecipe = (jsonLdRecipe, sourceUrl) => {
   }
 
   // Extract basic recipe information with better fallbacks
-  const name = recipe.name || recipe.headline || "Untitled Recipe";
+  const title =
+    recipe.title || recipe.name || recipe.headline || "Untitled Recipe";
   const description = recipe.description || recipe.about || "";
 
-  // Handle recipeYield - could be string or array
-  let recipeYield = 1;
-  if (recipe.recipeYield) {
-    if (Array.isArray(recipe.recipeYield)) {
+  // Handle recipe_yield - could be string or array
+  let recipe_yield = 1;
+  if (recipe.recipe_yield) {
+    if (Array.isArray(recipe.recipe_yield)) {
       // Try to extract number from first yield item
-      const firstYield = recipe.recipeYield[0];
+      const firstYield = recipe.recipe_yield[0];
       if (typeof firstYield === "string") {
         const match = firstYield.match(/(\d+)/);
         if (match) {
-          recipeYield = parseInt(match[1], 10);
+          recipe_yield = parseInt(match[1], 10);
         }
       } else if (typeof firstYield === "number") {
-        recipeYield = firstYield;
+        recipe_yield = firstYield;
       }
-    } else if (typeof recipe.recipeYield === "string") {
-      const match = recipe.recipeYield.match(/(\d+)/);
+    } else if (typeof recipe.recipe_yield === "string") {
+      const match = recipe.recipe_yield.match(/(\d+)/);
       if (match) {
-        recipeYield = parseInt(match[1], 10);
+        recipe_yield = parseInt(match[1], 10);
       }
-    } else if (typeof recipe.recipeYield === "number") {
-      recipeYield = recipe.recipeYield;
+    } else if (typeof recipe.recipe_yield === "number") {
+      recipe_yield = recipe.recipe_yield;
     }
   }
 
-  // Handle recipeCategory - could be string or array
-  let recipeCategory = "Recepten";
-  if (recipe.recipeCategory) {
-    if (Array.isArray(recipe.recipeCategory)) {
-      recipeCategory = recipe.recipeCategory[0] || "Recepten";
+  // Handle recipe_category - could be string or array
+  let recipe_category = "Recepten";
+  if (recipe.recipe_category) {
+    if (Array.isArray(recipe.recipe_category)) {
+      recipe_category = recipe.recipe_category[0] || "Recepten";
     } else {
-      recipeCategory = recipe.recipeCategory;
+      recipe_category = recipe.recipe_category;
     }
   }
 
-  // Handle times - convert ISO 8601 duration to readable format
-  const formatDuration = (duration) => {
-    if (!duration) return "";
+  // Handle times - store ISO 8601 duration format
+  const parseDuration = (duration) => {
+    if (!duration) return "PT0M";
 
-    // Simple conversion from PT format (e.g., PT5M -> 5 min)
-    const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-    if (match) {
-      const hours = match[1] ? parseInt(match[1], 10) : 0;
-      const minutes = match[2] ? parseInt(match[2], 10) : 0;
-      const seconds = match[3] ? parseInt(match[3], 10) : 0;
+    // If already in ISO 8601 format, return as is
+    if (duration.startsWith("PT")) return duration;
 
-      // Convert total minutes to hours and remaining minutes
-      const totalMinutes = hours * 60 + minutes;
-      if (totalMinutes >= 60) {
-        const displayHours = Math.floor(totalMinutes / 60);
-        const displayMinutes = totalMinutes % 60;
-        const result = `${displayHours}u`;
-        if (displayMinutes > 0) {
-          return `${result} ${displayMinutes}m`;
-        } else if (seconds > 0) {
-          return `${result} ${seconds}s`;
-        }
-        return result;
-      } else if (totalMinutes > 0) {
-        return `${totalMinutes}m`;
-      } else if (seconds > 0) {
-        return `${seconds}s`;
-      }
-    }
-    return duration;
+    // Convert various formats to ISO 8601
+    // Handle both "12m" and "12 m" formats
+    const hourMatch = duration.match(/(\d+)\s*h/i) || duration.match(/(\d+)h/i);
+    const minuteMatch =
+      duration.match(/(\d+)\s*m/i) || duration.match(/(\d+)m/i);
+    const secondMatch =
+      duration.match(/(\d+)\s*s/i) || duration.match(/(\d+)s/i);
+
+    let result = "PT";
+    if (hourMatch) result += `${hourMatch[1]}H`;
+    if (minuteMatch) result += `${minuteMatch[1]}M`;
+    if (secondMatch) result += `${secondMatch[1]}S`;
+
+    return result === "PT" ? "PT0M" : result;
   };
 
-  const prepTime = formatDuration(recipe.prepTime) || "";
-  const cookTime = formatDuration(recipe.cookTime) || "";
-  const totalTime = formatDuration(recipe.totalTime) || "";
+  const prep_time = parseDuration(recipe.prep_time) || "PT0M";
+  const cook_time = parseDuration(recipe.cook_time) || "PT0M";
+  const total_time = parseDuration(recipe.total_time) || "PT0M";
 
-  // Handle recipeIngredients - convert to IngredientLine format with better parsing
-  const recipeIngredients = [];
-  if (recipe.recipeIngredient && Array.isArray(recipe.recipeIngredient)) {
-    recipe.recipeIngredient.forEach((ingredient) => {
+  // Handle ingredients - convert to IngredientLine format with better parsing
+  const ingredients = [];
+  // Check for both new format and JSON-LD format
+  const ingredientSource = recipe.ingredients || recipe.recipeIngredient;
+  if (ingredientSource && Array.isArray(ingredientSource)) {
+    ingredientSource.forEach((ingredient) => {
       if (typeof ingredient === "string") {
-        recipeIngredients.push({ raw: ingredient });
+        ingredients.push({ raw: ingredient });
       } else if (ingredient && typeof ingredient === "object") {
         // Handle structured ingredients
         if (ingredient.text) {
-          recipeIngredients.push({ raw: ingredient.text });
+          ingredients.push({ raw: ingredient.text });
         } else if (ingredient.name) {
-          recipeIngredients.push({ raw: ingredient.name });
+          ingredients.push({ raw: ingredient.name });
         }
       }
     });
   }
 
-  // Handle recipeInstructions - convert to RecipeInstruction format with better parsing
-  const recipeInstructions = [];
-  if (recipe.recipeInstructions && Array.isArray(recipe.recipeInstructions)) {
-    recipe.recipeInstructions.forEach((instruction) => {
+  // Handle instructions - convert to RecipeInstruction format with better parsing
+  const instructions = [];
+  // Check for both new format and JSON-LD format
+  const instructionSource = recipe.instructions || recipe.recipeInstructions;
+  if (instructionSource && Array.isArray(instructionSource)) {
+    instructionSource.forEach((instruction) => {
       if (instruction && typeof instruction === "object") {
         if (instruction.text) {
-          recipeInstructions.push({ text: instruction.text });
+          instructions.push({ text: instruction.text });
         } else if (instruction.name) {
-          recipeInstructions.push({ text: instruction.name });
+          instructions.push({ text: instruction.name });
         } else if (instruction.description) {
-          recipeInstructions.push({ text: instruction.description });
+          instructions.push({ text: instruction.description });
         }
       } else if (typeof instruction === "string") {
-        recipeInstructions.push({ text: instruction });
+        instructions.push({ text: instruction });
       }
     });
   }
 
   const transformedRecipe = {
-    name,
-    recipeYield,
-    recipeCategory,
+    title,
+    recipe_yield,
+    recipe_category,
     description,
-    prepTime,
-    cookTime,
-    totalTime,
-    recipeIngredients,
-    recipeInstructions,
-    sourceUrl: sourceUrl || "",
+    prep_time,
+    cook_time,
+    total_time,
+    ingredients,
+    instructions,
+    source_url: sourceUrl || "",
   };
 
   console.log(

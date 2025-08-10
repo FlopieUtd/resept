@@ -17,11 +17,11 @@ describe("transformJsonLdToRecipe", () => {
         "@type": "Recipe",
         name: "Chocolate Chip Cookies",
         description: "Delicious homemade cookies",
-        recipeYield: "24 cookies",
-        recipeCategory: "Dessert",
-        prepTime: "PT15M",
-        cookTime: "PT12M",
-        totalTime: "PT27M",
+        recipe_yield: "24 cookies",
+        recipe_category: "Dessert",
+        prep_time: "PT15M",
+        cook_time: "PT12M",
+        total_time: "PT27M",
         recipeIngredient: ["2 cups flour", "1 cup sugar"],
         recipeInstructions: ["Mix ingredients", "Bake at 350F"],
       };
@@ -32,19 +32,16 @@ describe("transformJsonLdToRecipe", () => {
       );
 
       expect(result).toEqual({
-        name: "Chocolate Chip Cookies",
-        recipeYield: 24,
-        recipeCategory: "Dessert",
+        title: "Chocolate Chip Cookies",
+        recipe_yield: 24,
+        recipe_category: "Dessert",
         description: "Delicious homemade cookies",
-        prepTime: "15m",
-        cookTime: "12m",
-        totalTime: "27m",
-        recipeIngredients: [{ raw: "2 cups flour" }, { raw: "1 cup sugar" }],
-        recipeInstructions: [
-          { text: "Mix ingredients" },
-          { text: "Bake at 350F" },
-        ],
-        sourceUrl: "https://example.com/recipe",
+        prep_time: "PT15M",
+        cook_time: "PT12M",
+        total_time: "PT27M",
+        ingredients: [{ raw: "2 cups flour" }, { raw: "1 cup sugar" }],
+        instructions: [{ text: "Mix ingredients" }, { text: "Bake at 350F" }],
+        source_url: "https://example.com/recipe",
       });
     });
   });
@@ -64,7 +61,7 @@ describe("transformJsonLdToRecipe", () => {
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.name).toBe("Pasta Carbonara");
+      expect(result.title).toBe("Pasta Carbonara");
       expect(result.description).toBe("Italian pasta dish");
     });
 
@@ -78,7 +75,7 @@ describe("transformJsonLdToRecipe", () => {
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.name).toBe("First Recipe");
+      expect(result.title).toBe("First Recipe");
     });
 
     it("should fall back to root object if no recipe in @graph", () => {
@@ -90,57 +87,57 @@ describe("transformJsonLdToRecipe", () => {
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.name).toBe("Fallback Recipe");
+      expect(result.title).toBe("Fallback Recipe");
     });
   });
 
-  describe("recipeYield handling", () => {
+  describe("recipe_yield handling", () => {
     it("should handle string yield with number", () => {
       const jsonLdRecipe = {
         "@type": "Recipe",
         name: "Test Recipe",
-        recipeYield: "6 servings",
+        recipe_yield: "6 servings",
       };
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.recipeYield).toBe(6);
+      expect(result.recipe_yield).toBe(6);
     });
 
     it("should handle array yield with string", () => {
       const jsonLdRecipe = {
         "@type": "Recipe",
         name: "Test Recipe",
-        recipeYield: ["4 portions", "8 servings"],
+        recipe_yield: ["4 portions", "8 servings"],
       };
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.recipeYield).toBe(4);
+      expect(result.recipe_yield).toBe(4);
     });
 
     it("should handle numeric yield", () => {
       const jsonLdRecipe = {
         "@type": "Recipe",
         name: "Test Recipe",
-        recipeYield: 10,
+        recipe_yield: 10,
       };
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.recipeYield).toBe(10);
+      expect(result.recipe_yield).toBe(10);
     });
 
     it("should handle array yield with number", () => {
       const jsonLdRecipe = {
         "@type": "Recipe",
         name: "Test Recipe",
-        recipeYield: [12, 24],
+        recipe_yield: [12, 24],
       };
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.recipeYield).toBe(12);
+      expect(result.recipe_yield).toBe(12);
     });
 
     it("should default to 1 if no yield or invalid yield", () => {
@@ -151,45 +148,45 @@ describe("transformJsonLdToRecipe", () => {
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.recipeYield).toBe(1);
+      expect(result.recipe_yield).toBe(1);
     });
 
     it("should default to 1 for yield without numbers", () => {
       const jsonLdRecipe = {
         "@type": "Recipe",
         name: "Test Recipe",
-        recipeYield: "servings",
+        recipe_yield: "servings",
       };
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.recipeYield).toBe(1);
+      expect(result.recipe_yield).toBe(1);
     });
   });
 
-  describe("recipeCategory handling", () => {
+  describe("recipe_category handling", () => {
     it("should handle string category", () => {
       const jsonLdRecipe = {
         "@type": "Recipe",
         name: "Test Recipe",
-        recipeCategory: "Main Course",
+        recipe_category: "Main Course",
       };
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.recipeCategory).toBe("Main Course");
+      expect(result.recipe_category).toBe("Main Course");
     });
 
     it("should handle array category", () => {
       const jsonLdRecipe = {
         "@type": "Recipe",
         name: "Test Recipe",
-        recipeCategory: ["Dessert", "Sweet"],
+        recipe_category: ["Dessert", "Sweet"],
       };
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.recipeCategory).toBe("Dessert");
+      expect(result.recipe_category).toBe("Dessert");
     });
 
     it("should default to 'Recepten' if no category", () => {
@@ -200,105 +197,117 @@ describe("transformJsonLdToRecipe", () => {
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.recipeCategory).toBe("Recepten");
+      expect(result.recipe_category).toBe("Recepten");
     });
 
     it("should default to 'Recepten' for empty array category", () => {
       const jsonLdRecipe = {
         "@type": "Recipe",
         name: "Test Recipe",
-        recipeCategory: [],
+        recipe_category: [],
       };
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.recipeCategory).toBe("Recepten");
+      expect(result.recipe_category).toBe("Recepten");
     });
   });
 
-  describe("duration formatting", () => {
-    it("should format minutes correctly", () => {
+  describe("duration parsing", () => {
+    it("should keep ISO 8601 format as is", () => {
       const jsonLdRecipe = {
         "@type": "Recipe",
         name: "Test Recipe",
-        prepTime: "PT30M",
+        prep_time: "PT30M",
       };
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.prepTime).toBe("30m");
+      expect(result.prep_time).toBe("PT30M");
     });
 
-    it("should format hours correctly", () => {
+    it("should convert human-readable hours to ISO format", () => {
       const jsonLdRecipe = {
         "@type": "Recipe",
         name: "Test Recipe",
-        cookTime: "PT2H",
+        cook_time: "2h",
       };
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.cookTime).toBe("2u");
+      expect(result.cook_time).toBe("PT2H");
     });
 
-    it("should format hours and minutes correctly", () => {
+    it("should convert human-readable minutes to ISO format", () => {
       const jsonLdRecipe = {
         "@type": "Recipe",
         name: "Test Recipe",
-        totalTime: "PT1H30M",
+        total_time: "90m",
       };
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.totalTime).toBe("1u 30m");
+      expect(result.total_time).toBe("PT90M");
     });
 
-    it("should format seconds correctly", () => {
+    it("should convert minutes without space to ISO format", () => {
       const jsonLdRecipe = {
         "@type": "Recipe",
         name: "Test Recipe",
-        prepTime: "PT45S",
+        prep_time: "12m",
       };
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.prepTime).toBe("45s");
+      expect(result.prep_time).toBe("PT12M");
     });
 
-    it("should handle complex duration", () => {
+    it("should convert human-readable seconds to ISO format", () => {
       const jsonLdRecipe = {
         "@type": "Recipe",
         name: "Test Recipe",
-        totalTime: "PT2H15M30S",
+        prep_time: "45s",
       };
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.totalTime).toBe("2u 15m");
+      expect(result.prep_time).toBe("PT45S");
     });
 
-    it("should return original string for invalid duration", () => {
+    it("should handle complex human-readable duration", () => {
       const jsonLdRecipe = {
         "@type": "Recipe",
         name: "Test Recipe",
-        prepTime: "invalid",
+        total_time: "2h 15m",
       };
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.prepTime).toBe("invalid");
+      expect(result.total_time).toBe("PT2H15M");
     });
 
-    it("should return empty string for null duration", () => {
+    it("should return PT0M for null duration", () => {
       const jsonLdRecipe = {
         "@type": "Recipe",
         name: "Test Recipe",
-        prepTime: null,
+        prep_time: null,
       };
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.prepTime).toBe("");
+      expect(result.prep_time).toBe("PT0M");
+    });
+
+    it("should return PT0M for empty duration", () => {
+      const jsonLdRecipe = {
+        "@type": "Recipe",
+        name: "Test Recipe",
+        prep_time: "",
+      };
+
+      const result = transformJsonLdToRecipe(jsonLdRecipe);
+
+      expect(result.prep_time).toBe("PT0M");
     });
   });
 
@@ -312,7 +321,7 @@ describe("transformJsonLdToRecipe", () => {
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.recipeIngredients).toEqual([
+      expect(result.ingredients).toEqual([
         { raw: "2 eggs" },
         { raw: "1 cup milk" },
       ]);
@@ -327,7 +336,7 @@ describe("transformJsonLdToRecipe", () => {
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.recipeIngredients).toEqual([]);
+      expect(result.ingredients).toEqual([]);
     });
 
     it("should handle missing ingredients", () => {
@@ -338,7 +347,7 @@ describe("transformJsonLdToRecipe", () => {
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.recipeIngredients).toEqual([]);
+      expect(result.ingredients).toEqual([]);
     });
   });
 
@@ -355,7 +364,7 @@ describe("transformJsonLdToRecipe", () => {
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.recipeInstructions).toEqual([
+      expect(result.instructions).toEqual([
         { text: "Step 1: Mix ingredients" },
         { text: "Step 2: Bake" },
       ]);
@@ -370,7 +379,7 @@ describe("transformJsonLdToRecipe", () => {
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.recipeInstructions).toEqual([
+      expect(result.instructions).toEqual([
         { text: "Mix" },
         { text: "Bake" },
         { text: "Serve" },
@@ -386,7 +395,7 @@ describe("transformJsonLdToRecipe", () => {
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.recipeInstructions).toEqual([]);
+      expect(result.instructions).toEqual([]);
     });
 
     it("should handle missing instructions", () => {
@@ -397,7 +406,7 @@ describe("transformJsonLdToRecipe", () => {
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.recipeInstructions).toEqual([]);
+      expect(result.instructions).toEqual([]);
     });
   });
 
@@ -413,7 +422,7 @@ describe("transformJsonLdToRecipe", () => {
         "https://example.com/recipe"
       );
 
-      expect(result.sourceUrl).toBe("https://example.com/recipe");
+      expect(result.source_url).toBe("https://example.com/recipe");
     });
 
     it("should default to empty string if no sourceUrl", () => {
@@ -424,7 +433,7 @@ describe("transformJsonLdToRecipe", () => {
 
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
-      expect(result.sourceUrl).toBe("");
+      expect(result.source_url).toBe("");
     });
 
     it("should handle null sourceUrl", () => {
@@ -435,7 +444,7 @@ describe("transformJsonLdToRecipe", () => {
 
       const result = transformJsonLdToRecipe(jsonLdRecipe, null);
 
-      expect(result.sourceUrl).toBe("");
+      expect(result.source_url).toBe("");
     });
   });
 
@@ -448,16 +457,16 @@ describe("transformJsonLdToRecipe", () => {
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
       expect(result).toEqual({
-        name: "Untitled Recipe",
-        recipeYield: 1,
-        recipeCategory: "Recepten",
+        title: "Untitled Recipe",
+        recipe_yield: 1,
+        recipe_category: "Recepten",
         description: "",
-        prepTime: "",
-        cookTime: "",
-        totalTime: "",
-        recipeIngredients: [],
-        recipeInstructions: [],
-        sourceUrl: "",
+        prep_time: "PT0M",
+        cook_time: "PT0M",
+        total_time: "PT0M",
+        ingredients: [],
+        instructions: [],
+        source_url: "",
       });
     });
   });
