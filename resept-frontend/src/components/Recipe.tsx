@@ -1,7 +1,6 @@
 import recipesData from "../json/recipes.json";
 import { useParams } from "react-router-dom";
-import type { IngredientLine, Recipe as RecipeType } from "../types";
-import { UNIT_LABEL_MAP } from "../consts";
+import type { Recipe as RecipeType } from "../types";
 
 const recipes = recipesData as Array<RecipeType>;
 
@@ -35,38 +34,6 @@ export const Recipe = () => {
     return timeString;
   };
 
-  const formatIngredientAmount = (ingredient: IngredientLine) => {
-    if (ingredient.amount === undefined) return "";
-
-    if (ingredient.amountMax !== undefined) {
-      return `${ingredient.amount}-${ingredient.amountMax}`;
-    } else {
-      return ingredient.amount.toString();
-    }
-  };
-
-  const formatIngredientRest = (ingredient: IngredientLine) => {
-    let rest = "";
-
-    if (ingredient.unit) {
-      rest += `${UNIT_LABEL_MAP[ingredient.unit]} `;
-    }
-
-    if (ingredient.qualifier) {
-      rest += `${ingredient.qualifier} `;
-    }
-
-    if (ingredient.name) {
-      rest += ingredient.name;
-    }
-
-    if (ingredient.note) {
-      rest += ` (${ingredient.note})`;
-    }
-
-    return rest.trim();
-  };
-
   return (
     <div className="flex w-full h-full justify-center">
       <div className="flex w-full max-w-[1080px] mx-[24px] my-[48px] flex-col">
@@ -77,7 +44,7 @@ export const Recipe = () => {
           <div className="font-radley text-[18px]">{recipe.description}</div>
           <div className="flex mt-[16px] gap-[12px] ">
             <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
-              {recipe.recipeYield}
+              {recipe.recipeYield} personen
             </div>
             <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
               Bereiding: {formatTime(recipe.prepTime)}
@@ -97,14 +64,9 @@ export const Recipe = () => {
               Ingrediënten
             </div>
             <ul>
-              {recipe.recipeIngredient.map((ingredient, index) => (
+              {recipe.recipeIngredients.map((ingredient, index) => (
                 <li key={index} className="pb-[16px] flex">
-                  <span className="w-[50px] flex-shrink-0">
-                    {formatIngredientAmount(ingredient)}
-                  </span>
-                  <span className="flex-1">
-                    {formatIngredientRest(ingredient)}
-                  </span>
+                  {ingredient.raw}
                 </li>
               ))}
             </ul>
