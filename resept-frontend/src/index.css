@@ -1,0 +1,11 @@
+@font-face {
+  font-family: "Radley";
+  src: url("/fonts/Radley-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

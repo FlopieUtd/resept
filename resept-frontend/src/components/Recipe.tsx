@@ -1,19 +1,9 @@
 import recipesData from "../json/recipes.json";
 import { useParams } from "react-router-dom";
-import type { IngredientLine } from "../types";
+import type { IngredientLine, Recipe as RecipeType } from "../types";
 import { UNIT_LABEL_MAP } from "../consts";
 
-const recipes = recipesData as Array<{
-  name: string;
-  recipeYield: string;
-  recipeCategory: string;
-  description: string;
-  prepTime: string;
-  cookTime: string;
-  totalTime: string;
-  recipeIngredient: IngredientLine[];
-  recipeInstructions: Array<{ text: string }>;
-}>;
+const recipes = recipesData as Array<RecipeType>;
 
 export const Recipe = () => {
   const { recipeId } = useParams();
@@ -103,7 +93,7 @@ export const Recipe = () => {
 
         <div className="flex gap-[36px] pb-[72px]">
           <div className="w-1/3 flex flex-col gap-[24px]">
-            <div className="text-[24px] pb-[12px] font-bold border-b-[2px] border-black">
+            <div className="text-[24px] pb-[12px] font-bold border-b-[2px] border-black tracking-[1px]">
               Ingrediënten
             </div>
             <ul>
@@ -120,7 +110,7 @@ export const Recipe = () => {
             </ul>
           </div>
           <div className="w-2/3 flex flex-col gap-[24px]">
-            <div className="text-[24px] pb-[12px] font-bold border-b-[2px] border-black">
+            <div className="text-[24px] pb-[12px] font-bold border-b-[2px] border-black tracking-[1px]">
               Instructies
             </div>
             <div className="font-radley text-[18px]">

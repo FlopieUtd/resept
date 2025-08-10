@@ -35,3 +35,20 @@ export interface IngredientLine {
   note?: string;
   ingredientType?: IngredientType;
 }
+
+export interface RecipeInstruction {
+  text: string;
+}
+
+export interface Recipe {
+  name: string;
+  recipeYield: number;
+  recipeCategory: string;
+  description: string;
+  prepTime: string;
+  cookTime: string;
+  totalTime: string;
+  recipeIngredient: IngredientLine[];
+  recipeInstructions: RecipeInstruction[];
+  sourceUrl: string;
+}
