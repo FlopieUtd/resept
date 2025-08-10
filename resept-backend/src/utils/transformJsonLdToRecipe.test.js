@@ -274,6 +274,38 @@ describe("transformJsonLdToRecipe", () => {
       expect(result.prep_time).toBe("PT45S");
     });
 
+    it("should handle camelCase time fields from JSON-LD", () => {
+      const jsonLdRecipe = {
+        "@type": "Recipe",
+        name: "Test Recipe",
+        prepTime: "PT30M",
+        cookTime: "PT45M",
+        totalTime: "PT75M",
+      };
+
+      const result = transformJsonLdToRecipe(jsonLdRecipe);
+
+      expect(result.prep_time).toBe("PT30M");
+      expect(result.cook_time).toBe("PT45M");
+      expect(result.total_time).toBe("PT75M");
+    });
+
+    it("should handle human-readable camelCase time fields", () => {
+      const jsonLdRecipe = {
+        "@type": "Recipe",
+        name: "Test Recipe",
+        prepTime: "15m",
+        cookTime: "2h",
+        totalTime: "2h 15m",
+      };
+
+      const result = transformJsonLdToRecipe(jsonLdRecipe);
+
+      expect(result.prep_time).toBe("PT15M");
+      expect(result.cook_time).toBe("PT2H");
+      expect(result.total_time).toBe("PT2H15M");
+    });
+
     it("should handle complex human-readable duration", () => {
       const jsonLdRecipe = {
         "@type": "Recipe",
@@ -468,6 +500,82 @@ describe("transformJsonLdToRecipe", () => {
         instructions: [],
         source_url: "",
       });
+    });
+  });
+
+  describe("HTML entity decoding", () => {
+    it("should decode HTML entities in title", () => {
+      const jsonLdRecipe = {
+        "@type": "Recipe",
+        name: "Pizza met courgette &amp; zongedroogde tomaat",
+      };
+
+      const result = transformJsonLdToRecipe(jsonLdRecipe);
+
+      expect(result.title).toBe("Pizza met courgette & zongedroogde tomaat");
+    });
+
+    it("should decode HTML entities in description", () => {
+      const jsonLdRecipe = {
+        "@type": "Recipe",
+        name: "Test Recipe",
+        description:
+          "Een van de lekkerste vegetarische pizza&#039;s die je kunt eten.",
+      };
+
+      const result = transformJsonLdToRecipe(jsonLdRecipe);
+
+      expect(result.description).toBe(
+        "Een van de lekkerste vegetarische pizza's die je kunt eten."
+      );
+    });
+
+    it("should decode HTML entities in ingredients", () => {
+      const jsonLdRecipe = {
+        "@type": "Recipe",
+        name: "Test Recipe",
+        recipeIngredient: ["2 &amp;frac12; cups flour", "1 &lt; 2 cups sugar"],
+      };
+
+      const result = transformJsonLdToRecipe(jsonLdRecipe);
+
+      expect(result.ingredients).toEqual([
+        { raw: "2 &frac12; cups flour" },
+        { raw: "1 < 2 cups sugar" },
+      ]);
+    });
+
+    it("should decode HTML entities in instructions", () => {
+      const jsonLdRecipe = {
+        "@type": "Recipe",
+        name: "Test Recipe",
+        recipeInstructions: [
+          { text: "Mix ingredients &amp; bake" },
+          { text: "Let it cool &lt; 30 minutes" },
+        ],
+      };
+
+      const result = transformJsonLdToRecipe(jsonLdRecipe);
+
+      expect(result.instructions).toEqual([
+        { text: "Mix ingredients & bake" },
+        { text: "Let it cool < 30 minutes" },
+      ]);
+    });
+
+    it("should handle non-string values gracefully", () => {
+      const jsonLdRecipe = {
+        "@type": "Recipe",
+        name: null,
+        description: undefined,
+        recipeIngredient: [null, undefined, "valid ingredient"],
+      };
+
+      const result = transformJsonLdToRecipe(jsonLdRecipe);
+
+      expect(result.title).toBe("Untitled Recipe");
+      expect(result.description).toBe("");
+      expect(result.ingredients).toEqual([{ raw: "valid ingredient" }]);
     });
   });
 });

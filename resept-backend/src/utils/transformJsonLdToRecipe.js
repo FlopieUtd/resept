@@ -1,3 +1,25 @@
+// HTML entity decoding function
+const decodeHtmlEntities = (text) => {
+  if (typeof text !== "string") return text;
+
+  const htmlEntities = {
+    "&amp;": "&",
+    "&lt;": "<",
+    "&gt;": ">",
+    "&quot;": '"',
+    "&#039;": "'",
+    "&apos;": "'",
+    "&nbsp;": " ",
+    "&copy;": "©",
+    "&reg;": "®",
+    "&trade;": "™",
+  };
+
+  return text.replace(/&[#\w]+;/g, (entity) => {
+    return htmlEntities[entity] || entity;
+  });
+};
+
 export const transformJsonLdToRecipe = (jsonLdRecipe, sourceUrl) => {
   if (!jsonLdRecipe) {
     return null;
@@ -21,9 +43,12 @@ export const transformJsonLdToRecipe = (jsonLdRecipe, sourceUrl) => {
   }
 
   // Extract basic recipe information with better fallbacks
-  const title =
-    recipe.title || recipe.name || recipe.headline || "Untitled Recipe";
-  const description = recipe.description || recipe.about || "";
+  const title = decodeHtmlEntities(
+    recipe.title || recipe.name || recipe.headline || "Untitled Recipe"
+  );
+  const description = decodeHtmlEntities(
+    recipe.description || recipe.about || ""
+  );
 
   // Handle recipe_yield - could be string or array
   let recipe_yield = 1;
@@ -82,9 +107,12 @@ export const transformJsonLdToRecipe = (jsonLdRecipe, sourceUrl) => {
     return result === "PT" ? "PT0M" : result;
   };
 
-  const prep_time = parseDuration(recipe.prep_time) || "PT0M";
-  const cook_time = parseDuration(recipe.cook_time) || "PT0M";
-  const total_time = parseDuration(recipe.total_time) || "PT0M";
+  const prep_time =
+    parseDuration(recipe.prep_time || recipe.prepTime) || "PT0M";
+  const cook_time =
+    parseDuration(recipe.cook_time || recipe.cookTime) || "PT0M";
+  const total_time =
+    parseDuration(recipe.total_time || recipe.totalTime) || "PT0M";
 
   // Handle ingredients - convert to IngredientLine format with better parsing
   const ingredients = [];
@@ -93,13 +121,13 @@ export const transformJsonLdToRecipe = (jsonLdRecipe, sourceUrl) => {
   if (ingredientSource && Array.isArray(ingredientSource)) {
     ingredientSource.forEach((ingredient) => {
       if (typeof ingredient === "string") {
-        ingredients.push({ raw: ingredient });
+        ingredients.push({ raw: decodeHtmlEntities(ingredient) });
       } else if (ingredient && typeof ingredient === "object") {
         // Handle structured ingredients
         if (ingredient.text) {
-          ingredients.push({ raw: ingredient.text });
+          ingredients.push({ raw: decodeHtmlEntities(ingredient.text) });
         } else if (ingredient.name) {
-          ingredients.push({ raw: ingredient.name });
+          ingredients.push({ raw: decodeHtmlEntities(ingredient.name) });
         }
       }
     });
@@ -113,14 +141,16 @@ export const transformJsonLdToRecipe = (jsonLdRecipe, sourceUrl) => {
     instructionSource.forEach((instruction) => {
       if (instruction && typeof instruction === "object") {
         if (instruction.text) {
-          instructions.push({ text: instruction.text });
+          instructions.push({ text: decodeHtmlEntities(instruction.text) });
         } else if (instruction.name) {
-          instructions.push({ text: instruction.name });
+          instructions.push({ text: decodeHtmlEntities(instruction.name) });
         } else if (instruction.description) {
-          instructions.push({ text: instruction.description });
+          instructions.push({
+            text: decodeHtmlEntities(instruction.description),
+          });
         }
       } else if (typeof instruction === "string") {
-        instructions.push({ text: instruction });
+        instructions.push({ text: decodeHtmlEntities(instruction) });
       }
     });
   }
