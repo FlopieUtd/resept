@@ -1,0 +1,38 @@
+export const detectSiteType = (html) => {
+  const textContent = html.replace(/<[^>]+>/g, "").trim();
+
+  // More flexible root div detection using regex
+  const rootDivPattern = /<div[^>]*id=["'](root|app|__next)["'][^>]*>/i;
+  const hasRootDiv = rootDivPattern.test(html);
+
+  const isShort = html.length < 8000;
+  const hasLittleText = textContent.length < 2000;
+  const hasFrameworkMarkers =
+    html.includes("data-reactroot") ||
+    html.includes("__NEXT_DATA__") ||
+    html.includes("window.__INITIAL_STATE__") ||
+    html.includes("data-v-") ||
+    html.includes("__VUE_DEVTOOLS_GLOBAL_HOOK__") ||
+    html.includes("ng-") ||
+    html.includes("data-ng-") ||
+    html.includes("x-ng-");
+
+  const isSPA = hasRootDiv && (isShort || hasLittleText) && hasFrameworkMarkers;
+  const isMinimal = isShort && hasLittleText;
+
+  console.log("Site Analysis:", {
+    length: html.length,
+    textLength: textContent.length,
+    hasRootDiv,
+    hasFrameworkMarkers,
+    isSPA,
+    isMinimal,
+    needsBrowser: isSPA || isMinimal,
+  });
+
+  return {
+    isSPA,
+    isMinimal,
+    needsBrowser: isSPA || isMinimal,
+  };
+};
