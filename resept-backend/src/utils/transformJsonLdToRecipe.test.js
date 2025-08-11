@@ -140,6 +140,68 @@ describe("transformJsonLdToRecipe", () => {
       expect(result.recipe_yield).toBe(12);
     });
 
+    it("should handle camelCase recipeYield field", () => {
+      const jsonLdRecipe = {
+        "@type": "Recipe",
+        name: "Test Recipe",
+        recipeYield: "8 portions",
+      };
+
+      const result = transformJsonLdToRecipe(jsonLdRecipe);
+
+      expect(result.recipe_yield).toBe(8);
+    });
+
+    it("should handle yield field", () => {
+      const jsonLdRecipe = {
+        "@type": "Recipe",
+        name: "Test Recipe",
+        yield: "12 servings",
+      };
+
+      const result = transformJsonLdToRecipe(jsonLdRecipe);
+
+      expect(result.recipe_yield).toBe(12);
+    });
+
+    it("should handle servings field", () => {
+      const jsonLdRecipe = {
+        "@type": "Recipe",
+        name: "Test Recipe",
+        servings: "6 people",
+      };
+
+      const result = transformJsonLdToRecipe(jsonLdRecipe);
+
+      expect(result.recipe_yield).toBe(6);
+    });
+
+    it("should handle recipeServings field", () => {
+      const jsonLdRecipe = {
+        "@type": "Recipe",
+        name: "Test Recipe",
+        recipeServings: "4 portions",
+      };
+
+      const result = transformJsonLdToRecipe(jsonLdRecipe);
+
+      expect(result.recipe_yield).toBe(4);
+    });
+
+    it("should prioritize recipe_yield over other fields", () => {
+      const jsonLdRecipe = {
+        "@type": "Recipe",
+        name: "Test Recipe",
+        recipe_yield: "10 servings",
+        recipeYield: "8 portions",
+        yield: "6 people",
+      };
+
+      const result = transformJsonLdToRecipe(jsonLdRecipe);
+
+      expect(result.recipe_yield).toBe(10);
+    });
+
     it("should default to 1 if no yield or invalid yield", () => {
       const jsonLdRecipe = {
         "@type": "Recipe",
@@ -439,6 +501,125 @@ describe("transformJsonLdToRecipe", () => {
       const result = transformJsonLdToRecipe(jsonLdRecipe);
 
       expect(result.instructions).toEqual([]);
+    });
+
+    it("should handle nested instruction sections", () => {
+      const jsonLdRecipe = {
+        "@type": "Recipe",
+        name: "Test Recipe",
+        recipeInstructions: [
+          {
+            type: "section",
+            name: "For the Dough",
+            steps: ["Mix flour and water", "Knead for 10 minutes"],
+          },
+          {
+            type: "section",
+            name: "For the Filling",
+            steps: ["Chop vegetables", "Season with salt and pepper"],
+          },
+        ],
+      };
+
+      const result = transformJsonLdToRecipe(jsonLdRecipe);
+
+      expect(result.instructions).toEqual([
+        {
+          type: "section",
+          name: "For the Dough",
+          steps: [
+            { text: "Mix flour and water" },
+            { text: "Knead for 10 minutes" },
+          ],
+        },
+        {
+          type: "section",
+          name: "For the Filling",
+          steps: [
+            { text: "Chop vegetables" },
+            { text: "Season with salt and pepper" },
+          ],
+        },
+      ]);
+    });
+
+    it("should handle mixed instruction types", () => {
+      const jsonLdRecipe = {
+        "@type": "Recipe",
+        name: "Test Recipe",
+        recipeInstructions: [
+          { text: "Preheat oven to 350F" },
+          {
+            type: "section",
+            name: "Prepare Ingredients",
+            steps: ["Chop onions", "Dice tomatoes"],
+          },
+          { text: "Bake for 30 minutes" },
+        ],
+      };
+
+      const result = transformJsonLdToRecipe(jsonLdRecipe);
+
+      expect(result.instructions).toEqual([
+        { text: "Preheat oven to 350F" },
+        {
+          type: "section",
+          name: "Prepare Ingredients",
+          steps: [{ text: "Chop onions" }, { text: "Dice tomatoes" }],
+        },
+        { text: "Bake for 30 minutes" },
+      ]);
+    });
+
+    it("should handle HowToSection format (newer schema.org)", () => {
+      const jsonLdRecipe = {
+        "@type": "Recipe",
+        name: "Test Recipe",
+        recipeInstructions: [
+          {
+            "@type": "HowToSection",
+            name: "Meat Sauce:",
+            itemListElement: [
+              {
+                "@type": "HowToStep",
+                text: "Heat oil in a large pot over high heat",
+              },
+              {
+                "@type": "HowToStep",
+                text: "Add garlic and onion, cook for 2-3 minutes",
+              },
+            ],
+          },
+          {
+            "@type": "HowToSection",
+            name: "Greek Béchamel:",
+            itemListElement: [
+              {
+                "@type": "HowToStep",
+                text: "Melt butter in a saucepan",
+              },
+            ],
+          },
+        ],
+      };
+
+      const result = transformJsonLdToRecipe(jsonLdRecipe);
+
+      expect(result.instructions).toEqual([
+        {
+          type: "section",
+          name: "Meat Sauce:",
+          steps: [
+            { text: "Heat oil in a large pot over high heat" },
+            { text: "Add garlic and onion, cook for 2-3 minutes" },
+          ],
+        },
+        {
+          type: "section",
+          name: "Greek Béchamel:",
+          steps: [{ text: "Melt butter in a saucepan" }],
+        },
+      ]);
     });
   });
 

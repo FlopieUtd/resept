@@ -51,11 +51,19 @@ export const transformJsonLdToRecipe = (jsonLdRecipe, sourceUrl) => {
   );
 
   // Handle recipe_yield - could be string or array
+  // Check multiple common JSON-LD field names for recipe yield
   let recipe_yield = 1;
-  if (recipe.recipe_yield) {
-    if (Array.isArray(recipe.recipe_yield)) {
+  const yieldValue =
+    recipe.recipe_yield ||
+    recipe.recipeYield ||
+    recipe.yield ||
+    recipe.servings ||
+    recipe.recipeServings;
+
+  if (yieldValue) {
+    if (Array.isArray(yieldValue)) {
       // Try to extract number from first yield item
-      const firstYield = recipe.recipe_yield[0];
+      const firstYield = yieldValue[0];
       if (typeof firstYield === "string") {
         const match = firstYield.match(/(\d+)/);
         if (match) {
@@ -64,13 +72,13 @@ export const transformJsonLdToRecipe = (jsonLdRecipe, sourceUrl) => {
       } else if (typeof firstYield === "number") {
         recipe_yield = firstYield;
       }
-    } else if (typeof recipe.recipe_yield === "string") {
-      const match = recipe.recipe_yield.match(/(\d+)/);
+    } else if (typeof yieldValue === "string") {
+      const match = yieldValue.match(/(\d+)/);
       if (match) {
         recipe_yield = parseInt(match[1], 10);
       }
-    } else if (typeof recipe.recipe_yield === "number") {
-      recipe_yield = recipe.recipe_yield;
+    } else if (typeof yieldValue === "number") {
+      recipe_yield = yieldValue;
     }
   }
 
@@ -140,7 +148,60 @@ export const transformJsonLdToRecipe = (jsonLdRecipe, sourceUrl) => {
   if (instructionSource && Array.isArray(instructionSource)) {
     instructionSource.forEach((instruction) => {
       if (instruction && typeof instruction === "object") {
-        if (instruction.text) {
+        // Handle HowToSection format (newer schema.org)
+        if (
+          instruction["@type"] === "HowToSection" &&
+          instruction.name &&
+          instruction.itemListElement
+        ) {
+          const section = {
+            type: "section",
+            name: decodeHtmlEntities(instruction.name),
+            steps: instruction.itemListElement
+              .map((step) => {
+                if (step && typeof step === "object") {
+                  if (step["@type"] === "HowToStep") {
+                    return {
+                      text: decodeHtmlEntities(
+                        step.text || step.name || step.description || ""
+                      ),
+                    };
+                  } else if (step.text) {
+                    return { text: decodeHtmlEntities(step.text) };
+                  }
+                }
+                return { text: "" };
+              })
+              .filter((step) => step.text),
+          };
+          instructions.push(section);
+        }
+        // Handle nested instruction sections (older format)
+        else if (
+          instruction.type === "section" &&
+          instruction.name &&
+          instruction.steps
+        ) {
+          const section = {
+            type: "section",
+            name: decodeHtmlEntities(instruction.name),
+            steps: instruction.steps
+              .map((step) => {
+                if (typeof step === "string") {
+                  return { text: decodeHtmlEntities(step) };
+                } else if (step && typeof step === "object") {
+                  return {
+                    text: decodeHtmlEntities(
+                      step.text || step.name || step.description || ""
+                    ),
+                  };
+                }
+                return { text: "" };
+              })
+              .filter((step) => step.text),
+          };
+          instructions.push(section);
+        } else if (instruction.text) {
           instructions.push({ text: decodeHtmlEntities(instruction.text) });
         } else if (instruction.name) {
           instructions.push({ text: decodeHtmlEntities(instruction.name) });

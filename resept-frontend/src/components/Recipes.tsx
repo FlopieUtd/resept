@@ -29,17 +29,17 @@ export const Recipes = () => {
             <div className="text-[24px] text-gray-500">No recipes found</div>
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             {recipes.map((recipe) => (
               <Link
                 key={recipe.id}
                 to={`/recipes/${recipe.id}`}
                 className="block p-4 border-2 border-black hover:bg-gray-100 cursor-pointer"
               >
-                <h2 className="text-xl font-semibold mb-2 min-h-[56px] line-clamp-3">
+                <h2 className="text-xl font-semibold mb-2 line-clamp-3 overflow-hidden">
                   {recipe.title}
                 </h2>
-                <p className="text-black mb-2 line-clamp-3 font-radley">
+                <p className="text-black mb-2 line-clamp-3 font-radley flex-1 overflow-hidden">
                   {recipe.description}
                 </p>
               </Link>
