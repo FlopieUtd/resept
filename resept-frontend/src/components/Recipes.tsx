@@ -36,7 +36,7 @@ export const Recipes = () => {
                 to={`/recipes/${recipe.id}`}
                 className="block p-4 border-2 border-black hover:bg-gray-100 cursor-pointer"
               >
-                <h2 className="text-xl font-semibold mb-2 min-h-[56px]">
+                <h2 className="text-xl font-semibold mb-2 min-h-[56px] line-clamp-3">
                   {recipe.title}
                 </h2>
                 <p className="text-black mb-2 line-clamp-3 font-radley">

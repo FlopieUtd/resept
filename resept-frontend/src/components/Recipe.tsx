@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useRecipe } from "../lib/recipeService";
-import { type IngredientLine, type RecipeInstruction } from "../types";
+import { type IngredientLine, type RecipeInstructionItem } from "../types";
 import { Loading } from "./Loading";
 
 export const Recipe = () => {
@@ -97,11 +97,29 @@ export const Recipe = () => {
             </div>
             <div className="font-radley text-[18px]">
               {recipe.instructions.map(
-                (instruction: RecipeInstruction, index: number) => (
-                  <div key={index} className="pb-[16px]">
-                    {instruction.text}
-                  </div>
-                )
+                (instruction: RecipeInstructionItem, index: number) => {
+                  if ("type" in instruction && instruction.type === "section") {
+                    return (
+                      <div key={index} className="pb-[16px]">
+                        <div className="font-bold text-[20px] mb-[12px] text-[#333]">
+                          {instruction.name}
+                        </div>
+                        {instruction.steps.map((step, stepIndex) => (
+                          <div key={stepIndex} className="pb-[12px] ml-[16px]">
+                            {step.text}
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  } else if ("text" in instruction) {
+                    return (
+                      <div key={index} className="pb-[16px]">
+                        {instruction.text}
+                      </div>
+                    );
+                  }
+                  return null;
+                }
               )}
             </div>
           </div>
