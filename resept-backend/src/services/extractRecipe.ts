@@ -4,6 +4,7 @@ import { detectSiteType } from "../utils/detectSiteType.js";
 import { detectRecipeJsonLd } from "../utils/detectRecipeJsonLd.js";
 import { transformJsonLdToRecipe } from "../utils/transformJsonLdToRecipe.js";
 import { extractTextContent, cleanHtml } from "../utils/extractTextContent.js";
+import { extractRecipeWithLlm } from "../utils/llmRecipeExtractor.js";
 
 interface RecipeResult {
   success: boolean;
@@ -60,19 +61,30 @@ export const extractRecipe = async (url: string): Promise<RecipeResult> => {
       };
     }
 
-    // Step 4: No JSON-LD found, provide clean HTML for LLM processing
-    console.log("No JSON-LD found, providing clean HTML for LLM processing...");
+    // Step 4: No JSON-LD found, use LLM to extract recipe from clean HTML
+    console.log("No JSON-LD found, using LLM to extract recipe from HTML...");
     const cleanHtmlContent = cleanHtml(html);
 
+    const llmResult = await extractRecipeWithLlm({
+      cleanHtml: cleanHtmlContent,
+      sourceUrl: url,
+    });
+
+    if (llmResult.success && llmResult.recipe) {
+      console.log("LLM successfully extracted recipe");
+      return {
+        success: true,
+        error: null,
+        data: llmResult.recipe,
+      };
+    }
+
+    // Step 5: LLM extraction failed, return error
+    console.log("LLM extraction failed, returning error");
     return {
-      success: true,
-      error: null,
-      data: {
-        source: url,
-        extractedFrom: "HTML Structure",
-        cleanHtml: cleanHtmlContent,
-        message: "Recipe data extracted as clean HTML for LLM processing",
-      },
+      success: false,
+      error: llmResult.error || "Failed to extract recipe from HTML content",
+      data: null,
     };
   } catch (error: any) {
     console.error("Error extracting recipe:", error);
