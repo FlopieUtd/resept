@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { Loading } from "./Loading";
 import lemonImage from "../assets/lemon.png";
 
 export const Login = () => {

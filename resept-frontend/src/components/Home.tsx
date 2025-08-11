@@ -1,17 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { recipeService } from "../lib/recipeService";
+import { useCreateRecipe } from "../lib/recipeService";
 import { type DatabaseRecipe } from "../types";
 
 export const Home = () => {
   const [url, setUrl] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const createRecipeMutation = useCreateRecipe();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
 
     try {
@@ -30,10 +29,8 @@ export const Home = () => {
       } else {
         setError(data.error || "Failed to extract recipe");
       }
-    } catch (err) {
+    } catch {
       setError("Network error occurred");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -52,13 +49,11 @@ export const Home = () => {
         source_url: extractedRecipe.source_url,
       };
 
-      const savedRecipe = await recipeService.createRecipe(recipeData);
+      const savedRecipe = await createRecipeMutation.mutateAsync(recipeData);
 
       if (savedRecipe) {
         setUrl("");
         navigate(`/recipes/${savedRecipe.id}`);
-      } else {
-        setError("Failed to save recipe to database");
       }
     } catch {
       setError("Error saving recipe to database");
@@ -84,10 +79,10 @@ export const Home = () => {
             />
             <button
               type="submit"
-              disabled={loading}
+              disabled={createRecipeMutation.isPending}
               className="px-6 py-3 bg-blue-600 text-white font-semibold  hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Importeren
+              {createRecipeMutation.isPending ? "Importeren..." : "Importeren"}
             </button>
           </div>
         </form>

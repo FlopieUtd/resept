@@ -1,18 +1,78 @@
 import { supabase } from "./supabase";
-import { type DatabaseRecipe, type CreateRecipeData } from "../types";
+import { type CreateRecipeData } from "../types";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-export const recipeService = {
-  async createRecipe(
-    recipeData: CreateRecipeData
-  ): Promise<DatabaseRecipe | null> {
-    try {
+export const useRecipes = () => {
+  return useQuery({
+    queryKey: ["recipes"],
+    queryFn: async () => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
       if (!user) {
-        console.error("User not authenticated");
-        return null;
+        throw new Error("User not authenticated");
+      }
+
+      const { data, error } = await supabase
+        .from("recipes")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        throw new Error(`Failed to fetch recipes: ${error.message}`);
+      }
+
+      return data || [];
+    },
+    retry: 2,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+  });
+};
+
+export const useRecipe = (recipeId: string) => {
+  return useQuery({
+    queryKey: ["recipe", recipeId],
+    queryFn: async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+
+      const { data, error } = await supabase
+        .from("recipes")
+        .select("*")
+        .eq("id", recipeId)
+        .eq("user_id", user.id)
+        .single();
+
+      if (error) {
+        throw new Error(`Failed to fetch recipe: ${error.message}`);
+      }
+
+      return data;
+    },
+    enabled: !!recipeId,
+    retry: 2,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+  });
+};
+
+export const useCreateRecipe = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (recipeData: CreateRecipeData) => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        throw new Error("User not authenticated");
       }
 
       const { data, error } = await supabase
@@ -36,88 +96,37 @@ export const recipeService = {
         .single();
 
       if (error) {
-        console.error("Error creating recipe:", error);
-        return null;
+        throw new Error(`Failed to create recipe: ${error.message}`);
       }
 
       return data;
-    } catch (error) {
-      console.error("Error creating recipe:", error);
-      return null;
-    }
-  },
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["recipes"] });
+    },
+    onError: (error) => {
+      console.error("Recipe creation failed:", error);
+    },
+  });
+};
 
-  async getUserRecipes(): Promise<DatabaseRecipe[]> {
-    try {
+export const useUpdateRecipe = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      recipeId,
+      updates,
+    }: {
+      recipeId: string;
+      updates: Partial<CreateRecipeData>;
+    }) => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
       if (!user) {
-        console.error("User not authenticated");
-        return [];
-      }
-
-      const { data, error } = await supabase
-        .from("recipes")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Error fetching recipes:", error);
-        return [];
-      }
-
-      return data || [];
-    } catch (error) {
-      console.error("Error fetching recipes:", error);
-      return [];
-    }
-  },
-
-  async getUserRecipe(recipeId: string): Promise<DatabaseRecipe | null> {
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        console.error("User not authenticated");
-        return null;
-      }
-
-      const { data, error } = await supabase
-        .from("recipes")
-        .select("*")
-        .eq("id", recipeId)
-        .eq("user_id", user.id)
-        .single();
-
-      if (error) {
-        console.error("Error fetching recipe:", error);
-        return null;
-      }
-
-      return data;
-    } catch (error) {
-      console.error("Error fetching recipe:", error);
-      return null;
-    }
-  },
-
-  async updateRecipe(
-    recipeId: string,
-    updates: Partial<CreateRecipeData>
-  ): Promise<DatabaseRecipe | null> {
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        console.error("User not authenticated");
-        return null;
+        throw new Error("User not authenticated");
       }
 
       const { data, error } = await supabase
@@ -129,26 +138,32 @@ export const recipeService = {
         .single();
 
       if (error) {
-        console.error("Error updating recipe:", error);
-        return null;
+        throw new Error(`Failed to update recipe: ${error.message}`);
       }
 
       return data;
-    } catch (error) {
-      console.error("Error updating recipe:", error);
-      return null;
-    }
-  },
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["recipes"] });
+      queryClient.invalidateQueries({ queryKey: ["recipe", data.id] });
+    },
+    onError: (error) => {
+      console.error("Recipe update failed:", error);
+    },
+  });
+};
 
-  async deleteRecipe(recipeId: string): Promise<boolean> {
-    try {
+export const useDeleteRecipe = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (recipeId: string) => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
       if (!user) {
-        console.error("User not authenticated");
-        return false;
+        throw new Error("User not authenticated");
       }
 
       const { error } = await supabase
@@ -158,14 +173,16 @@ export const recipeService = {
         .eq("user_id", user.id);
 
       if (error) {
-        console.error("Error deleting recipe:", error);
-        return false;
+        throw new Error(`Failed to delete recipe: ${error.message}`);
       }
 
       return true;
-    } catch (error) {
-      console.error("Error deleting recipe:", error);
-      return false;
-    }
-  },
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["recipes"] });
+    },
+    onError: (error) => {
+      console.error("Recipe deletion failed:", error);
+    },
+  });
 };

@@ -1,40 +1,22 @@
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { recipeService } from "../lib/recipeService";
-import { type DatabaseRecipe } from "../types";
+import { useRecipe } from "../lib/recipeService";
+import { type IngredientLine, type RecipeInstruction } from "../types";
 import { Loading } from "./Loading";
 
 export const Recipe = () => {
   const { recipeId } = useParams();
-  const [recipe, setRecipe] = useState<DatabaseRecipe | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: recipe, isLoading, error } = useRecipe(recipeId!);
 
-  useEffect(() => {
-    const fetchRecipe = async () => {
-      if (!recipeId) return;
-
-      try {
-        const recipeData = await recipeService.getUserRecipe(recipeId);
-        setRecipe(recipeData);
-      } catch (err) {
-        console.error("Error fetching recipe:", err);
-        setRecipe(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRecipe();
-  }, [recipeId]);
-
-  if (loading) {
+  if (isLoading) {
     return <Loading />;
   }
 
-  if (!recipe) {
+  if (error || !recipe) {
     return (
       <div className="flex w-full h-full justify-center items-center">
-        <div className="text-[24px]">Couldn't find recipe</div>
+        <div className="text-[24px]">
+          {error instanceof Error ? error.message : "Couldn't find recipe"}
+        </div>
       </div>
     );
   }
@@ -59,7 +41,6 @@ export const Recipe = () => {
       }
     }
 
-    // Fallback for non-ISO format (in case there are existing recipes with old format)
     if (
       timeString.includes("m") ||
       timeString.includes("h") ||
@@ -101,11 +82,13 @@ export const Recipe = () => {
               Ingrediënten
             </div>
             <ul>
-              {recipe.ingredients.map((ingredient, index) => (
-                <li key={index} className="pb-[16px] flex">
-                  {ingredient.raw}
-                </li>
-              ))}
+              {recipe.ingredients.map(
+                (ingredient: IngredientLine, index: number) => (
+                  <li key={index} className="pb-[16px] flex">
+                    {ingredient.raw}
+                  </li>
+                )
+              )}
             </ul>
           </div>
           <div className="w-2/3 flex flex-col gap-[24px]">
@@ -113,11 +96,13 @@ export const Recipe = () => {
               Instructies
             </div>
             <div className="font-radley text-[18px]">
-              {recipe.instructions.map((instruction, index) => (
-                <div key={index} className="pb-[16px]">
-                  {instruction.text}
-                </div>
-              ))}
+              {recipe.instructions.map(
+                (instruction: RecipeInstruction, index: number) => (
+                  <div key={index} className="pb-[16px]">
+                    {instruction.text}
+                  </div>
+                )
+              )}
             </div>
           </div>
         </div>
