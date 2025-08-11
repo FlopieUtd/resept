@@ -1,4 +1,10 @@
-export const detectRecipeJsonLd = (html) => {
+interface JsonLdRecipe {
+  "@type": string | string[];
+  "@graph"?: Array<{ "@type": string }>;
+  [key: string]: any;
+}
+
+export const detectRecipeJsonLd = (html: string): JsonLdRecipe[] | null => {
   console.log("Step 2: Detecting recipe JSON-LD...");
 
   const jsonLdMatches = html.match(
@@ -10,14 +16,14 @@ export const detectRecipeJsonLd = (html) => {
     return null;
   }
 
-  const recipes = [];
+  const recipes: JsonLdRecipe[] = [];
 
   jsonLdMatches.forEach((match, index) => {
     try {
       const jsonContent = match
         .replace(/<script type="application\/ld\+json"[^>]*>/, "")
         .replace(/<\/script>/, "");
-      const parsed = JSON.parse(jsonContent);
+      const parsed: JsonLdRecipe = JSON.parse(jsonContent);
 
       if (
         parsed["@type"] === "Recipe" ||
@@ -30,7 +36,7 @@ export const detectRecipeJsonLd = (html) => {
         console.log(`Recipe JSON-LD found in script ${index + 1}`);
         recipes.push(parsed);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(
         `Failed to parse JSON-LD script ${index + 1}:`,
         error.message

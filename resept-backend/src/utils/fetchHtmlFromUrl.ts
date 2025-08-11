@@ -1,4 +1,4 @@
-export const fetchHtmlFromUrl = async (url) => {
+export const fetchHtmlFromUrl = async (url: string): Promise<string> => {
   console.log("Step 1: Fetching HTML from URL...");
   const html = await fetch(url, {
     redirect: "follow",

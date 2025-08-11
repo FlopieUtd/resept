@@ -1,7 +1,8 @@
-import { fetchHtmlFromUrl } from "./fetchHtmlFromUrl.js";
+import { fetchHtmlFromUrl } from "./fetchHtmlFromUrl";
 
 // Mock fetch globally
-global.fetch = jest.fn();
+const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
+global.fetch = mockFetch;
 
 describe("htmlFetcher", () => {
   beforeEach(() => {
@@ -14,13 +15,13 @@ describe("htmlFetcher", () => {
       const mockHtml = "<html><body>Test content</body></html>";
       const mockResponse = {
         text: jest.fn().mockResolvedValue(mockHtml),
-      };
+      } as any;
 
-      global.fetch.mockResolvedValue(mockResponse);
+      mockFetch.mockResolvedValue(mockResponse);
 
       const result = await fetchHtmlFromUrl("https://example.com");
 
-      expect(global.fetch).toHaveBeenCalledWith("https://example.com", {
+      expect(mockFetch).toHaveBeenCalledWith("https://example.com", {
         redirect: "follow",
         headers: {
           "User-Agent": "Mozilla/5.0",
@@ -39,13 +40,13 @@ describe("htmlFetcher", () => {
 
     it("should handle fetch errors gracefully", async () => {
       const fetchError = new Error("Network error");
-      global.fetch.mockRejectedValue(fetchError);
+      mockFetch.mockRejectedValue(fetchError);
 
       await expect(fetchHtmlFromUrl("https://invalid-url.com")).rejects.toThrow(
         "Network error"
       );
 
-      expect(global.fetch).toHaveBeenCalledWith("https://invalid-url.com", {
+      expect(mockFetch).toHaveBeenCalledWith("https://invalid-url.com", {
         redirect: "follow",
         headers: {
           "User-Agent": "Mozilla/5.0",
@@ -57,9 +58,9 @@ describe("htmlFetcher", () => {
     it("should handle response.text() errors", async () => {
       const mockResponse = {
         text: jest.fn().mockRejectedValue(new Error("Text parsing error")),
-      };
+      } as any;
 
-      global.fetch.mockResolvedValue(mockResponse);
+      mockFetch.mockResolvedValue(mockResponse);
 
       await expect(fetchHtmlFromUrl("https://example.com")).rejects.toThrow(
         "Text parsing error"
@@ -69,13 +70,13 @@ describe("htmlFetcher", () => {
     it("should use correct headers and options", async () => {
       const mockResponse = {
         text: jest.fn().mockResolvedValue("<html></html>"),
-      };
+      } as any;
 
-      global.fetch.mockResolvedValue(mockResponse);
+      mockFetch.mockResolvedValue(mockResponse);
 
       await fetchHtmlFromUrl("https://example.com");
 
-      expect(global.fetch).toHaveBeenCalledWith("https://example.com", {
+      expect(mockFetch).toHaveBeenCalledWith("https://example.com", {
         redirect: "follow",
         headers: {
           "User-Agent": "Mozilla/5.0",
@@ -88,9 +89,9 @@ describe("htmlFetcher", () => {
       const shortHtml = "<html></html>";
       const mockResponse = {
         text: jest.fn().mockResolvedValue(shortHtml),
-      };
+      } as any;
 
-      global.fetch.mockResolvedValue(mockResponse);
+      mockFetch.mockResolvedValue(mockResponse);
 
       await fetchHtmlFromUrl("https://example.com");
 

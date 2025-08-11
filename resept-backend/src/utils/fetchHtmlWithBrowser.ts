@@ -1,8 +1,15 @@
 import puppeteer from "puppeteer";
 
-let browser = null;
+interface BrowserOptions {
+  waitForSelector?: string;
+  waitForTimeout?: number;
+  waitForNetworkIdle?: boolean;
+  maxWaitTime?: number;
+}
 
-const getBrowser = async () => {
+let browser: puppeteer.Browser | null = null;
+
+const getBrowser = async (): Promise<puppeteer.Browser> => {
   if (!browser) {
     browser = await puppeteer.launch({
       headless: true,
@@ -23,7 +30,10 @@ const getBrowser = async () => {
   return browser;
 };
 
-export const fetchHtmlWithBrowser = async (url, options = {}) => {
+export const fetchHtmlWithBrowser = async (
+  url: string,
+  options: BrowserOptions = {}
+): Promise<string> => {
   const {
     waitForSelector = null,
     waitForTimeout = 5000,
@@ -112,7 +122,7 @@ export const fetchHtmlWithBrowser = async (url, options = {}) => {
   }
 };
 
-export const closeBrowser = async () => {
+export const closeBrowser = async (): Promise<void> => {
   if (browser) {
     await browser.close();
     browser = null;

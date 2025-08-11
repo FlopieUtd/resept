@@ -1,4 +1,10 @@
-export const detectSiteType = (html) => {
+interface SiteAnalysis {
+  isSPA: boolean;
+  isMinimal: boolean;
+  needsBrowser: boolean;
+}
+
+export const detectSiteType = (html: string): SiteAnalysis => {
   const textContent = html.replace(/<[^>]+>/g, "").trim();
 
   // More flexible root div detection using regex

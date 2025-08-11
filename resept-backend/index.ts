@@ -1,15 +1,16 @@
-import express from "express";
+import express, { Application } from "express";
+import { Server } from "http";
 import cors from "cors";
 import routes from "./routes.js";
 import { closeBrowser } from "./src/utils/fetchHtmlWithBrowser.js";
 
-const app = express();
+const app: Application = express();
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 
 app.use(routes);
 
-const server = app.listen(8787, () =>
+const server: Server = app.listen(8787, () =>
   console.log("API on http://localhost:8787")
 );
 

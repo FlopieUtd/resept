@@ -1,6 +1,9 @@
 export default {
   testEnvironment: "node",
+  preset: "ts-jest",
   transform: {
-    "^.+\\.js$": "babel-jest",
+    "^.+\\.ts$": "ts-jest",
   },
+  testPathIgnorePatterns: ["/dist/", "/node_modules/"],
+  moduleFileExtensions: ["ts", "js"],
 };
