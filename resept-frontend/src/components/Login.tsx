@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { Loading } from "./Loading";
+import lemonImage from "../assets/lemon.png";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
@@ -77,7 +79,15 @@ export const Login = () => {
             disabled={loading}
             className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
           >
-            {loading ? "Loading..." : isSignUp ? "Sign Up" : "Sign In"}
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <img src={lemonImage} alt="Loading..." className="w-6 h-6" />
+              </div>
+            ) : isSignUp ? (
+              "Sign Up"
+            ) : (
+              "Sign In"
+            )}
           </button>
         </form>
 
