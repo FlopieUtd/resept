@@ -18,7 +18,7 @@ interface LlmRecipeExtractionResponse {
     total_time: string;
     ingredients: Array<{ raw: string }>;
     instructions: Array<{ text: string }>;
-    source: string;
+    source_url: string;
   };
 }
 
@@ -37,11 +37,6 @@ export const extractRecipeWithLlm = async (
   try {
     const { cleanHtml, sourceUrl } = request;
 
-    console.log("LLM: Extracting recipe from clean HTML...");
-    console.log(`LLM: Using model: ${modelName}`);
-    console.log(`LLM: HTML length: ${cleanHtml.length} characters`);
-    console.log(`LLM: Source URL: ${sourceUrl}`);
-
     // Create the prompt for the LLM
     const prompt = createLlmPrompt(cleanHtml, sourceUrl);
 
@@ -55,13 +50,11 @@ export const extractRecipeWithLlm = async (
         },
       ],
       options: {
-        temperature: 0.1, // Low temperature for consistent output
-        num_predict: 1000, // Limit response length
+        temperature: 0.0, // Zero temperature for maximum determinism and accuracy
+        num_predict: 1200, // Increased to ensure complete JSON
+        top_k: 20, // Limit token selection for speed
       },
     });
-
-    const executionTime = Date.now() - startTime;
-    console.log(`LLM: Received response from Ollama in ${executionTime}ms`);
 
     // Extract the content from the response
     const llmResponse = response.message.content;
@@ -69,27 +62,41 @@ export const extractRecipeWithLlm = async (
     // Try to parse the JSON response
     try {
       // Find JSON in the response (sometimes LLMs add extra text)
-      const jsonMatch = llmResponse.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) {
+      // Try to find the largest complete JSON object
+      const jsonMatches = llmResponse.match(/\{[\s\S]*\}/g);
+      if (!jsonMatches || jsonMatches.length === 0) {
         throw new Error("No JSON found in LLM response");
       }
 
-      let jsonString = jsonMatch[0];
-      console.log("LLM: Initial JSON match length:", jsonString.length);
+      // Pick the largest JSON match (most complete recipe)
+      let jsonString = jsonMatches.reduce((largest, current) =>
+        current.length > largest.length ? current : largest
+      );
       let recipeData: any;
-
-      console.log("LLM: Extracted JSON string length:", jsonString.length);
 
       // Try to fix common JSON issues
       try {
         // First attempt: direct parse
         recipeData = JSON.parse(jsonString);
-        console.log("LLM: Successfully parsed recipe data on first attempt");
+        // console.log("LLM: Successfully parsed recipe data on first attempt");
       } catch (firstError: any) {
-        console.log(
-          "LLM: First JSON parse failed, attempting to fix common issues..."
-        );
-        console.log("LLM: First error:", firstError.message);
+        // Check if JSON is incomplete (missing closing braces)
+        const openBraces = (jsonString.match(/\{/g) || []).length;
+        let closeBraces = (jsonString.match(/\}/g) || []).length;
+        const openBrackets = (jsonString.match(/\[/g) || []).length;
+        let closeBrackets = (jsonString.match(/\]/g) || []).length;
+
+        if (openBraces > closeBraces || openBrackets > closeBrackets) {
+          // Try to complete the JSON by adding missing closing characters
+          while (openBraces > closeBraces) {
+            jsonString += "}";
+            closeBraces++;
+          }
+          while (openBrackets > closeBrackets) {
+            jsonString += "]";
+            closeBrackets++;
+          }
+        }
 
         // Fix common trailing comma issues
         jsonString = jsonString.replace(/,(\s*[}\]])/g, "$1");
@@ -117,13 +124,7 @@ export const extractRecipeWithLlm = async (
         // Try parsing again
         try {
           recipeData = JSON.parse(jsonString);
-          console.log(
-            "LLM: Successfully parsed recipe data after fixing common issues"
-          );
         } catch (secondError: any) {
-          console.log("LLM: Second parse attempt failed:", secondError.message);
-          console.log("LLM: Attempting to extract valid JSON portion...");
-
           // Try to find the largest valid JSON object
           let validJson = "";
           for (let i = jsonString.length; i > 0; i--) {
@@ -139,19 +140,7 @@ export const extractRecipeWithLlm = async (
 
           if (validJson) {
             recipeData = JSON.parse(validJson);
-            console.log("LLM: Successfully parsed truncated JSON");
           } else {
-            // Last resort: try to extract JSON from anywhere in the response
-            console.log(
-              "LLM: Truncation failed, attempting to find JSON anywhere in response..."
-            );
-            console.log("LLM: Raw response length:", llmResponse.length);
-            console.log(
-              "LLM: Raw response preview:",
-              llmResponse.substring(0, 500)
-            );
-
-            // Look for JSON patterns in the entire response
             const jsonPatterns = [
               /\{[\s\S]*\}/g, // Any JSON object (greedy)
               /\[[\s\S]*\]/g, // Any JSON array (greedy)
@@ -189,18 +178,10 @@ export const extractRecipeWithLlm = async (
 
             if (largestValidJson) {
               recipeData = largestValidJson;
-              console.log(
-                `LLM: Found valid JSON using pattern matching (type: ${
-                  Array.isArray(largestValidJson) ? "array" : "object"
-                }, size: ${bestMatch?.length || "unknown"} chars)`
-              );
             }
 
             if (largestValidJson) {
               recipeData = largestValidJson;
-              console.log(
-                `LLM: Found valid JSON using pattern matching (size: ${largestSize} chars)`
-              );
             }
 
             if (!recipeData) {
@@ -212,23 +193,8 @@ export const extractRecipeWithLlm = async (
         }
       }
 
-      console.log("LLM: Successfully parsed recipe data");
-      console.log(
-        "LLM: Raw recipe data before validation:",
-        JSON.stringify(recipeData, null, 2)
-      );
-
       // Validate and transform the recipe data
       const recipe = validateAndTransformRecipe(recipeData, sourceUrl);
-      console.log(
-        "LLM: Recipe after validation:",
-        JSON.stringify(recipe, null, 2)
-      );
-
-      const totalTime = Date.now() - startTime;
-      console.log(
-        `LLM: Recipe extraction completed successfully in ${totalTime}ms using model ${modelName}`
-      );
 
       return {
         success: true,
@@ -240,7 +206,6 @@ export const extractRecipeWithLlm = async (
         `LLM: Failed to parse JSON response after ${totalTime}ms:`,
         parseError
       );
-      console.log("LLM: Raw response was:", llmResponse);
 
       return {
         success: false,
@@ -248,11 +213,6 @@ export const extractRecipeWithLlm = async (
       };
     }
   } catch (error: any) {
-    const totalTime = Date.now() - startTime;
-    console.error(
-      `LLM: Error calling Ollama after ${totalTime}ms using model ${modelName}:`,
-      error
-    );
     return {
       success: false,
       error: error.message || "Failed to extract recipe with LLM",
@@ -262,12 +222,6 @@ export const extractRecipeWithLlm = async (
 
 // Function to validate and transform the LLM response
 const validateAndTransformRecipe = (recipeData: any, sourceUrl: string) => {
-  console.log(
-    "LLM: Validation function input:",
-    JSON.stringify(recipeData, null, 2)
-  );
-  console.log("LLM: Available fields in recipeData:", Object.keys(recipeData));
-
   // Ensure all required fields exist with defaults
   const recipe = {
     title: recipeData.title || recipeData.name || "Untitled Recipe",
@@ -298,50 +252,40 @@ const validateAndTransformRecipe = (recipeData: any, sourceUrl: string) => {
                 "Unknown instruction",
         }))
       : [],
-    source: sourceUrl,
+    source_url: sourceUrl,
   };
 
-  console.log(
-    "LLM: Validation function output:",
-    JSON.stringify(recipe, null, 2)
-  );
   return recipe;
 };
 
 // Function to prepare the prompt for the LLM
 const createLlmPrompt = (cleanHtml: string, sourceUrl: string): string => {
-  return `You are a recipe extraction expert. Extract recipe information from the following HTML content and format it as a JSON object.
+  return `Extract recipe from HTML. Return ONLY this JSON format:
 
-Source URL: ${sourceUrl}
-
-HTML Content:
-${cleanHtml}
-
-Please extract and return a recipe in the following JSON format:
 {
-  "title": "Recipe title (e.g. 'Spaghetti met kokkels')",
+  "title": "Recipe title (e.g. 'Spaghetti carbonara')",
   "recipe_yield": number of servings,
-  "recipe_category": "Category (e.g., Hoofdgerecht, Dessert, Appetizer)",
+  "recipe_category": "Category (e.g., Main dish, Dessert, Appetizer)",
   "description": "Brief description of the recipe",
   "prep_time": "ISO 8601 duration (e.g., PT15M for 15 minutes)",
   "cook_time": "ISO 8601 duration (e.g., PT30M for 30 minutes)", 
   "total_time": "ISO 8601 duration (e.g., PT45M for 45 minutes)",
   "ingredients": [
-    {"raw": "ingredient text"}
+    {"raw": "ingredient text (e.g. '200g spaghetti')"}
   ],
   "instructions": [
     {"text": "instruction step"}
   ],
-  "source_url": "source URL"
+  "source_url": "${sourceUrl}"
 }
 
+Source: ${sourceUrl}
+HTML: ${cleanHtml}
+
 Rules:
-1. Extract ALL fields - do not omit any fields
-2. If a field is not found in the HTML, use null for that field
-3. Ingredients should be extracted as individual items
-4. Instructions should be extracted as sequential steps
-5. All times should be in ISO 8601 format (PT1H30M for 1 hour 30 minutes)
-6. Absolutely no translating or paraphrasing. Copy the ingredient and instruction from the HTML content as is.
-7. Dutch html content in, dutch JSON out.
-8. Return only the JSON object, no additional text.`;
+1. All ingredients should be extracted as multiple individual items in an array
+2. Instructions should be extracted as multiple sequential steps
+3. Absolutely no translating or paraphrasing. Copy the ingredient and instruction from the HTML content as is.
+4. Dutch html content in, dutch JSON out; english html content in, english JSON out.
+5. ZERO CREATIVITY: You are forbidden from paraphrasing or rewriting. Only copy text exactly as it appears in the HTML. Any deviation from the source text is a failure. If text is not found, use null.`;
 };

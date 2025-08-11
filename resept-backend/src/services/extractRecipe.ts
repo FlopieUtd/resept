@@ -65,6 +65,8 @@ export const extractRecipe = async (url: string): Promise<RecipeResult> => {
     console.log("No JSON-LD found, using LLM to extract recipe from HTML...");
     const cleanHtmlContent = cleanHtml(html);
 
+    console.log("cleanHtmlContent", cleanHtmlContent);
+
     const llmResult = await extractRecipeWithLlm({
       cleanHtml: cleanHtmlContent,
       sourceUrl: url,
