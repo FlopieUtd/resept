@@ -177,6 +177,13 @@ export const transformJsonLdToRecipe = (
     recipe.recipeInstructions.forEach((instruction: any) => {
       if (instruction && typeof instruction === "string") {
         instructions.push({ text: decodeHtmlEntities(instruction) });
+      } else if (
+        instruction &&
+        typeof instruction === "object" &&
+        instruction.text
+      ) {
+        // Handle HowToStep objects with text field
+        instructions.push({ text: decodeHtmlEntities(instruction.text) });
       }
     });
   }

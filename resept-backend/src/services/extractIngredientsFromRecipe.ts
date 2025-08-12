@@ -111,25 +111,29 @@ CRITICAL: Pay special attention to the FINAL step of the recipe. Do not stop unt
     const ingredients = ingredientsText
       .split("\n")
       .map((line: string) => line.trim())
-      .filter((line: string) => line.length > 0);
+      .filter((line: string) => line.length > 0)
+      .map((line: string) => ({ raw: line }));
 
     const instructions = instructionsText
       .split("\n")
       .map((line: string) => line.trim())
-      .filter((line: string) => line.length > 0);
+      .filter((line: string) => line.length > 0)
+      .map((line: string) => ({ text: line }));
 
     // Validate that instructions are exact copies from input
     const inputTexts = textNodes.map((node) => node.text);
-    const validatedInstructions = instructions.filter((instruction: string) => {
-      const isExactCopy = inputTexts.some(
-        (inputText) => inputText.trim() === instruction
-      );
-      if (!isExactCopy) {
-        console.warn("LLM modified instruction text:", instruction);
-        console.warn("Expected one of:", inputTexts);
+    const validatedInstructions = instructions.filter(
+      (instruction: { text: string }) => {
+        const isExactCopy = inputTexts.some(
+          (inputText) => inputText.trim() === instruction.text
+        );
+        if (!isExactCopy) {
+          console.warn("LLM modified instruction text:", instruction.text);
+          console.warn("Expected one of:", inputTexts);
+        }
+        return isExactCopy;
       }
-      return isExactCopy;
-    });
+    );
 
     if (validatedInstructions.length === 0) {
       console.error("LLM failed to preserve any instruction text exactly");
