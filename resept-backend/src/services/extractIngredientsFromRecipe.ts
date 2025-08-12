@@ -72,7 +72,7 @@ CRITICAL: Pay special attention to the FINAL step of the recipe. Do not stop unt
           model: "llama3.2:3b",
           prompt: ingredientsPrompt,
           stream: false,
-          options: { temperature: 0, num_predict: 1000 },
+          options: { temperature: 0, num_predict: 600 },
         }),
       }),
       fetch("http://localhost:11434/api/generate", {
@@ -82,7 +82,7 @@ CRITICAL: Pay special attention to the FINAL step of the recipe. Do not stop unt
           model: "llama3.2:3b",
           prompt: instructionsPrompt,
           stream: false,
-          options: { temperature: 0, num_predict: 1000 },
+          options: { temperature: 0, num_predict: 600 },
         }),
       }),
     ]);
