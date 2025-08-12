@@ -3,8 +3,9 @@ import { fetchHtmlWithBrowser } from "../utils/fetchHtmlWithBrowser.js";
 import { detectSiteType } from "../utils/detectSiteType.js";
 import { detectRecipeJsonLd } from "../utils/detectRecipeJsonLd.js";
 import { transformJsonLdToRecipe } from "../utils/transformJsonLdToRecipe.js";
-import { extractTextContent, cleanHtml } from "../utils/extractTextContent.js";
-import { extractRecipeWithLlm } from "../utils/llmRecipeExtractor.js";
+import { cleanHtml } from "../utils/cleanHTML.js";
+import { extractFirstIngredientFromHtml } from "./extractFirstIngredientFromHtml.js";
+import { extractIngredientsFromRecipe } from "./extractIngredientsFromRecipe.js";
 
 interface RecipeResult {
   success: boolean;
@@ -61,23 +62,26 @@ export const extractRecipe = async (url: string): Promise<RecipeResult> => {
       };
     }
 
-    // Step 4: No JSON-LD found, use LLM to extract recipe from clean HTML
-    console.log("No JSON-LD found, using LLM to extract recipe from HTML...");
-    const cleanHtmlContent = cleanHtml(html);
+    // Step 4: No JSON-LD found, use LLM to extract ingredients from clean HTML
+    console.log(
+      "No JSON-LD found, using LLM to extract ingredients from HTML..."
+    );
+    const textNodes = cleanHtml(html);
 
-    console.log("cleanHtmlContent", cleanHtmlContent);
+    console.log(textNodes);
 
-    const llmResult = await extractRecipeWithLlm({
-      cleanHtml: cleanHtmlContent,
-      sourceUrl: url,
-    });
+    const llmResult = await extractIngredientsFromRecipe(textNodes);
 
-    if (llmResult.success && llmResult.recipe) {
-      console.log("LLM successfully extracted recipe");
+    if (
+      llmResult.success &&
+      llmResult.ingredients &&
+      llmResult.ingredients.length > 0
+    ) {
+      console.log("LLM successfully extracted ingredients");
       return {
         success: true,
         error: null,
-        data: llmResult.recipe,
+        data: { ingredients: llmResult.ingredients },
       };
     }
 
@@ -85,7 +89,8 @@ export const extractRecipe = async (url: string): Promise<RecipeResult> => {
     console.log("LLM extraction failed, returning error");
     return {
       success: false,
-      error: llmResult.error || "Failed to extract recipe from HTML content",
+      error:
+        llmResult.error || "Failed to extract ingredients from HTML content",
       data: null,
     };
   } catch (error: any) {
