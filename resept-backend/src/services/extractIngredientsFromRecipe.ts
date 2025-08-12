@@ -15,20 +15,18 @@ export const extractIngredientsFromRecipe = async (
       .map((node) => `${"  ".repeat(node.depth)}${node.text}`)
       .join("\n");
 
-    const prompt = `You are a recipe ingredient list extractor. You are given a list of text nodes with depth levels. Extract the nodes that are ingredients of the recipe.
+    const prompt = `You are a recipe ingredient extractor. Extract ONLY the ingredient lines from this recipe text.
 
 Text content:
 ${structuredContent}
 
-Instructions: 
-- Extract ALL ingredients from the recipe
-- All ingredients must have the same depth
-- Once you find ingredients, include all sibling nodes of the same depth
-- Dont stop after finding a few ingredients, traverse ALL siblings of the same depth
+Rules for identifying ingredients:
+- Ingredients are typically food items, measurements, or cooking instructions
+- They often start with numbers, fractions, or measurement words (1 cup, 2 tbsp, 1/2 tsp)
+- Common ingredient words: flour, sugar, salt, eggs, milk, butter, oil, spices, herbs
+- Only identify, dont translate, paraphrase, or change the text in any way.
 
-
-
-Ingredients (one per line):`;
+Return ONLY the ingredient lines, one per line, with no additional text:`;
 
     const response = await fetch("http://localhost:11434/api/generate", {
       method: "POST",
@@ -36,7 +34,7 @@ Ingredients (one per line):`;
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "qwen2.5:0.5b",
+        model: "llama3.2:3b",
         prompt,
         stream: false,
         options: {
