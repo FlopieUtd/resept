@@ -5,7 +5,7 @@ import { detectRecipeJsonLd } from "../utils/detectRecipeJsonLd.js";
 import { transformJsonLdToRecipe } from "../utils/transformJsonLdToRecipe.js";
 import { cleanHtml } from "../utils/cleanHTML.js";
 import { extractFirstIngredientFromHtml } from "./extractFirstIngredientFromHtml.js";
-import { extractIngredientsFromRecipe } from "./extractIngredientsFromRecipe.js";
+import { extractRecipeComponents } from "./extractIngredientsFromRecipe.js";
 
 interface RecipeResult {
   success: boolean;
@@ -62,26 +62,28 @@ export const extractRecipe = async (url: string): Promise<RecipeResult> => {
       };
     }
 
-    // Step 4: No JSON-LD found, use LLM to extract ingredients from clean HTML
+    // Step 4: No JSON-LD found, use LLM to extract recipe components from clean HTML
     console.log(
-      "No JSON-LD found, using LLM to extract ingredients from HTML..."
+      "No JSON-LD found, using LLM to extract recipe components from HTML..."
     );
     const textNodes = cleanHtml(html);
 
     console.log(textNodes);
 
-    const llmResult = await extractIngredientsFromRecipe(textNodes);
+    const llmResult = await extractRecipeComponents(textNodes);
 
     if (
       llmResult.success &&
-      llmResult.ingredients &&
-      llmResult.ingredients.length > 0
+      (llmResult.ingredients.length > 0 || llmResult.instructions.length > 0)
     ) {
-      console.log("LLM successfully extracted ingredients");
+      console.log("LLM successfully extracted recipe components");
       return {
         success: true,
         error: null,
-        data: { ingredients: llmResult.ingredients },
+        data: {
+          ingredients: llmResult.ingredients,
+          instructions: llmResult.instructions,
+        },
       };
     }
 
@@ -90,7 +92,8 @@ export const extractRecipe = async (url: string): Promise<RecipeResult> => {
     return {
       success: false,
       error:
-        llmResult.error || "Failed to extract ingredients from HTML content",
+        llmResult.error ||
+        "Failed to extract recipe components from HTML content",
       data: null,
     };
   } catch (error: any) {

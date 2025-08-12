@@ -6,16 +6,20 @@ interface IngredientsResult {
   ingredients: string[];
 }
 
-export const extractIngredientsFromRecipe = async (
+export const extractRecipeComponents = async (
   textNodes: TextNode[]
-): Promise<IngredientsResult> => {
+): Promise<{
+  success: boolean;
+  error: string | null;
+  ingredients: string[];
+  instructions: string[];
+}> => {
   try {
-    // Convert text nodes to a structured string format for LLM processing
     const structuredContent = textNodes
       .map((node) => `${"  ".repeat(node.depth)}${node.text}`)
       .join("\n");
 
-    const prompt = `You are a recipe ingredient extractor. Extract ONLY the ingredient lines from this recipe text.
+    const ingredientsPrompt = `You are a recipe ingredient extractor. Extract ONLY the ingredient lines from this recipe text.
 
 Text content:
 ${structuredContent}
@@ -28,62 +32,112 @@ Rules for identifying ingredients:
 
 Return ONLY the ingredient lines, one per line, with no additional text:`;
 
-    const response = await fetch("http://localhost:11434/api/generate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "llama3.2:3b",
-        prompt,
-        stream: false,
-        options: {
-          temperature: 0,
-          num_predict: 500,
-        },
+    const instructionsPrompt = `You are a recipe instruction extractor. Your task is to COPY ALL instruction text nodes exactly as they appear.
+
+IMPORTANT: You must extract EVERY SINGLE instruction step. Missing even one step will cause failure.
+
+Text content:
+${structuredContent}
+
+CRITICAL REQUIREMENTS:
+- COPY ALL instruction text nodes EXACTLY as they appear in the input
+- Do NOT add, remove, or change ANY characters
+- Do NOT break up text into sentences
+- Do NOT rephrase or summarize
+- Each output line must be a 100% exact copy of an input text node
+- You MUST extract ALL instruction steps, not just one or a few
+
+Instructions are cooking steps that:
+- Usually start with action verbs (mix, heat, combine, bake, cook, stir)
+- May contain multiple sentences
+- Include cooking times, temperatures, and techniques
+
+Return format:
+[EXACT_COPY_1]
+[EXACT_COPY_2]
+[EXACT_COPY_3]
+... (continue for ALL instruction steps)
+
+Remember: This is a COPY operation, not a rewrite operation. Extract EVERY instruction step.
+
+WARNING: If you miss even ONE instruction step, the extraction will FAIL. You must find and copy ALL instruction text nodes from the input.
+
+CRITICAL: Pay special attention to the FINAL step of the recipe. Do not stop until you have copied the very last instruction.`;
+
+    const [ingredientsResponse, instructionsResponse] = await Promise.all([
+      fetch("http://localhost:11434/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "llama3.2:3b",
+          prompt: ingredientsPrompt,
+          stream: false,
+          options: { temperature: 0, num_predict: 1000 },
+        }),
       }),
-    });
+      fetch("http://localhost:11434/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "llama3.2:3b",
+          prompt: instructionsPrompt,
+          stream: false,
+          options: { temperature: 0, num_predict: 1000 },
+        }),
+      }),
+    ]);
 
-    if (!response.ok) {
-      if (response.status === 404) {
-        throw new Error(
-          "Ollama API not found. Please ensure Ollama is running on localhost:11434"
-        );
-      }
-      throw new Error(`HTTP error! status: ${response.status}`);
+    if (!ingredientsResponse.ok || !instructionsResponse.ok) {
+      throw new Error("One or both LLM API calls failed");
     }
 
-    const data = await response.json();
+    const [ingredientsData, instructionsData] = await Promise.all([
+      ingredientsResponse.json(),
+      instructionsResponse.json(),
+    ]);
 
-    const ingredientsText = data.response?.trim();
+    const ingredientsText = ingredientsData.response?.trim();
+    const instructionsText = instructionsData.response?.trim();
 
-    if (!ingredientsText || ingredientsText.length < 2) {
+    if (!ingredientsText || !instructionsText) {
       return {
         success: false,
-        error: "No valid ingredients extracted",
+        error: "Failed to extract recipe components",
         ingredients: [],
+        instructions: [],
       };
     }
 
-    if (ingredientsText === "NO_INGREDIENTS_FOUND") {
-      return {
-        success: false,
-        error: "No ingredients found in the HTML content",
-        ingredients: [],
-      };
-    }
-
-    // Split the response by newlines and filter out empty lines
     const ingredients = ingredientsText
       .split("\n")
-      .map((ingredient: string) => ingredient.trim())
-      .filter((ingredient: string) => ingredient.length > 0);
+      .map((line: string) => line.trim())
+      .filter((line: string) => line.length > 0);
 
-    if (ingredients.length === 0) {
+    const instructions = instructionsText
+      .split("\n")
+      .map((line: string) => line.trim())
+      .filter((line: string) => line.length > 0);
+
+    // Validate that instructions are exact copies from input
+    const inputTexts = textNodes.map((node) => node.text);
+    const validatedInstructions = instructions.filter((instruction: string) => {
+      const isExactCopy = inputTexts.some(
+        (inputText) => inputText.trim() === instruction
+      );
+      if (!isExactCopy) {
+        console.warn("LLM modified instruction text:", instruction);
+        console.warn("Expected one of:", inputTexts);
+      }
+      return isExactCopy;
+    });
+
+    if (validatedInstructions.length === 0) {
+      console.error("LLM failed to preserve any instruction text exactly");
       return {
         success: false,
-        error: "No valid ingredients found after parsing",
-        ingredients: [],
+        error: "LLM modified instruction text instead of copying exactly",
+        ingredients,
+        instructions: [],
       };
     }
 
@@ -91,13 +145,15 @@ Return ONLY the ingredient lines, one per line, with no additional text:`;
       success: true,
       error: null,
       ingredients,
+      instructions: validatedInstructions,
     };
   } catch (error: any) {
-    console.error("Error in extractIngredientsFromRecipe:", error);
+    console.error("Error in extractRecipeComponents:", error);
     return {
       success: false,
-      error: error.message || "Failed to extract ingredients",
+      error: error.message || "Failed to extract recipe components",
       ingredients: [],
+      instructions: [],
     };
   }
 };
