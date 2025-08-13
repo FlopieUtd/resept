@@ -6,28 +6,10 @@ export interface TextNode {
 }
 
 const parseBrTags = (html: string): string => {
-  // Split the HTML by <br> tags (case insensitive)
-  const brRegex = /<br\s*\/?>/gi;
-  const parts = html.split(brRegex);
-
-  if (parts.length <= 1) {
-    return html; // No br tags found
-  }
-
-  let result = "";
-
-  for (let i = 0; i < parts.length; i++) {
-    const part = parts[i].trim();
-    if (part) {
-      // Wrap each part in a div
-      result += `<div>${part}</div>`;
-    }
-  }
-
-  return result;
+  return html;
 };
 
-export const cleanHtml = (html: string): TextNode[] => {
+export const extractTextNodes = (html: string): TextNode[] => {
   try {
     const $ = cheerio.load(html);
     $("head").remove();
@@ -47,9 +29,6 @@ export const cleanHtml = (html: string): TextNode[] => {
       .replace(/\r+/g, "") // Remove all carriage returns
       .trim(); // Remove leading/trailing whitespace
 
-    const $clean = cheerio.load(normalizedHtml);
-
-    // Parse br tags by wrapping content before each br in its own div
     const htmlWithBrDivs = parseBrTags(normalizedHtml);
     const $cleanWithBrDivs = cheerio.load(htmlWithBrDivs);
 
@@ -58,20 +37,37 @@ export const cleanHtml = (html: string): TextNode[] => {
     const extractTextNodes = (element: cheerio.Element, depth: number = 0) => {
       const $el = $cleanWithBrDivs(element);
 
-      // Get direct text content of this element
-      const directText = $el
-        .contents()
-        .filter((_, node) => node.type === "text")
-        .text()
-        .trim();
-      if (directText) {
-        textNodes.push({ depth, text: directText });
-      }
+      // Check if this element contains <br> tags
+      const hasBrTags = $el.find("br").length > 0;
+      const adjustedDepth = hasBrTags ? depth + 1 : depth;
 
-      // Recursively process child elements
-      $el.children().each((_, child) => {
-        extractTextNodes(child, depth + 1);
+      let buffer = "";
+      $el.contents().each((_, node) => {
+        if (node.type === "text") {
+          const text = (node as any).data as string;
+          if (text && text.trim()) {
+            buffer += text;
+          }
+        } else if (node.type === "tag") {
+          const name = (node as any).name?.toLowerCase();
+          if (name === "br") {
+            if (buffer.trim()) {
+              textNodes.push({ depth: adjustedDepth, text: buffer.trim() });
+            }
+            buffer = "";
+          } else {
+            if (buffer.trim()) {
+              textNodes.push({ depth: adjustedDepth, text: buffer.trim() });
+              buffer = "";
+            }
+            extractTextNodes(node as unknown as cheerio.Element, depth + 1);
+          }
+        }
       });
+
+      if (buffer.trim()) {
+        textNodes.push({ depth: adjustedDepth, text: buffer.trim() });
+      }
     };
 
     extractTextNodes(
@@ -93,4 +89,8 @@ export const cleanHtml = (html: string): TextNode[] => {
     console.error("Error cleaning HTML:", error);
     return [];
   }
+};
+
+export const cleanHtml = (html: string): TextNode[] => {
+  return extractTextNodes(html);
 };

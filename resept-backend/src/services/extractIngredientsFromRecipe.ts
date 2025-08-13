@@ -1,4 +1,4 @@
-import { TextNode } from "../utils/cleanHTML";
+import { TextNode } from "../utils/extractTextNodes";
 
 interface IngredientsResult {
   success: boolean;
@@ -158,6 +158,85 @@ CRITICAL: Pay special attention to the FINAL step of the recipe. Do not stop unt
       error: error.message || "Failed to extract recipe components",
       ingredients: [],
       instructions: [],
+    };
+  }
+};
+
+export const extractIngredientsFromRecipe = async (
+  textNodes: TextNode[]
+): Promise<IngredientsResult> => {
+  try {
+    const structuredContent = textNodes
+      .map((node) => `${"  ".repeat(node.depth)}${node.text}`)
+      .join("\n");
+
+    const prompt = `You are a recipe ingredient extractor. Extract ONLY the ingredient lines from this recipe text. Return ONLY the ingredient lines, one per line, with no additional text. If there are no ingredients, return exactly NO_INGREDIENTS_FOUND.\n\nText content:\n${structuredContent}`;
+
+    const response = await fetch("http://localhost:11434/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "llama3.2:3b",
+        prompt,
+        stream: false,
+        options: { temperature: 0, num_predict: 600 },
+      }),
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        return {
+          success: false,
+          error:
+            "Ollama API not found. Please ensure Ollama is running on localhost:11434",
+          ingredients: [],
+        };
+      }
+      return {
+        success: false,
+        error: `HTTP error! status: ${response.status}`,
+        ingredients: [],
+      };
+    }
+
+    const data = await response.json();
+    const raw = (data.response as string | undefined)?.trim() || "";
+
+    if (raw === "") {
+      return {
+        success: false,
+        error: "No valid ingredients extracted",
+        ingredients: [],
+      };
+    }
+
+    if (raw === "NO_INGREDIENTS_FOUND") {
+      return {
+        success: false,
+        error: "No ingredients found in the HTML content",
+        ingredients: [],
+      };
+    }
+
+    const ingredients = raw
+      .split("\n")
+      .map((line: string) => line.trim())
+      .filter((line: string) => line.length > 0);
+
+    if (ingredients.length === 0) {
+      return {
+        success: false,
+        error: "No valid ingredients extracted",
+        ingredients: [],
+      };
+    }
+
+    return { success: true, error: null, ingredients };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.message || "Failed to extract ingredients",
+      ingredients: [],
     };
   }
 };

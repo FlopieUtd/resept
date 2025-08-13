@@ -3,9 +3,8 @@ import { fetchHtmlWithBrowser } from "../utils/fetchHtmlWithBrowser.js";
 import { detectSiteType } from "../utils/detectSiteType.js";
 import { detectRecipeJsonLd } from "../utils/detectRecipeJsonLd.js";
 import { transformJsonLdToRecipe } from "../utils/transformJsonLdToRecipe.js";
-import { cleanHtml } from "../utils/cleanHTML.js";
-import { extractFirstIngredientFromHtml } from "./extractFirstIngredientFromHtml.js";
-import { extractRecipeComponents } from "./extractIngredientsFromRecipe.js";
+import { extractTextNodes } from "../utils/extractTextNodes.js";
+import { preparseIngredientNodes } from "../utils/preparseIngredientNodes.js";
 
 interface RecipeResult {
   success: boolean;
@@ -66,35 +65,20 @@ export const extractRecipe = async (url: string): Promise<RecipeResult> => {
     console.log(
       "No JSON-LD found, using LLM to extract recipe components from HTML..."
     );
-    const textNodes = cleanHtml(html);
+    const textNodes = extractTextNodes(html);
+    const parsedNodes = preparseIngredientNodes(textNodes);
 
-    console.log(textNodes);
+    console.log(JSON.stringify(parsedNodes, null, 2));
 
-    const llmResult = await extractRecipeComponents(textNodes);
+    // const llmResult = await extractRecipeComponents(textNodes);
 
-    if (
-      llmResult.success &&
-      (llmResult.ingredients.length > 0 || llmResult.instructions.length > 0)
-    ) {
-      console.log("LLM successfully extracted recipe components");
-      return {
-        success: true,
-        error: null,
-        data: {
-          ingredients: llmResult.ingredients,
-          instructions: llmResult.instructions,
-        },
-      };
-    }
-
-    // Step 5: LLM extraction failed, return error
-    console.log("LLM extraction failed, returning error");
     return {
-      success: false,
-      error:
-        llmResult.error ||
-        "Failed to extract recipe components from HTML content",
-      data: null,
+      success: true,
+      error: null,
+      data: {
+        ingredients: parsedNodes.ingredients,
+        instructions: parsedNodes.instructions,
+      },
     };
   } catch (error: any) {
     console.error("Error extracting recipe:", error);

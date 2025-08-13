@@ -1,5 +1,5 @@
 import { extractIngredientsFromRecipe } from "./extractIngredientsFromRecipe";
-import { TextNode } from "../utils/cleanHTML";
+import { TextNode } from "../utils/extractTextNodes";
 
 // Mock fetch globally
 global.fetch = jest.fn();
