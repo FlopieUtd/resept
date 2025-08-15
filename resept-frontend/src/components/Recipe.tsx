@@ -61,18 +61,26 @@ export const Recipe = () => {
         <div className=" mb-[36px] mt-[6px]">
           <div className="font-radley text-[18px]">{recipe.description}</div>
           <div className="flex mt-[16px] gap-[12px] ">
-            <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
-              {recipe.recipe_yield} personen
-            </div>
-            <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
-              Bereiding: {formatTime(recipe.prep_time)}
-            </div>
-            <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
-              Kooktijd: {formatTime(recipe.cook_time)}
-            </div>
-            <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
-              Totaal: {formatTime(recipe.total_time)}
-            </div>
+            {recipe.recipe_yield && (
+              <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
+                {recipe.recipe_yield} personen
+              </div>
+            )}
+            {recipe.prep_time && (
+              <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
+                Bereiding: {formatTime(recipe.prep_time)}
+              </div>
+            )}
+            {recipe.cook_time && (
+              <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
+                Kooktijd: {formatTime(recipe.cook_time)}
+              </div>
+            )}
+            {recipe.total_time && (
+              <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
+                Totaal: {formatTime(recipe.total_time)}
+              </div>
+            )}
           </div>
         </div>
 

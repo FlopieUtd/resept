@@ -5,6 +5,7 @@ import { detectRecipeJsonLd } from "../utils/detectRecipeJsonLd.js";
 import { transformJsonLdToRecipe } from "../utils/transformJsonLdToRecipe.js";
 import { extractTextNodes } from "../utils/extractTextNodes.js";
 import { preparseIngredientNodes } from "../utils/preparseIngredientNodes.js";
+import { extractTitle } from "../utils/extractTitle.js";
 
 interface RecipeResult {
   success: boolean;
@@ -31,9 +32,9 @@ export const extractRecipe = async (url: string): Promise<RecipeResult> => {
       console.log(`Site detected as SPA, using headless browser...`);
       try {
         const browserOptions: BrowserOptions = {
-          waitForTimeout: 3000,
+          waitForTimeout: 5000,
           waitForNetworkIdle: true,
-          maxWaitTime: 10000,
+          maxWaitTime: 15000,
         };
         html = await fetchHtmlWithBrowser(url, browserOptions);
         console.log("Headless browser fetch completed successfully");
@@ -54,11 +55,34 @@ export const extractRecipe = async (url: string): Promise<RecipeResult> => {
       const jsonLdRecipe = jsonLdRecipes[0];
       const recipe = transformJsonLdToRecipe(jsonLdRecipe, url);
 
-      return {
-        success: true,
-        error: null,
-        data: recipe,
-      };
+      // Check if the recipe was successfully transformed and has valid ingredients and instructions
+      if (recipe) {
+        const hasValidIngredients =
+          recipe.ingredients &&
+          Array.isArray(recipe.ingredients) &&
+          recipe.ingredients.length > 0;
+
+        const hasValidInstructions =
+          recipe.instructions &&
+          Array.isArray(recipe.instructions) &&
+          recipe.instructions.length > 0;
+
+        if (hasValidIngredients && hasValidInstructions) {
+          return {
+            success: true,
+            error: null,
+            data: recipe,
+          };
+        } else {
+          console.log(
+            "JSON-LD recipe has empty ingredients or instructions, falling back to HTML extraction"
+          );
+        }
+      } else {
+        console.log(
+          "Failed to transform JSON-LD recipe, falling back to HTML extraction"
+        );
+      }
     }
 
     // Step 4: No JSON-LD found, use LLM to extract recipe components from clean HTML
@@ -67,8 +91,7 @@ export const extractRecipe = async (url: string): Promise<RecipeResult> => {
     );
     const textNodes = extractTextNodes(html);
     const parsedNodes = preparseIngredientNodes(textNodes);
-
-    console.log(JSON.stringify(parsedNodes, null, 2));
+    const title = extractTitle(html, url);
 
     // const llmResult = await extractRecipeComponents(textNodes);
 
@@ -76,6 +99,7 @@ export const extractRecipe = async (url: string): Promise<RecipeResult> => {
       success: true,
       error: null,
       data: {
+        title,
         ingredients: parsedNodes.ingredients,
         instructions: parsedNodes.instructions,
       },

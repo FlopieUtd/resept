@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import * as puppeteer from "puppeteer";
 
 interface BrowserOptions {
   waitForSelector?: string;
@@ -89,12 +89,17 @@ export const fetchHtmlWithBrowser = async (
           () => {
             return performance
               .getEntriesByType("resource")
-              .filter(
-                (r) =>
-                  r.initiatorType === "xmlhttprequest" ||
-                  r.initiatorType === "fetch"
-              )
-              .every((r) => r.responseEnd > 0);
+              .filter((r) => {
+                const resource = r as PerformanceResourceTiming;
+                return (
+                  resource.initiatorType === "xmlhttprequest" ||
+                  resource.initiatorType === "fetch"
+                );
+              })
+              .every((r) => {
+                const resource = r as PerformanceResourceTiming;
+                return resource.responseEnd > 0;
+              });
           },
           { timeout: maxWaitTime }
         );

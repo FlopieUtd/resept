@@ -3,6 +3,7 @@ import * as cheerio from "cheerio";
 export interface TextNode {
   depth: number;
   text: string;
+  elementType: string;
 }
 
 const parseBrTags = (html: string): string => {
@@ -52,12 +53,30 @@ export const extractTextNodes = (html: string): TextNode[] => {
           const name = (node as any).name?.toLowerCase();
           if (name === "br") {
             if (buffer.trim()) {
-              textNodes.push({ depth: adjustedDepth, text: buffer.trim() });
+              const parentTag = $el.prop("tagName")?.toLowerCase() || "unknown";
+              textNodes.push({
+                depth: adjustedDepth,
+                text: buffer.trim(),
+                elementType: parentTag,
+              });
             }
             buffer = "";
+          } else if (name === "span") {
+            // For span elements, just extract their text content and add to buffer
+            // without creating new text nodes or changing depth
+            const $span = $cleanWithBrDivs(node);
+            const spanText = $span.text().trim();
+            if (spanText) {
+              buffer += " " + spanText;
+            }
           } else {
             if (buffer.trim()) {
-              textNodes.push({ depth: adjustedDepth, text: buffer.trim() });
+              const parentTag = $el.prop("tagName")?.toLowerCase() || "unknown";
+              textNodes.push({
+                depth: adjustedDepth,
+                text: buffer.trim(),
+                elementType: parentTag,
+              });
               buffer = "";
             }
             extractTextNodes(node as unknown as cheerio.Element, depth + 1);
@@ -66,7 +85,12 @@ export const extractTextNodes = (html: string): TextNode[] => {
       });
 
       if (buffer.trim()) {
-        textNodes.push({ depth: adjustedDepth, text: buffer.trim() });
+        const parentTag = $el.prop("tagName")?.toLowerCase() || "unknown";
+        textNodes.push({
+          depth: adjustedDepth,
+          text: buffer.trim(),
+          elementType: parentTag,
+        });
       }
     };
 
@@ -83,14 +107,9 @@ export const extractTextNodes = (html: string): TextNode[] => {
     console.log(
       `HTML stripped: ${strippedPercent}% (${originalLength} -> ${finalLength} chars)`
     );
-
     return textNodes;
   } catch (error) {
     console.error("Error cleaning HTML:", error);
     return [];
   }
-};
-
-export const cleanHtml = (html: string): TextNode[] => {
-  return extractTextNodes(html);
 };
