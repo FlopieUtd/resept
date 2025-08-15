@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCreateRecipe } from "../lib/recipeService";
-import { type DatabaseRecipe } from "../types";
+import { type CreateRecipeData } from "../types";
+import { RecipeEditModal } from "./RecipeEditModal";
 
 export const Home = () => {
   const [url, setUrl] = useState("");
   const [error, setError] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [extractedRecipe, setExtractedRecipe] =
+    useState<CreateRecipeData | null>(null);
   const navigate = useNavigate();
   const createRecipeMutation = useCreateRecipe();
 
@@ -25,7 +29,32 @@ export const Home = () => {
       const data = await response.json();
 
       if (response.ok) {
-        await handleAutoSave(data);
+        // Transform backend data to match frontend format
+        const transformedData: CreateRecipeData = {
+          title: data.title || "Untitled Recipe",
+          recipe_yield: data.recipe_yield || 1,
+          recipe_category: data.recipe_category || "Recepten",
+          description: data.description || "",
+          prep_time: data.prep_time || "",
+          cook_time: data.cook_time || "",
+          total_time: data.total_time || "",
+          ingredients: data.ingredients || [],
+          instructions: data.instructions || [],
+          source_url: url, // Always use the submitted URL as the source
+        };
+
+        // Only show modal if we have at least a title, source URL, and some ingredients/instructions
+        if (
+          transformedData.title &&
+          transformedData.source_url &&
+          (transformedData.ingredients.length > 0 ||
+            transformedData.instructions.length > 0)
+        ) {
+          setExtractedRecipe(transformedData);
+          setIsModalOpen(true);
+        } else {
+          setError("Could not extract valid recipe data from this URL");
+        }
       } else {
         setError(data.error || "Failed to extract recipe");
       }
@@ -34,30 +63,24 @@ export const Home = () => {
     }
   };
 
-  const handleAutoSave = async (extractedRecipe: DatabaseRecipe) => {
+  const handleSave = async (recipeData: CreateRecipeData) => {
     try {
-      const recipeData = {
-        title: extractedRecipe.title,
-        recipe_yield: extractedRecipe.recipe_yield,
-        recipe_category: extractedRecipe.recipe_category,
-        description: extractedRecipe.description,
-        prep_time: extractedRecipe.prep_time,
-        cook_time: extractedRecipe.cook_time,
-        total_time: extractedRecipe.total_time,
-        ingredients: extractedRecipe.ingredients,
-        instructions: extractedRecipe.instructions,
-        source_url: extractedRecipe.source_url,
-      };
-
       const savedRecipe = await createRecipeMutation.mutateAsync(recipeData);
 
       if (savedRecipe) {
         setUrl("");
+        setIsModalOpen(false);
+        setExtractedRecipe(null);
         navigate(`/recipes/${savedRecipe.id}`);
       }
     } catch {
       setError("Error saving recipe to database");
     }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setExtractedRecipe(null);
   };
 
   return (
@@ -93,6 +116,16 @@ export const Home = () => {
           </div>
         )}
       </div>
+
+      {extractedRecipe && (
+        <RecipeEditModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          onSave={handleSave}
+          initialData={extractedRecipe}
+          isSaving={createRecipeMutation.isPending}
+        />
+      )}
     </div>
   );
 };
