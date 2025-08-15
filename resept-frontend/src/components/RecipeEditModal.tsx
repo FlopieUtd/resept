@@ -5,16 +5,20 @@ interface RecipeEditModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (recipeData: CreateRecipeData) => void;
+  onDelete?: () => void;
   initialData: CreateRecipeData;
   isSaving: boolean;
+  isDeleting?: boolean;
 }
 
 export const RecipeEditModal = ({
   isOpen,
   onClose,
   onSave,
+  onDelete,
   initialData,
   isSaving,
+  isDeleting = false,
 }: RecipeEditModalProps) => {
   const [formData, setFormData] = useState<CreateRecipeData>({
     ...initialData,
@@ -104,7 +108,7 @@ export const RecipeEditModal = ({
     e.preventDefault();
 
     // Validate required fields
-    if (!formData.title.trim() || !formData.source_url.trim()) {
+    if (!formData.title.trim()) {
       return; // Form validation will show required field errors
     }
 
@@ -130,11 +134,11 @@ export const RecipeEditModal = ({
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+      className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center p-4 z-50"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
+      <div className="bg-white max-w-[960px] w-full max-h-[90vh] overflow-y-auto">
+        <div className="py-[24px] px-[96px]">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-800">Bewerk recept</h2>
             <button
@@ -155,7 +159,7 @@ export const RecipeEditModal = ({
                   type="text"
                   value={formData.title}
                   onChange={(e) => handleInputChange("title", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
@@ -170,8 +174,7 @@ export const RecipeEditModal = ({
                   onChange={(e) =>
                     handleInputChange("recipe_category", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -185,7 +188,7 @@ export const RecipeEditModal = ({
                   onChange={(e) =>
                     handleInputChange("recipe_yield", parseInt(e.target.value))
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                   min="1"
                 />
@@ -201,7 +204,7 @@ export const RecipeEditModal = ({
                   onChange={(e) =>
                     handleInputChange("prep_time", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="bijv. 15 min"
                 />
               </div>
@@ -216,7 +219,7 @@ export const RecipeEditModal = ({
                   onChange={(e) =>
                     handleInputChange("cook_time", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="bijv. 30 min"
                 />
               </div>
@@ -231,7 +234,7 @@ export const RecipeEditModal = ({
                   onChange={(e) =>
                     handleInputChange("total_time", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="bijv. 45 min"
                 />
               </div>
@@ -247,7 +250,7 @@ export const RecipeEditModal = ({
                   handleInputChange("description", e.target.value)
                 }
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -261,8 +264,7 @@ export const RecipeEditModal = ({
                 onChange={(e) =>
                   handleInputChange("source_url", e.target.value)
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
+                className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="https://example.com/recipe"
               />
             </div>
@@ -289,7 +291,7 @@ export const RecipeEditModal = ({
                       onChange={(e) =>
                         handleIngredientChange(index, e.target.value)
                       }
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="flex-1 px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Ingrediënt..."
                       required
                     />
@@ -331,7 +333,7 @@ export const RecipeEditModal = ({
                           handleInstructionChange(index, e.target.value)
                         }
                         rows={2}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Instructie..."
                         required
                       />
@@ -348,21 +350,35 @@ export const RecipeEditModal = ({
               </div>
             </div>
 
-            <div className="flex justify-end gap-4 pt-4 border-t">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-6 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                Annuleren
-              </button>
-              <button
-                type="submit"
-                disabled={isSaving}
-                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSaving ? "Opslaan..." : "Opslaan"}
-              </button>
+            <div className="flex justify-between items-center gap-4 pt-4 border-t">
+              <div className="flex gap-2">
+                {onDelete && (
+                  <button
+                    type="button"
+                    onClick={onDelete}
+                    disabled={isDeleting}
+                    className="px-6 py-2 bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isDeleting ? "Verwijderen..." : "Verwijderen"}
+                  </button>
+                )}
+              </div>
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-6 py-2 text-gray-600 border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                >
+                  Annuleren
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="px-6 py-2 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSaving ? "Opslaan..." : "Opslaan"}
+                </button>
+              </div>
             </div>
           </form>
         </div>

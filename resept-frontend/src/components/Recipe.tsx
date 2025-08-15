@@ -1,11 +1,26 @@
-import { useParams } from "react-router-dom";
-import { useRecipe } from "../lib/recipeService";
-import { type IngredientLine, type RecipeInstructionItem } from "../types";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  useRecipe,
+  useUpdateRecipe,
+  useDeleteRecipe,
+} from "../lib/recipeService";
+import {
+  type IngredientLine,
+  type RecipeInstructionItem,
+  type CreateRecipeData,
+} from "../types";
 import { Loading } from "./Loading";
+import { RecipeEditModal } from "./RecipeEditModal";
+import { PencilSimple } from "@phosphor-icons/react";
+import { useState } from "react";
 
 export const Recipe = () => {
   const { recipeId } = useParams();
+  const navigate = useNavigate();
   const { data: recipe, isLoading, error } = useRecipe(recipeId!);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const updateRecipe = useUpdateRecipe();
+  const deleteRecipe = useDeleteRecipe();
 
   if (isLoading) {
     return <Loading />;
@@ -24,7 +39,7 @@ export const Recipe = () => {
   const formatTime = (timeString: string) => {
     if (!timeString) return "0 min";
 
-    const match = timeString.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+    const match = timeString.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)M)?/);
     if (match) {
       const hours = parseInt(match[1] || "0");
       const minutes = parseInt(match[2] || "0");
@@ -52,18 +67,52 @@ export const Recipe = () => {
     return "0 min";
   };
 
+  const handleSave = async (recipeData: CreateRecipeData) => {
+    if (!recipeId) return;
+
+    try {
+      await updateRecipe.mutateAsync({
+        recipeId,
+        updates: recipeData,
+      });
+      setIsEditModalOpen(false);
+    } catch (error) {
+      console.error("Failed to update recipe:", error);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!recipeId) return;
+
+    try {
+      await deleteRecipe.mutateAsync(recipeId);
+      navigate("/recipes");
+    } catch (error) {
+      console.error("Failed to delete recipe:", error);
+    }
+  };
+
   return (
     <div className="flex w-full h-full justify-center">
       <div className="flex w-full max-w-[1080px] mx-[24px] my-[48px] flex-col">
         <div className="flex flex-col border-b-[2px] border-black mb-[24px]">
-          <div className="text-[48px] font-bold mb-[12px]">{recipe.title}</div>
+          <div className="flex justify-between items-center mb-[12px]">
+            <div className="text-[48px] font-bold">{recipe.title}</div>
+            <button
+              onClick={() => setIsEditModalOpen(true)}
+              className="bg-white text-black p-3 rounded-lg hover:bg-gray-200 transition-colors"
+            >
+              <PencilSimple size={24} />
+            </button>
+          </div>
         </div>
         <div className=" mb-[36px] mt-[6px]">
           <div className="font-radley text-[18px]">{recipe.description}</div>
           <div className="flex mt-[16px] gap-[12px] ">
             {recipe.recipe_yield && (
               <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
-                {recipe.recipe_yield} personen
+                {recipe.recipe_yield}{" "}
+                {recipe.recipe_yield === 1 ? "persoon" : "personen"}
               </div>
             )}
             {recipe.prep_time && (
@@ -133,6 +182,16 @@ export const Recipe = () => {
           </div>
         </div>
       </div>
+
+      <RecipeEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSave={handleSave}
+        onDelete={handleDelete}
+        initialData={recipe}
+        isSaving={updateRecipe.isPending}
+        isDeleting={deleteRecipe.isPending}
+      />
     </div>
   );
 };
