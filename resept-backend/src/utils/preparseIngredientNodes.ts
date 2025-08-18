@@ -1,5 +1,6 @@
 import { TextNode } from "./extractTextNodes";
 import { COOKING_IMPERATIVES } from "./constants";
+import { parseIngredient, type ParsedIngredient } from "./parseIngredient";
 
 interface IngredientGroup {
   ingredientProbability: number;
@@ -8,7 +9,7 @@ interface IngredientGroup {
 }
 
 interface ParsedResult {
-  ingredients: { raw: string }[];
+  ingredients: { raw: string; parsed: ParsedIngredient }[];
   instructions: { text: string }[];
 }
 
@@ -200,7 +201,7 @@ export const preparseIngredientNodes = (
 
   console.log(JSON.stringify(filteredResult, null, 2));
 
-  const ingredients: { raw: string }[] = [];
+  const ingredients: { raw: string; parsed: ParsedIngredient }[] = [];
   const instructions: { text: string }[] = [];
 
   if (filteredResult.length > 0) {
@@ -252,7 +253,11 @@ export const preparseIngredientNodes = (
     console.log("=== End QA ===\n");
 
     ingredients.push(
-      ...maxIngredientGroup.nodes.map((node) => ({ raw: node.text }))
+      ...maxIngredientGroup.nodes.map((node) => {
+        const raw = node.text;
+        const parsed = parseIngredient(raw);
+        return { raw, parsed };
+      })
     );
     instructions.push(
       ...maxInstructionsGroup.nodes.map((node) => ({ text: node.text }))

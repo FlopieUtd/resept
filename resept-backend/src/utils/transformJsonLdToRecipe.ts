@@ -1,3 +1,5 @@
+import { parseIngredient, type ParsedIngredient } from "./parseIngredient";
+
 interface JsonLdRecipe {
   "@type"?: string | string[];
   "@graph"?: Array<{ "@type": string; [key: string]: any }>;
@@ -28,7 +30,7 @@ interface TransformedRecipe {
   prep_time: string;
   cook_time: string;
   total_time: string;
-  ingredients: Array<{ raw: string }>;
+  ingredients: Array<{ raw: string; parsed: ParsedIngredient }>;
   instructions: Array<{ text: string }>;
   source: string;
 }
@@ -162,11 +164,13 @@ export const transformJsonLdToRecipe = (
   const total_time = parseDuration(recipe.totalTime);
 
   // Handle ingredients
-  const ingredients: Array<{ raw: string }> = [];
+  const ingredients: Array<{ raw: string; parsed: ParsedIngredient }> = [];
   if (recipe.recipeIngredient && Array.isArray(recipe.recipeIngredient)) {
     recipe.recipeIngredient.forEach((ingredient: any) => {
       if (ingredient && typeof ingredient === "string") {
-        ingredients.push({ raw: decodeHtmlEntities(ingredient) });
+        const rawIngredient = decodeHtmlEntities(ingredient);
+        const parsed = parseIngredient(rawIngredient);
+        ingredients.push({ raw: rawIngredient, parsed });
       }
     });
   }

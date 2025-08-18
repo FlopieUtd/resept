@@ -99,7 +99,7 @@ export const COOKING_IMPERATIVES: Record<
   },
   dry: {
     dutch: "droog",
-    english: "dry",
+    english: ["dry", "pat"],
   },
   cool: {
     dutch: "koel",
@@ -126,7 +126,7 @@ export const COOKING_IMPERATIVES: Record<
     english: "serve",
   },
   garnish: {
-    dutch: "garneer",
+    dutch: ["garneer", "versier"],
     english: "garnish",
   },
   simmer: {
@@ -146,7 +146,7 @@ export const COOKING_IMPERATIVES: Record<
     english: "grill",
   },
   roast: {
-    dutch: "braad",
+    dutch: ["braad", "rooster"],
     english: "roast",
   },
   steam: {
@@ -200,5 +200,9 @@ export const COOKING_IMPERATIVES: Record<
   remove: {
     dutch: "verwijder",
     english: "remove",
+  },
+  bring: {
+    dutch: "breng",
+    english: "bring",
   },
 };

@@ -45,7 +45,20 @@ describe("transformJsonLdToRecipe", () => {
         prep_time: "PT15M",
         cook_time: "PT12M",
         total_time: "PT27M",
-        ingredients: [{ raw: "2 cups flour" }, { raw: "1 cup sugar" }],
+        ingredients: [
+          {
+            raw: "2 cups flour",
+            parsed: {
+              amount: 2,
+            },
+          },
+          {
+            raw: "1 cup sugar",
+            parsed: {
+              amount: 1,
+            },
+          },
+        ],
         instructions: [{ text: "Mix ingredients" }, { text: "Bake at 350F" }],
         source: "https://example.com/recipe",
       });
@@ -252,7 +265,14 @@ describe("transformJsonLdToRecipe", () => {
         "https://example.com"
       );
 
-      expect(result!.ingredients).toEqual([{ raw: "2 cups flour" }]);
+      expect(result!.ingredients).toEqual([
+        {
+          raw: "2 cups flour",
+          parsed: {
+            amount: 2,
+          },
+        },
+      ]);
       expect(result!.instructions).toEqual([{ text: "Mix ingredients" }]);
     });
 
@@ -270,8 +290,18 @@ describe("transformJsonLdToRecipe", () => {
       );
 
       expect(result!.ingredients).toEqual([
-        { raw: "2 cups flour" },
-        { raw: "1 cup sugar" },
+        {
+          raw: "2 cups flour",
+          parsed: {
+            amount: 2,
+          },
+        },
+        {
+          raw: "1 cup sugar",
+          parsed: {
+            amount: 1,
+          },
+        },
       ]);
       expect(result!.instructions).toEqual([
         { text: "Mix dry ingredients" },
