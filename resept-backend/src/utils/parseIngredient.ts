@@ -1,20 +1,34 @@
 export interface ParsedIngredient {
-  amount: number;
+  amount?: number;
+  rawWithoutAmount: string;
+  amountMax?: number;
 }
 
 export const parseIngredient = (text: string): ParsedIngredient => {
   const trimmedText = text.trim();
 
   // Default values
-  let amount = 1;
+  let amount: number | undefined = undefined;
+  let rawWithoutAmount = trimmedText;
 
   // Try to match amount patterns
   const amountPatterns = [
+    // Dutch ranges: 3 a 4, 3 à 4, 1 a 2, etc.
+    /^(\d+\s+a\s+\d+)/,
+    /^(\d+\s+à\s+\d+)/,
+    // Standard ranges: 1-2, 3-4, etc.
+    /^(\d+-\d+)/,
+    // Mixed numbers with Unicode fractions: 12 ¼, 1 ½, etc.
+    /^(\d+\s+[¼½¾⅐⅑⅒⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞])/,
     // Fractions: 1/2, 1/4, 3/4, etc.
     /^(\d+\/\d+)/,
     // Mixed numbers: 1 1/2, 2 3/4, etc.
     /^(\d+\s+\d+\/\d+)/,
-    // Decimals: 1.5, 0.25, etc.
+    // Unicode fractions: ¼, ½, ¾, etc.
+    /^([¼½¾⅐⅑⅒⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞])/,
+    // European decimals: 0,5, 1,25, etc.
+    /^(\d+,\d+)/,
+    // US decimals: 1.5, 0.25, etc.
     /^(\d+\.\d+)/,
     // Whole numbers: 1, 2, 3, etc.
     /^(\d+)/,
@@ -33,27 +47,67 @@ export const parseIngredient = (text: string): ParsedIngredient => {
     }
   }
 
-  // Parse amount
+  // Parse amount and extract text without amount
   if (matchedAmount) {
-    if (matchedAmount.includes("/")) {
-      // Handle fractions
-      if (matchedAmount.includes(" ")) {
+    amount = 1; // Set default amount when we find a pattern
+    if (matchedAmount.includes(" a ") || matchedAmount.includes(" à ")) {
+      // Handle Dutch ranges like "3 a 4" or "3 à 4"
+      const separator = matchedAmount.includes(" a ") ? " a " : " à ";
+      const rangeParts = matchedAmount.split(separator);
+      const min = parseInt(rangeParts[0]);
+      const max = parseInt(rangeParts[1]);
+      amount = min; // Use the minimum as the default amount
+      return {
+        amount: min,
+        rawWithoutAmount: trimmedText
+          .replace(new RegExp(`^${matchedAmount}\\s*`), "")
+          .trim(),
+        amountMax: max,
+      };
+    } else if (matchedAmount.includes("-")) {
+      // Handle standard ranges like "1-2"
+      const rangeParts = matchedAmount.split("-");
+      const min = parseInt(rangeParts[0]);
+      const max = parseInt(rangeParts[1]);
+      amount = min; // Use the minimum as the default amount
+      return {
+        amount: min,
+        rawWithoutAmount: trimmedText
+          .replace(new RegExp(`^${matchedAmount}\\s*`), "")
+          .trim(),
+        amountMax: max,
+      };
+    } else if (matchedAmount.includes(" ")) {
+      // Handle mixed numbers like "12 ¼" or "1 1/2"
+      const parts = matchedAmount.split(" ");
+      const whole = parseInt(parts[0]);
+
+      if (parts[1].includes("/")) {
         // Mixed numbers like "1 1/2"
-        const parts = matchedAmount.split(" ");
-        const whole = parseInt(parts[0]);
         const fractionParts = parts[1].split("/");
         const numerator = parseInt(fractionParts[0]);
         const denominator = parseInt(fractionParts[1]);
         amount = whole + numerator / denominator;
       } else {
-        // Simple fractions like "1/2"
-        const parts = matchedAmount.split("/");
-        const numerator = parseInt(parts[0]);
-        const denominator = parseInt(parts[1]);
-        amount = numerator / denominator;
+        // Mixed numbers with Unicode fractions like "12 ¼"
+        const unicodeFraction = parts[1];
+        const fractionValue = getUnicodeFractionValue(unicodeFraction);
+        amount = whole + fractionValue;
       }
+    } else if (matchedAmount.includes("/")) {
+      // Handle fractions
+      const parts = matchedAmount.split("/");
+      const numerator = parseInt(parts[0]);
+      const denominator = parseInt(parts[1]);
+      amount = numerator / denominator;
+    } else if (isUnicodeFraction(matchedAmount)) {
+      // Handle Unicode fractions like "¼", "½", "¾"
+      amount = getUnicodeFractionValue(matchedAmount);
+    } else if (matchedAmount.includes(",")) {
+      // European decimals (comma as decimal separator)
+      amount = parseFloat(matchedAmount.replace(",", "."));
     } else if (matchedAmount.includes(".")) {
-      // Decimals
+      // US decimals (dot as decimal separator)
       amount = parseFloat(matchedAmount);
     } else if (/^\d+$/.test(matchedAmount)) {
       // Whole numbers
@@ -84,9 +138,63 @@ export const parseIngredient = (text: string): ParsedIngredient => {
       };
       amount = writtenNumbers[matchedAmount.toLowerCase()] || 1;
     }
+
+    // Extract text without the amount
+    rawWithoutAmount = trimmedText
+      .replace(new RegExp(`^${matchedAmount}\\s*`), "")
+      .trim();
   }
 
   return {
     amount,
+    rawWithoutAmount,
   };
+};
+
+const isUnicodeFraction = (text: string): boolean => {
+  const unicodeFractions = [
+    "¼",
+    "½",
+    "¾",
+    "⅐",
+    "⅑",
+    "⅒",
+    "⅓",
+    "⅔",
+    "⅕",
+    "⅖",
+    "⅗",
+    "⅘",
+    "⅙",
+    "⅚",
+    "⅛",
+    "⅜",
+    "⅝",
+    "⅞",
+  ];
+  return unicodeFractions.includes(text);
+};
+
+const getUnicodeFractionValue = (fraction: string): number => {
+  const fractionMap: Record<string, number> = {
+    "¼": 0.25, // quarter
+    "½": 0.5, // half
+    "¾": 0.75, // three-quarters
+    "⅐": 1 / 7, // one-seventh
+    "⅑": 1 / 9, // one-ninth
+    "⅒": 1 / 10, // one-tenth
+    "⅓": 1 / 3, // one-third
+    "⅔": 2 / 3, // two-thirds
+    "⅕": 1 / 5, // one-fifth
+    "⅖": 2 / 5, // two-fifths
+    "⅗": 3 / 5, // three-fifths
+    "⅘": 4 / 5, // four-fifths
+    "⅙": 1 / 6, // one-sixth
+    "⅚": 5 / 6, // five-sixths
+    "⅛": 1 / 8, // one-eighth
+    "⅜": 3 / 8, // three-eighths
+    "⅝": 5 / 8, // five-eighths
+    "⅞": 7 / 8, // seven-eighths
+  };
+  return fractionMap[fraction] || 0;
 };

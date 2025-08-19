@@ -50,12 +50,14 @@ describe("transformJsonLdToRecipe", () => {
             raw: "2 cups flour",
             parsed: {
               amount: 2,
+              rawWithoutAmount: "cups flour",
             },
           },
           {
             raw: "1 cup sugar",
             parsed: {
               amount: 1,
+              rawWithoutAmount: "cup sugar",
             },
           },
         ],
@@ -270,6 +272,7 @@ describe("transformJsonLdToRecipe", () => {
           raw: "2 cups flour",
           parsed: {
             amount: 2,
+            rawWithoutAmount: "cups flour",
           },
         },
       ]);
@@ -294,12 +297,14 @@ describe("transformJsonLdToRecipe", () => {
           raw: "2 cups flour",
           parsed: {
             amount: 2,
+            rawWithoutAmount: "cups flour",
           },
         },
         {
           raw: "1 cup sugar",
           parsed: {
             amount: 1,
+            rawWithoutAmount: "cup sugar",
           },
         },
       ]);

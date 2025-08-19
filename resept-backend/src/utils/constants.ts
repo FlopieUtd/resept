@@ -195,7 +195,7 @@ export const COOKING_IMPERATIVES: Record<
   },
   use: {
     dutch: "gebruik",
-    english: "use",
+    english: ["use", "using"],
   },
   remove: {
     dutch: "verwijder",
@@ -203,6 +203,14 @@ export const COOKING_IMPERATIVES: Record<
   },
   bring: {
     dutch: "breng",
-    english: "bring",
+    english: ["bring", "transfer", "move", "place"],
+  },
+  rinse: {
+    dutch: "spoel",
+    english: "rinse",
+  },
+  set: {
+    dutch: "zet",
+    english: "set",
   },
 };
