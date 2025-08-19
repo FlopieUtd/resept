@@ -1,5 +1,17 @@
+export interface ParsedIngredient {
+  amount?: number;
+  rawWithoutAmount: string;
+  amountMax?: number;
+}
+
 export interface IngredientLine {
   raw: string;
+  parsed?: ParsedIngredient;
+}
+
+export interface ScaledIngredient extends IngredientLine {
+  scaledAmount?: number;
+  scaledAmountMax?: number;
 }
 
 export interface RecipeInstruction {

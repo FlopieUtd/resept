@@ -4,15 +4,15 @@ import {
   useUpdateRecipe,
   useDeleteRecipe,
 } from "../lib/recipeService";
-import {
-  type IngredientLine,
-  type RecipeInstructionItem,
-  type CreateRecipeData,
-} from "../types";
+import { type RecipeInstructionItem, type CreateRecipeData } from "../types";
 import { Loading } from "./Loading";
 import { RecipeEditModal } from "./RecipeEditModal";
 import { PencilSimple } from "@phosphor-icons/react";
 import { useState } from "react";
+import { useRecipeYield } from "../hooks/useRecipeYield";
+import { extractDomainFromUrl } from "../utils/extractDomainFromUrl";
+import { decodeHtmlEntities } from "../utils/decodeHtmlEntities";
+import { formatTime } from "../utils/formatTime";
 
 export const Recipe = () => {
   const { recipeId } = useParams();
@@ -21,6 +21,20 @@ export const Recipe = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const updateRecipe = useUpdateRecipe();
   const deleteRecipe = useDeleteRecipe();
+
+  const {
+    recipeYield,
+    incrementRecipeYield,
+    decrementRecipeYield,
+    scaledIngredients,
+  } = useRecipeYield({
+    originalYield: recipe?.recipe_yield,
+    ingredients: recipe?.ingredients || [],
+  });
+
+  const formatNumber = (num: number) => {
+    return Number(num.toFixed(2)).toString().replace(".", ",");
+  };
 
   if (isLoading) {
     return <Loading />;
@@ -35,37 +49,6 @@ export const Recipe = () => {
       </div>
     );
   }
-
-  const formatTime = (timeString: string) => {
-    if (!timeString) return "0 min";
-
-    const match = timeString.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)M)?/);
-    if (match) {
-      const hours = parseInt(match[1] || "0");
-      const minutes = parseInt(match[2] || "0");
-      const seconds = parseInt(match[3] || "0");
-
-      if (hours > 0 && minutes > 0) {
-        return `${hours} uur ${minutes} min`;
-      } else if (hours > 0) {
-        return `${hours} uur`;
-      } else if (minutes > 0) {
-        return `${minutes} min`;
-      } else if (seconds > 0) {
-        return `${seconds} sec`;
-      }
-    }
-
-    if (
-      timeString.includes("m") ||
-      timeString.includes("h") ||
-      timeString.includes("u")
-    ) {
-      return timeString;
-    }
-
-    return "0 min";
-  };
 
   const handleSave = async (recipeData: CreateRecipeData) => {
     if (!recipeId) return;
@@ -106,13 +89,30 @@ export const Recipe = () => {
             </button>
           </div>
         </div>
-        <div className=" mb-[36px] mt-[6px]">
-          <div className="font-radley text-[18px]">{recipe.description}</div>
-          <div className="flex mt-[16px] gap-[12px] ">
+        <div className=" mb-[36px] flex flex-col gap-[16px]">
+          {recipe.description && (
+            <div className="font-radley text-[18px]">{recipe.description}</div>
+          )}
+
+          <div className="flex gap-[12px] ">
             {recipe.recipe_yield && (
-              <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
-                {recipe.recipe_yield}{" "}
-                {recipe.recipe_yield === 1 ? "persoon" : "personen"}
+              <div className="bg-[#f9f9f9] text-[14px] flex">
+                <button
+                  onClick={decrementRecipeYield}
+                  className="py-[4px] px-[12px] hover:bg-[#eee]"
+                >
+                  -
+                </button>
+                <div className="flex py-[4px] px-[12px] min-w-[106px] justify-center">
+                  {recipeYield || 0}{" "}
+                  {recipeYield === 1 ? "persoon" : "personen"}
+                </div>
+                <button
+                  onClick={incrementRecipeYield}
+                  className="py-[4px] px-[12px] hover:bg-[#eee]"
+                >
+                  +
+                </button>
               </div>
             )}
             {recipe.prep_time && (
@@ -130,6 +130,13 @@ export const Recipe = () => {
                 Totaal: {formatTime(recipe.total_time)}
               </div>
             )}
+            {recipe.source_url && (
+              <a href={recipe.source_url} target="_blank">
+                <div className="bg-[#f9f9f9] hover:bg-[#eee] py-[4px] px-[16px] text-[14px]">
+                  Bron: {extractDomainFromUrl(recipe.source_url)}
+                </div>{" "}
+              </a>
+            )}
           </div>
         </div>
 
@@ -139,13 +146,30 @@ export const Recipe = () => {
               Ingrediënten
             </div>
             <ul>
-              {recipe.ingredients.map(
-                (ingredient: IngredientLine, index: number) => (
-                  <li key={index} className="pb-[16px] flex">
-                    {ingredient.raw}
-                  </li>
-                )
-              )}
+              {scaledIngredients.map((ingredient, index: number) => (
+                <li key={index} className="pb-[16px] flex">
+                  <span className="min-w-[65px]">
+                    {ingredient.scaledAmountMax !== undefined
+                      ? `${formatNumber(
+                          ingredient.scaledAmount!
+                        )}-${formatNumber(ingredient.scaledAmountMax)}`
+                      : ingredient.scaledAmount !== undefined
+                      ? formatNumber(ingredient.scaledAmount)
+                      : ingredient.parsed?.amountMax !== undefined
+                      ? `${formatNumber(
+                          ingredient.parsed.amount!
+                        )}-${formatNumber(ingredient.parsed.amountMax)}`
+                      : ingredient.parsed?.amount !== undefined
+                      ? formatNumber(ingredient.parsed.amount)
+                      : ""}
+                  </span>
+                  <span>
+                    {decodeHtmlEntities(
+                      ingredient.parsed?.rawWithoutAmount || ""
+                    )}
+                  </span>
+                </li>
+              ))}
             </ul>
           </div>
           <div className="w-2/3 flex flex-col gap-[24px]">

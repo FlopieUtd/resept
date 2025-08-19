@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useRecipes } from "../lib/recipeService";
 import { Loading } from "./Loading";
+import { formatTime } from "../utils/formatTime";
 
 export const Recipes = () => {
   const { data: recipes, isLoading, error } = useRecipes();
@@ -34,14 +35,18 @@ export const Recipes = () => {
               <Link
                 key={recipe.id}
                 to={`/recipes/${recipe.id}`}
-                className="block p-4 border-2 border-black hover:bg-gray-100 cursor-pointer"
+                className="flex flex-col cursor-pointer bg-[#f9f9f9] hover:bg-[#eee] p-[12px] gap-[6px]"
               >
-                <h2 className="text-xl font-semibold mb-2 line-clamp-3 overflow-hidden">
+                <h2 className="text-xl font-semibold line-clamp-3 overflow-hidden">
                   {recipe.title}
                 </h2>
-                <p className="text-black mb-2 line-clamp-3 font-radley flex-1 overflow-hidden">
-                  {recipe.description}
-                </p>
+                <div className="flex gap-[6px] items-center text-[14px]">
+                  <div>{recipe.recipe_category && recipe.recipe_category}</div>
+                  <div>●</div>
+                  {recipe.total_time && (
+                    <div className="">{formatTime(recipe.total_time)}</div>
+                  )}
+                </div>
               </Link>
             ))}
           </div>

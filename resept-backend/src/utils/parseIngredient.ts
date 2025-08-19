@@ -4,20 +4,64 @@ export interface ParsedIngredient {
   amountMax?: number;
 }
 
+const decodeHtmlEntities = (text: string): string => {
+  const htmlEntities: Record<string, string> = {
+    "&amp;": "&",
+    "&lt;": "<",
+    "&gt;": ">",
+    "&quot;": '"',
+    "&#39;": "'",
+    "&#8217;": "'",
+    "&#8216;": "'",
+    "&#8220;": '"',
+    "&#8221;": '"',
+    "&#8211;": "–",
+    "&#8212;": "—",
+    "&#8208;": "‐",
+    "&#8209;": "‑",
+    "&#820A;": " ",
+    "&#820B;": "​",
+    "&#820C;": "‌",
+    "&#820D;": "‍",
+    "&#820E;": "‎",
+    "&#820F;": "‏",
+  };
+
+  return text.replace(/&[#\w]+;/g, (entity) => {
+    return htmlEntities[entity] || entity;
+  });
+};
+
 export const parseIngredient = (text: string): ParsedIngredient => {
-  const trimmedText = text.trim();
+  // Decode HTML entities first to ensure proper parsing
+  const decodedText = decodeHtmlEntities(text);
+  const trimmedText = decodedText.trim();
 
   // Default values
   let amount: number | undefined = undefined;
   let rawWithoutAmount = trimmedText;
 
-  // Try to match amount patterns
+  // Check for ranges first (including HTML entity decoded hyphens)
+  const rangeMatch = trimmedText.match(/^(\d+)\s*[-–—‐‑]\s*(\d+)/);
+  if (rangeMatch) {
+    const min = parseInt(rangeMatch[1]);
+    const max = parseInt(rangeMatch[2]);
+    const fullRange = rangeMatch[0];
+
+    return {
+      amount: min,
+      rawWithoutAmount: trimmedText
+        .replace(new RegExp(`^${fullRange}\\s*`), "")
+        .trim(),
+      amountMax: max,
+    };
+  }
+
+  // Try to match other amount patterns
   const amountPatterns = [
     // Dutch ranges: 3 a 4, 3 à 4, 1 a 2, etc.
     /^(\d+\s+a\s+\d+)/,
     /^(\d+\s+à\s+\d+)/,
-    // Standard ranges: 1-2, 3-4, etc.
-    /^(\d+-\d+)/,
     // Mixed numbers with Unicode fractions: 12 ¼, 1 ½, etc.
     /^(\d+\s+[¼½¾⅐⅑⅒⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞])/,
     // Fractions: 1/2, 1/4, 3/4, etc.
@@ -30,10 +74,10 @@ export const parseIngredient = (text: string): ParsedIngredient => {
     /^(\d+,\d+)/,
     // US decimals: 1.5, 0.25, etc.
     /^(\d+\.\d+)/,
-    // Whole numbers: 1, 2, 3, etc.
-    /^(\d+)/,
     // Written numbers: one, two, three, etc.
     /^(one|two|three|four|five|six|seven|eight|nine|ten|een|twee|drie|vier|vijf|zes|zeven|acht|negen|tien)\b/i,
+    // Whole numbers: 1, 2, 3, etc.
+    /^(\d+)/,
   ];
 
   let matchedAmount = "";
@@ -54,19 +98,6 @@ export const parseIngredient = (text: string): ParsedIngredient => {
       // Handle Dutch ranges like "3 a 4" or "3 à 4"
       const separator = matchedAmount.includes(" a ") ? " a " : " à ";
       const rangeParts = matchedAmount.split(separator);
-      const min = parseInt(rangeParts[0]);
-      const max = parseInt(rangeParts[1]);
-      amount = min; // Use the minimum as the default amount
-      return {
-        amount: min,
-        rawWithoutAmount: trimmedText
-          .replace(new RegExp(`^${matchedAmount}\\s*`), "")
-          .trim(),
-        amountMax: max,
-      };
-    } else if (matchedAmount.includes("-")) {
-      // Handle standard ranges like "1-2"
-      const rangeParts = matchedAmount.split("-");
       const min = parseInt(rangeParts[0]);
       const max = parseInt(rangeParts[1]);
       amount = min; // Use the minimum as the default amount

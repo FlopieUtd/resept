@@ -128,6 +128,26 @@ describe("parseIngredient", () => {
       expect(result.amount).toBe(0.5);
       expect(result.rawWithoutAmount).toBe("teaspoon vanilla");
     });
+
+    it("should parse ranges with encoded hyphens", () => {
+      const result = parseIngredient("1 &#8211; 2 chili peppers");
+      expect(result.amount).toBe(1);
+      expect(result.rawWithoutAmount).toBe("chili peppers");
+      expect(result.amountMax).toBe(2);
+    });
+
+    it("should parse ranges with other encoded characters", () => {
+      const result = parseIngredient("1 &#8208; 2 chili peppers");
+      expect(result.amount).toBe(1);
+      expect(result.rawWithoutAmount).toBe("chili peppers");
+      expect(result.amountMax).toBe(2);
+    });
+
+    it("should decode HTML entities in ingredient names", () => {
+      const result = parseIngredient("1 cup Annie Chun&#8217;s noodles");
+      expect(result.amount).toBe(1);
+      expect(result.rawWithoutAmount).toBe("cup Annie Chun's noodles");
+    });
   });
 
   describe("edge cases", () => {

@@ -10,6 +10,11 @@ const parseBrTags = (html: string): string => {
   return html;
 };
 
+// Strip HTML tags from text
+const stripHtmlTags = (text: string): string => {
+  return text.replace(/<[^>]*>/g, "").trim();
+};
+
 export const extractTextNodes = (html: string): TextNode[] => {
   try {
     const $ = cheerio.load(html);
@@ -47,7 +52,7 @@ export const extractTextNodes = (html: string): TextNode[] => {
         if (node.type === "text") {
           const text = (node as any).data as string;
           if (text && text.trim()) {
-            buffer += text;
+            buffer += stripHtmlTags(text);
           }
         } else if (node.type === "tag") {
           const name = (node as any).name?.toLowerCase();
@@ -56,7 +61,7 @@ export const extractTextNodes = (html: string): TextNode[] => {
               const parentTag = $el.prop("tagName")?.toLowerCase() || "unknown";
               textNodes.push({
                 depth: adjustedDepth,
-                text: buffer.trim(),
+                text: stripHtmlTags(buffer.trim()),
                 elementType: parentTag,
               });
             }
@@ -67,14 +72,14 @@ export const extractTextNodes = (html: string): TextNode[] => {
             const $span = $cleanWithBrDivs(node);
             const spanText = $span.text().trim();
             if (spanText) {
-              buffer += " " + spanText;
+              buffer += " " + stripHtmlTags(spanText);
             }
           } else {
             if (buffer.trim()) {
               const parentTag = $el.prop("tagName")?.toLowerCase() || "unknown";
               textNodes.push({
                 depth: adjustedDepth,
-                text: buffer.trim(),
+                text: stripHtmlTags(buffer.trim()),
                 elementType: parentTag,
               });
               buffer = "";
@@ -88,7 +93,7 @@ export const extractTextNodes = (html: string): TextNode[] => {
         const parentTag = $el.prop("tagName")?.toLowerCase() || "unknown";
         textNodes.push({
           depth: adjustedDepth,
-          text: buffer.trim(),
+          text: stripHtmlTags(buffer.trim()),
           elementType: parentTag,
         });
       }

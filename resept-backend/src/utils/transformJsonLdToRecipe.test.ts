@@ -331,6 +331,62 @@ describe("transformJsonLdToRecipe", () => {
       expect(result!.title).toBe("Chocolate & Vanilla Cookies");
       expect(result!.description).toBe('Cookies with "amazing" flavor');
     });
+
+    it("should strip HTML tags from text content", () => {
+      const jsonLdRecipe = {
+        "@type": "Recipe",
+        name: "Recipe with <strong>HTML</strong> tags",
+        description: "Description with <p>paragraph</p> and <em>emphasis</em>",
+        recipeIngredient: [
+          "2 cups <b>flour</b>",
+          "1 cup <i>sugar</i>",
+          "<span>3 eggs</span>",
+        ],
+        recipeInstructions: [
+          "Mix <strong>dry</strong> ingredients",
+          "Add <em>wet</em> ingredients",
+          "Bake at <u>350°F</u>",
+        ],
+      };
+
+      const result = transformJsonLdToRecipe(
+        jsonLdRecipe,
+        "https://example.com"
+      );
+
+      expect(result!.title).toBe("Recipe with HTML tags");
+      expect(result!.description).toBe(
+        "Description with paragraph and emphasis"
+      );
+      expect(result!.ingredients).toEqual([
+        {
+          raw: "2 cups flour",
+          parsed: {
+            amount: 2,
+            rawWithoutAmount: "cups flour",
+          },
+        },
+        {
+          raw: "1 cup sugar",
+          parsed: {
+            amount: 1,
+            rawWithoutAmount: "cup sugar",
+          },
+        },
+        {
+          raw: "3 eggs",
+          parsed: {
+            amount: 3,
+            rawWithoutAmount: "eggs",
+          },
+        },
+      ]);
+      expect(result!.instructions).toEqual([
+        { text: "Mix dry ingredients" },
+        { text: "Add wet ingredients" },
+        { text: "Bake at 350°F" },
+      ]);
+    });
   });
 
   describe("fallback title handling", () => {

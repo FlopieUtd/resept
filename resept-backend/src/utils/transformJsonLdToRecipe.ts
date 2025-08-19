@@ -57,6 +57,18 @@ const decodeHtmlEntities = (text: any): string => {
   });
 };
 
+// Strip HTML tags from text
+const stripHtmlTags = (text: string): string => {
+  return text.replace(/<[^>]*>/g, "").trim();
+};
+
+// Clean text by decoding entities and stripping HTML tags
+const cleanText = (text: any): string => {
+  if (typeof text !== "string") return "";
+  const decoded = decodeHtmlEntities(text);
+  return stripHtmlTags(decoded);
+};
+
 export const transformJsonLdToRecipe = (
   jsonLdRecipe: JsonLdRecipe,
   sourceUrl: string
@@ -83,12 +95,10 @@ export const transformJsonLdToRecipe = (
   }
 
   // Extract basic recipe information with better fallbacks
-  const title = decodeHtmlEntities(
+  const title = cleanText(
     recipe.title || recipe.name || recipe.headline || "Untitled Recipe"
   );
-  const description = decodeHtmlEntities(
-    recipe.description || recipe.about || ""
-  );
+  const description = cleanText(recipe.description || recipe.about || "");
 
   // Handle recipe_yield - could be string or array
   // Check multiple common JSON-LD field names for recipe yield
@@ -168,7 +178,7 @@ export const transformJsonLdToRecipe = (
   if (recipe.recipeIngredient && Array.isArray(recipe.recipeIngredient)) {
     recipe.recipeIngredient.forEach((ingredient: any) => {
       if (ingredient && typeof ingredient === "string") {
-        const rawIngredient = decodeHtmlEntities(ingredient);
+        const rawIngredient = cleanText(ingredient);
         const parsed = parseIngredient(rawIngredient);
         ingredients.push({ raw: rawIngredient, parsed });
       }
@@ -180,14 +190,14 @@ export const transformJsonLdToRecipe = (
   if (recipe.recipeInstructions && Array.isArray(recipe.recipeInstructions)) {
     recipe.recipeInstructions.forEach((instruction: any) => {
       if (instruction && typeof instruction === "string") {
-        instructions.push({ text: decodeHtmlEntities(instruction) });
+        instructions.push({ text: cleanText(instruction) });
       } else if (
         instruction &&
         typeof instruction === "object" &&
         instruction.text
       ) {
         // Handle HowToStep objects with text field
-        instructions.push({ text: decodeHtmlEntities(instruction.text) });
+        instructions.push({ text: cleanText(instruction.text) });
       }
     });
   }

@@ -1,5 +1,117 @@
 import { useState, useEffect } from "react";
-import { type CreateRecipeData } from "../types";
+import { type CreateRecipeData, type ParsedIngredient } from "../types";
+
+// Simple ingredient parsing function for the frontend
+const parseIngredientFrontend = (text: string): ParsedIngredient => {
+  const trimmedText = text.trim();
+
+  // Default values
+  let amount: number | undefined = undefined;
+  let rawWithoutAmount = trimmedText;
+
+  // Check for ranges first
+  const rangeMatch = trimmedText.match(/^(\d+)\s*[-–—‐‑]\s*(\d+)/);
+  if (rangeMatch) {
+    const min = parseInt(rangeMatch[1]);
+    const max = parseInt(rangeMatch[2]);
+    const fullRange = rangeMatch[0];
+
+    return {
+      amount: min,
+      rawWithoutAmount: trimmedText
+        .replace(new RegExp(`^${fullRange}\\s*`, "g"), "")
+        .trim(),
+      amountMax: max,
+    };
+  }
+
+  // Try to match amount patterns
+  const amountPatterns = [
+    // Dutch ranges: 3 a 4, 3 à 4, 1 a 2, etc.
+    /^(\d+\s+a\s+\d+)/,
+    /^(\d+\s+à\s+\d+)/,
+    // Fractions: 1/2, 1/4, 3/4, etc.
+    /^(\d+\/\d+)/,
+    // Mixed numbers: 1 1/2, 2 3/4, etc.
+    /^(\d+\s+\d+\/\d+)/,
+    // European decimals: 0,5, 1,25, etc.
+    /^(\d+,\d+)/,
+    // US decimals: 1.5, 0.25, etc.
+    /^(\d+\.\d+)/,
+    // Whole numbers: 1, 2, 3, etc.
+    /^(\d+)/,
+  ];
+
+  let matchedAmount = "";
+
+  // Find amount
+  for (const pattern of amountPatterns) {
+    const match = trimmedText.match(pattern);
+    if (match) {
+      matchedAmount = match[1] || match[0];
+      break;
+    }
+  }
+
+  // Parse amount and extract text without amount
+  if (matchedAmount) {
+    if (matchedAmount.includes(" a ") || matchedAmount.includes(" à ")) {
+      // Handle Dutch ranges like "3 a 4" or "3 à 4"
+      const separator = matchedAmount.includes(" a ") ? " a " : " à ";
+      const rangeParts = matchedAmount.split(separator);
+      const min = parseInt(rangeParts[0]);
+      const max = parseInt(rangeParts[1]);
+      amount = min;
+      return {
+        amount: min,
+        rawWithoutAmount: trimmedText
+          .replace(new RegExp(`^${matchedAmount}\\s*`, "g"), "")
+          .trim(),
+        amountMax: max,
+      };
+    } else if (matchedAmount.includes(" ")) {
+      // Handle mixed numbers like "1 1/2"
+      const parts = matchedAmount.split(" ");
+      const whole = parseInt(parts[0]);
+
+      if (parts[1].includes("/")) {
+        // Mixed numbers like "1 1/2"
+        const fractionParts = parts[1].split("/");
+        const numerator = parseInt(fractionParts[0]);
+        const denominator = parseInt(fractionParts[1]);
+        amount = whole + numerator / denominator;
+      } else {
+        // Mixed numbers with whole numbers like "12 3"
+        amount = whole;
+      }
+    } else if (matchedAmount.includes("/")) {
+      // Handle fractions
+      const parts = matchedAmount.split("/");
+      const numerator = parseInt(parts[0]);
+      const denominator = parseInt(parts[1]);
+      amount = numerator / denominator;
+    } else if (matchedAmount.includes(",")) {
+      // European decimals (comma as decimal separator)
+      amount = parseFloat(matchedAmount.replace(",", "."));
+    } else if (matchedAmount.includes(".")) {
+      // US decimals (dot as decimal separator)
+      amount = parseFloat(matchedAmount);
+    } else if (/^\d+$/.test(matchedAmount)) {
+      // Whole numbers
+      amount = parseInt(matchedAmount);
+    }
+
+    // Extract text without the amount
+    rawWithoutAmount = trimmedText
+      .replace(new RegExp(`^${matchedAmount}\\s*`, "g"), "")
+      .trim();
+  }
+
+  return {
+    amount,
+    rawWithoutAmount,
+  };
+};
 
 interface RecipeEditModalProps {
   isOpen: boolean;
@@ -115,7 +227,12 @@ export const RecipeEditModal = ({
     // Filter out empty ingredients and instructions
     const cleanedData = {
       ...formData,
-      ingredients: formData.ingredients.filter((ing) => ing.raw.trim() !== ""),
+      ingredients: formData.ingredients
+        .filter((ing) => ing.raw.trim() !== "")
+        .map((ing) => ({
+          raw: ing.raw,
+          parsed: parseIngredientFrontend(ing.raw),
+        })),
       instructions: formData.instructions.filter(
         (inst) => "text" in inst && inst.text.trim() !== ""
       ),
