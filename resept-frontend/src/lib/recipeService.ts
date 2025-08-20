@@ -102,6 +102,7 @@ export const useCreateRecipe = () => {
       return data;
     },
     onSuccess: () => {
+      // Invalidate and refetch recipe queries
       queryClient.invalidateQueries({ queryKey: ["recipes"] });
     },
     onError: (error) => {
@@ -144,6 +145,7 @@ export const useUpdateRecipe = () => {
       return data;
     },
     onSuccess: (data) => {
+      // Invalidate and refetch recipe queries
       queryClient.invalidateQueries({ queryKey: ["recipes"] });
       queryClient.invalidateQueries({ queryKey: ["recipe", data.id] });
     },
@@ -179,6 +181,7 @@ export const useDeleteRecipe = () => {
       return true;
     },
     onSuccess: () => {
+      // Invalidate and refetch recipe queries
       queryClient.invalidateQueries({ queryKey: ["recipes"] });
     },
     onError: (error) => {

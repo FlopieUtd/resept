@@ -121,6 +121,7 @@ interface RecipeEditModalProps {
   initialData: CreateRecipeData;
   isSaving: boolean;
   isDeleting?: boolean;
+  title?: string;
 }
 
 export const RecipeEditModal = ({
@@ -131,6 +132,7 @@ export const RecipeEditModal = ({
   initialData,
   isSaving,
   isDeleting = false,
+  title = "Bewerk recept",
 }: RecipeEditModalProps) => {
   const [formData, setFormData] = useState<CreateRecipeData>({
     ...initialData,
@@ -257,7 +259,7 @@ export const RecipeEditModal = ({
       <div className="bg-white max-w-[960px] w-full max-h-[90vh] overflow-y-auto">
         <div className="py-[24px] px-[96px]">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Bewerk recept</h2>
+            <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
             <button
               onClick={onClose}
               className="text-gray-500 hover:text-gray-700 text-2xl font-bold"

@@ -1,17 +1,49 @@
 import { Link } from "react-router-dom";
-import { useRecipes } from "../lib/recipeService";
+import { useRecipes, useCreateRecipe } from "../lib/recipeService";
 import { Loading } from "./Loading";
 import { formatTime } from "../utils/formatTime";
+import { RecipeEditModal } from "./RecipeEditModal";
+import { PlusIcon } from "@phosphor-icons/react";
+import { useState } from "react";
+import { type CreateRecipeData } from "../types";
 
 export const Recipes = () => {
-  const { data: recipes, isLoading, error } = useRecipes();
+  const { data: recipes, isLoading, error, refetch } = useRecipes();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const createRecipe = useCreateRecipe();
+
+  const handleSave = async (recipeData: CreateRecipeData) => {
+    try {
+      await createRecipe.mutateAsync(recipeData);
+      setIsEditModalOpen(false);
+      // Manually refetch recipes to ensure the list updates
+      await refetch();
+      // Force component re-render
+      setRefreshTrigger((prev) => prev + 1);
+    } catch (error) {
+      console.error("Failed to create recipe:", error);
+    }
+  };
+
+  const handleClose = () => {
+    setIsEditModalOpen(false);
+  };
 
   return (
     <div className="flex w-full h-full justify-center">
       <div className="flex w-full max-w-[1080px] mx-[24px] my-[48px] flex-col">
-        <h1 className="text-3xl font-bold mb-6 w-full border-b-2 border-black pb-[12px]">
-          Recepten
-        </h1>
+        <div className="flex justify-between items-center mb-6 w-full border-b-2 border-black pb-[12px]">
+          <h1 className="text-3xl font-bold">Recepten</h1>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setIsEditModalOpen(true)}
+              className="bg-white text-black p-3 rounded-lg hover:bg-gray-200 transition-colors"
+            >
+              <PlusIcon size={24} />
+            </button>
+          </div>
+        </div>
 
         {isLoading ? (
           <div className="flex w-full h-full justify-center items-center py-8">
@@ -30,7 +62,7 @@ export const Recipes = () => {
             <div className="text-[24px] text-gray-500">No recipes found</div>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4" key={refreshTrigger}>
             {recipes.map((recipe) => (
               <Link
                 key={recipe.id}
@@ -52,6 +84,25 @@ export const Recipes = () => {
           </div>
         )}
       </div>
+      <RecipeEditModal
+        isOpen={isEditModalOpen}
+        onClose={handleClose}
+        onSave={handleSave}
+        title="Nieuw recept"
+        initialData={{
+          title: "",
+          recipe_yield: 1,
+          recipe_category: "",
+          description: "",
+          prep_time: "",
+          cook_time: "",
+          total_time: "",
+          ingredients: [{ raw: "" }],
+          instructions: [{ text: "" }],
+          source_url: "",
+        }}
+        isSaving={createRecipe.isPending}
+      />
     </div>
   );
 };

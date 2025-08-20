@@ -3,6 +3,7 @@ import {
   useRecipe,
   useUpdateRecipe,
   useDeleteRecipe,
+  useRecipes,
 } from "../lib/recipeService";
 import { type RecipeInstructionItem, type CreateRecipeData } from "../types";
 import { Loading } from "./Loading";
@@ -13,12 +14,15 @@ import { useRecipeYield } from "../hooks/useRecipeYield";
 import { extractDomainFromUrl } from "../utils/extractDomainFromUrl";
 import { decodeHtmlEntities } from "../utils/decodeHtmlEntities";
 import { formatTime } from "../utils/formatTime";
+import { isDurationEmpty } from "../utils/isDurationEmpty";
 
 export const Recipe = () => {
   const { recipeId } = useParams();
   const navigate = useNavigate();
-  const { data: recipe, isLoading, error } = useRecipe(recipeId!);
+  const { data: recipe, isLoading, error, refetch } = useRecipe(recipeId!);
+  const { refetch: refetchRecipes } = useRecipes();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const updateRecipe = useUpdateRecipe();
   const deleteRecipe = useDeleteRecipe();
 
@@ -59,6 +63,8 @@ export const Recipe = () => {
         updates: recipeData,
       });
       setIsEditModalOpen(false);
+      // Force component re-render
+      setRefreshTrigger((prev) => prev + 1);
     } catch (error) {
       console.error("Failed to update recipe:", error);
     }
@@ -69,6 +75,8 @@ export const Recipe = () => {
 
     try {
       await deleteRecipe.mutateAsync(recipeId);
+      // Refetch recipes list before navigating to ensure it's up to date
+      await refetchRecipes();
       navigate("/recipes");
     } catch (error) {
       console.error("Failed to delete recipe:", error);
@@ -78,7 +86,10 @@ export const Recipe = () => {
   return (
     <div className="flex w-full h-full justify-center">
       <div className="flex w-full max-w-[1080px] mx-[24px] my-[48px] flex-col">
-        <div className="flex flex-col border-b-[2px] border-black mb-[24px]">
+        <div
+          className="flex flex-col border-b-[2px] border-black mb-[24px]"
+          key={refreshTrigger}
+        >
           <div className="flex justify-between items-center mb-[12px]">
             <div className="text-[48px] font-bold">{recipe.title}</div>
             <button
@@ -115,17 +126,17 @@ export const Recipe = () => {
                 </button>
               </div>
             )}
-            {recipe.prep_time && (
+            {recipe.prep_time && !isDurationEmpty(recipe.prep_time) && (
               <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
                 Bereiding: {formatTime(recipe.prep_time)}
               </div>
             )}
-            {recipe.cook_time && (
+            {recipe.cook_time && !isDurationEmpty(recipe.cook_time) && (
               <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
                 Kooktijd: {formatTime(recipe.cook_time)}
               </div>
             )}
-            {recipe.total_time && (
+            {recipe.total_time && !isDurationEmpty(recipe.total_time) && (
               <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
                 Totaal: {formatTime(recipe.total_time)}
               </div>
@@ -212,6 +223,7 @@ export const Recipe = () => {
         onClose={() => setIsEditModalOpen(false)}
         onSave={handleSave}
         onDelete={handleDelete}
+        title="Bewerk recept"
         initialData={recipe}
         isSaving={updateRecipe.isPending}
         isDeleting={deleteRecipe.isPending}

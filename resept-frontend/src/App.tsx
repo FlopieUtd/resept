@@ -10,8 +10,15 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000,
+      staleTime: 0, // Always consider queries stale so they refetch immediately
       gcTime: 10 * 60 * 1000,
+      refetchOnWindowFocus: true, // Refetch when window regains focus
+      refetchOnMount: true, // Refetch when component mounts
+      refetchOnReconnect: true, // Refetch when reconnecting to network
+    },
+    mutations: {
+      retry: 1, // Retry failed mutations once
+      retryDelay: 1000, // Wait 1 second before retrying
     },
   },
 });
