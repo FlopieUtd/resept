@@ -133,10 +133,10 @@ export const transformJsonLdToRecipe = (
   }
 
   // Handle recipe_category - could be string or array
-  let recipe_category = "Recepten";
+  let recipe_category = "Onbekend";
   if (recipe.recipe_category) {
     if (Array.isArray(recipe.recipe_category)) {
-      recipe_category = recipe.recipe_category[0] || "Recepten";
+      recipe_category = recipe.recipe_category[0] || "Onbekend";
     } else {
       recipe_category = recipe.recipe_category;
     }
