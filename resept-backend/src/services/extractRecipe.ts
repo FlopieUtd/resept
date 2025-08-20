@@ -6,6 +6,7 @@ import { transformJsonLdToRecipe } from "../utils/transformJsonLdToRecipe.js";
 import { extractTextNodes } from "../utils/extractTextNodes.js";
 import { preparseIngredientNodes } from "../utils/preparseIngredientNodes.js";
 import { extractTitle } from "../utils/extractTitle.js";
+import { extractYield } from "../utils/extractYield.js";
 
 interface RecipeResult {
   success: boolean;
@@ -92,8 +93,7 @@ export const extractRecipe = async (url: string): Promise<RecipeResult> => {
     const textNodes = extractTextNodes(html);
     const parsedNodes = preparseIngredientNodes(textNodes);
     const title = extractTitle(html, url);
-
-    // const llmResult = await extractRecipeComponents(textNodes);
+    const recipeYield = extractYield(html);
 
     return {
       success: true,
@@ -102,6 +102,7 @@ export const extractRecipe = async (url: string): Promise<RecipeResult> => {
         title,
         ingredients: parsedNodes.ingredients,
         instructions: parsedNodes.instructions,
+        recipe_yield: recipeYield,
       },
     };
   } catch (error: any) {

@@ -214,3 +214,20 @@ export const COOKING_IMPERATIVES: Record<
     english: "set",
   },
 };
+
+export const YIELD_KEYWORDS: Record<
+  string,
+  {
+    dutch: string | string[];
+    english: string | string[];
+  }
+> = {
+  yield: {
+    dutch: ["portie", "porties", "personen", "persoon", "stukken", "stuk"],
+    english: ["serving", "servings", "person", "people", "piece", "pieces"],
+  },
+  yield_numbers: {
+    dutch: ["voor", "van", "bereid", "maakt", "genoege"],
+    english: ["for", "of", "makes", "yields", "enough"],
+  },
+};
