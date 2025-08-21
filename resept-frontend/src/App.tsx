@@ -4,6 +4,9 @@ import { Menu } from "./components/Menu";
 import { Recipe } from "./components/Recipe";
 import { Home } from "./components/Home";
 import { Recipes } from "./components/Recipes";
+import { Login } from "./components/Login";
+import { PasswordRecovery } from "./components/PasswordRecovery";
+import { ResetPassword } from "./components/ResetPassword";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -27,37 +30,47 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <div className="flex w-full h-[100vh]">
-          <Menu />
-          <div className="ml-[240px] w-full flex">
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute>
-                    <Home />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/recipes/"
-                element={
-                  <ProtectedRoute>
-                    <Recipes />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/recipes/:recipeId"
-                element={
-                  <ProtectedRoute>
-                    <Recipe />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </div>
-        </div>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/password-recovery" element={<PasswordRecovery />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route
+            path="/*"
+            element={
+              <div className="flex w-full h-[100vh]">
+                <Menu />
+                <div className="ml-[240px] w-full flex">
+                  <Routes>
+                    <Route
+                      path="/"
+                      element={
+                        <ProtectedRoute>
+                          <Home />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/recipes/"
+                      element={
+                        <ProtectedRoute>
+                          <Recipes />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/recipes/:recipeId"
+                      element={
+                        <ProtectedRoute>
+                          <Recipe />
+                        </ProtectedRoute>
+                      }
+                    />
+                  </Routes>
+                </div>
+              </div>
+            }
+          />
+        </Routes>
       </AuthProvider>
     </QueryClientProvider>
   );

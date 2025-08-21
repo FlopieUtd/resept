@@ -146,6 +146,10 @@ export const RecipeEditModal = ({
         : [{ text: "" }],
   });
 
+  const [importUrl, setImportUrl] = useState("");
+  const [importError, setImportError] = useState("");
+  const [isImporting, setIsImporting] = useState(false);
+
   useEffect(() => {
     setFormData({
       ...initialData,
@@ -243,6 +247,67 @@ export const RecipeEditModal = ({
     onSave(cleanedData);
   };
 
+  const handleImportSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setImportError("");
+    setIsImporting(true);
+
+    try {
+      const response = await fetch("/extract", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ url: importUrl }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        const transformedData: CreateRecipeData = {
+          title: data.title || "Untitled Recipe",
+          recipe_yield: data.recipe_yield || 1,
+          recipe_category: data.recipe_category || "Recepten",
+          description: data.description || "",
+          prep_time: data.prep_time || "",
+          cook_time: data.cook_time || "",
+          total_time: data.total_time || "",
+          ingredients: data.ingredients || [],
+          instructions: data.instructions || [],
+          source_url: importUrl,
+        };
+
+        if (
+          transformedData.title &&
+          transformedData.source_url &&
+          (transformedData.ingredients.length > 0 ||
+            transformedData.instructions.length > 0)
+        ) {
+          setFormData({
+            ...transformedData,
+            ingredients:
+              transformedData.ingredients.length > 0
+                ? transformedData.ingredients
+                : [{ raw: "" }],
+            instructions:
+              transformedData.instructions.length > 0
+                ? transformedData.instructions
+                : [{ text: "" }],
+          });
+          setImportUrl("");
+        } else {
+          setImportError("Could not extract valid recipe data from this URL");
+        }
+      } else {
+        setImportError(data.error || "Failed to extract recipe");
+      }
+    } catch {
+      setImportError("Network error occurred");
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
   if (!isOpen) return null;
 
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -266,6 +331,36 @@ export const RecipeEditModal = ({
             >
               ×
             </button>
+          </div>
+
+          <div className="mb-8 p-6 border-2 border-gray-200 rounded-lg">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              Recept importeren van URL
+            </h3>
+            <form onSubmit={handleImportSubmit} className="space-y-4">
+              <div className="flex gap-4">
+                <input
+                  type="url"
+                  value={importUrl}
+                  onChange={(e) => setImportUrl(e.target.value)}
+                  placeholder="Recept URL..."
+                  className="flex-1 px-4 py-3 border-2 border-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={isImporting}
+                  className="px-6 py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isImporting ? "Importeren..." : "Importeren"}
+                </button>
+              </div>
+              {importError && (
+                <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                  {importError}
+                </div>
+              )}
+            </form>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
