@@ -1,15 +1,14 @@
 import { supabase } from "./supabase";
 import { type CreateRecipeData } from "../types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "../contexts/AuthContext";
 
 export const useRecipes = () => {
+  const { user } = useAuth();
+
   return useQuery({
     queryKey: ["recipes"],
     queryFn: async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
       if (!user) {
         throw new Error("User not authenticated");
       }
@@ -26,19 +25,18 @@ export const useRecipes = () => {
 
       return data || [];
     },
+    enabled: !!user,
     retry: 2,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 };
 
 export const useRecipe = (recipeId: string) => {
+  const { user } = useAuth();
+
   return useQuery({
     queryKey: ["recipe", recipeId],
     queryFn: async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
       if (!user) {
         throw new Error("User not authenticated");
       }
@@ -56,7 +54,7 @@ export const useRecipe = (recipeId: string) => {
 
       return data;
     },
-    enabled: !!recipeId,
+    enabled: !!user && !!recipeId,
     retry: 2,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
@@ -64,13 +62,10 @@ export const useRecipe = (recipeId: string) => {
 
 export const useCreateRecipe = () => {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   return useMutation({
     mutationFn: async (recipeData: CreateRecipeData) => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
       if (!user) {
         throw new Error("User not authenticated");
       }
@@ -102,7 +97,6 @@ export const useCreateRecipe = () => {
       return data;
     },
     onSuccess: () => {
-      // Invalidate and refetch recipe queries
       queryClient.invalidateQueries({ queryKey: ["recipes"] });
     },
     onError: (error) => {
@@ -113,6 +107,7 @@ export const useCreateRecipe = () => {
 
 export const useUpdateRecipe = () => {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   return useMutation({
     mutationFn: async ({
@@ -122,10 +117,6 @@ export const useUpdateRecipe = () => {
       recipeId: string;
       updates: Partial<CreateRecipeData>;
     }) => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
       if (!user) {
         throw new Error("User not authenticated");
       }
@@ -145,7 +136,6 @@ export const useUpdateRecipe = () => {
       return data;
     },
     onSuccess: (data) => {
-      // Invalidate and refetch recipe queries
       queryClient.invalidateQueries({ queryKey: ["recipes"] });
       queryClient.invalidateQueries({ queryKey: ["recipe", data.id] });
     },
@@ -157,13 +147,10 @@ export const useUpdateRecipe = () => {
 
 export const useDeleteRecipe = () => {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   return useMutation({
     mutationFn: async (recipeId: string) => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
       if (!user) {
         throw new Error("User not authenticated");
       }
@@ -181,7 +168,6 @@ export const useDeleteRecipe = () => {
       return true;
     },
     onSuccess: () => {
-      // Invalidate and refetch recipe queries
       queryClient.invalidateQueries({ queryKey: ["recipes"] });
     },
     onError: (error) => {
