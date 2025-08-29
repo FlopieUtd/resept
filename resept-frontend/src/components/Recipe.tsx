@@ -19,7 +19,7 @@ import { isDurationEmpty } from "../utils/isDurationEmpty";
 export const Recipe = () => {
   const { recipeId } = useParams();
   const navigate = useNavigate();
-  const { data: recipe, isLoading, error, refetch } = useRecipe(recipeId!);
+  const { data: recipe, isLoading, error } = useRecipe(recipeId!);
   const { refetch: refetchRecipes } = useRecipes();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
