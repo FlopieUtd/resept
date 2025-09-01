@@ -19,6 +19,8 @@ npm run build
 
 This project is configured to automatically deploy to GitHub Pages on every push to the `master` or `main` branch.
 
+**Note:** Since this repository contains both backend and frontend code, the deployment is configured to build and deploy only the frontend (`resept-frontend/`) directory.
+
 ### Setup Instructions
 
 1. **Enable GitHub Pages** in your repository settings:
@@ -29,6 +31,7 @@ This project is configured to automatically deploy to GitHub Pages on every push
    - Folder: `/ (root)`
 
 2. **Push to master/main** - The GitHub Action will automatically:
+   - Navigate to the `resept-frontend/` directory
    - Build the project
    - Deploy to GitHub Pages
    - Update the live site
@@ -38,13 +41,10 @@ This project is configured to automatically deploy to GitHub Pages on every push
 If you need to deploy manually:
 
 ```bash
+cd resept-frontend
 npm run deploy
 ```
 
 ## Project Structure
 
-- `src/components/` - React components
-- `src/contexts/` - React contexts
-- `src/hooks/` - Custom React hooks
-- `src/lib/` - Service libraries
-- `src/utils/` - Utility functions
+- `
