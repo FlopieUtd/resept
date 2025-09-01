@@ -1,5 +1,6 @@
 name: Deploy to GitHub Pages
 
+# Trigger workflow on push to main/master or manual dispatch
 on:
   push:
     branches: [master, main]
