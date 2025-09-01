@@ -38,16 +38,16 @@ jobs:
           echo "Checking environment variables:"
           echo "VITE_SUPABASE_URL: '$VITE_SUPABASE_URL'"
           echo "VITE_SUPABASE_ANON_KEY: '$VITE_SUPABASE_ANON_KEY'"
-          echo "Checking if secrets are accessible:"
-          echo "SUPABASE_URL_SECRET: '${{ secrets.VITE_SUPABASE_URL }}'"
-          echo "SUPABASE_KEY_SECRET: '${{ secrets.VITE_SUPABASE_ANON_KEY }}'"
+          echo "Checking if variables are accessible:"
+          echo "SUPABASE_URL_VAR: '${{ vars.VITE_SUPABASE_URL }}'"
+          echo "SUPABASE_KEY_VAR: '${{ vars.VITE_SUPABASE_ANON_KEY }}'"
           echo "Testing if any secrets work:"
           echo "GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'"
           npm run build
         working-directory: ./resept-frontend
         env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
