@@ -32,7 +32,10 @@ const App = () => {
       <AuthProvider>
         <Routes>
           <Route path="/resept/login" element={<Login />} />
-          <Route path="/resept/password-recovery" element={<PasswordRecovery />} />
+          <Route
+            path="/resept/password-recovery"
+            element={<PasswordRecovery />}
+          />
           <Route path="/resept/reset-password" element={<ResetPassword />} />
           <Route
             path="/resept/*"
