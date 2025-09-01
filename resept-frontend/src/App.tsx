@@ -31,11 +31,11 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/password-recovery" element={<PasswordRecovery />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/resept/login" element={<Login />} />
+          <Route path="/resept/password-recovery" element={<PasswordRecovery />} />
+          <Route path="/resept/reset-password" element={<ResetPassword />} />
           <Route
-            path="/*"
+            path="/resept/*"
             element={
               <div className="flex w-full h-[100vh]">
                 <Menu />
