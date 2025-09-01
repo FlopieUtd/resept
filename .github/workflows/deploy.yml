@@ -33,7 +33,10 @@ jobs:
         working-directory: ./resept-frontend
 
       - name: Build
-        run: npm run build
+        run: |
+          echo "VITE_SUPABASE_URL: $VITE_SUPABASE_URL"
+          echo "VITE_SUPABASE_ANON_KEY: $VITE_SUPABASE_ANON_KEY"
+          npm run build
         working-directory: ./resept-frontend
         env:
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
