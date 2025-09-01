@@ -1,103 +1,50 @@
-# Resept - Recipe App
+# Resept Frontend
 
-A React recipe application with Supabase authentication.
+A React-based recipe management application.
 
-## Setup
+## Development
 
-1. **Install dependencies:**
-
-   ```bash
-   npm install
-   ```
-
-2. **Set up Supabase:**
-
-   - Go to [supabase.com](https://supabase.com) and create a free account
-   - Create a new project
-   - Go to Settings > API to get your project URL and anon key
-
-3. **Create environment variables:**
-   Create a `.env` file in the root directory with:
-
-   ```
-   VITE_SUPABASE_URL=your_supabase_project_url
-   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-   ```
-
-4. **Run the development server:**
-   ```bash
-   npm run dev
-   ```
-
-## Features
-
-- User authentication (sign up, sign in, sign out)
-- Protected routes
-- Recipe browsing
-- Responsive design with Tailwind CSS
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Building for Production
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
-
-export default tseslint.config([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+```bash
+npm run build
 ```
+
+## GitHub Pages Deployment
+
+This project is configured to automatically deploy to GitHub Pages on every push to the `master` or `main` branch.
+
+### Setup Instructions
+
+1. **Enable GitHub Pages** in your repository settings:
+
+   - Go to Settings > Pages
+   - Source: Deploy from a branch
+   - Branch: `gh-pages` (will be created automatically)
+   - Folder: `/ (root)`
+
+2. **Push to master/main** - The GitHub Action will automatically:
+   - Build the project
+   - Deploy to GitHub Pages
+   - Update the live site
+
+### Manual Deployment
+
+If you need to deploy manually:
+
+```bash
+npm run deploy
+```
+
+## Project Structure
+
+- `src/components/` - React components
+- `src/contexts/` - React contexts
+- `src/hooks/` - Custom React hooks
+- `src/lib/` - Service libraries
+- `src/utils/` - Utility functions

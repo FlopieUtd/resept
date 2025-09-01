@@ -73,10 +73,14 @@ export const Recipes = () => {
                   {recipe.title}
                 </h2>
                 <div className="flex gap-[6px] items-center text-[14px]">
-                  <div>{recipe.recipe_category && recipe.recipe_category}</div>
-                  <div>●</div>
                   {recipe.total_time && (
                     <div className="">{formatTime(recipe.total_time)}</div>
+                  )}
+                  {recipe.total_time && <div>●</div>}
+                  {recipe.recipe_category && (
+                    <div className="">
+                      {recipe.ingredients.length} ingrediënten
+                    </div>
                   )}
                 </div>
               </Link>
