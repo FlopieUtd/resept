@@ -41,6 +41,8 @@ jobs:
           echo "Checking if secrets are accessible:"
           echo "SUPABASE_URL_SECRET: '${{ secrets.VITE_SUPABASE_URL }}'"
           echo "SUPABASE_KEY_SECRET: '${{ secrets.VITE_SUPABASE_ANON_KEY }}'"
+          echo "Testing if any secrets work:"
+          echo "GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'"
           npm run build
         working-directory: ./resept-frontend
         env:
