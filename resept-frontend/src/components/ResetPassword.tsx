@@ -20,34 +20,10 @@ export const ResetPassword = () => {
         data: { session },
       } = await supabase.auth.getSession();
 
-      // Check if we have a session OR if we're in the middle of a password reset flow
       if (session?.user) {
         setIsValidToken(true);
       } else {
-        // Check if there are URL parameters that indicate a password reset
-        const urlParams = new URLSearchParams(window.location.search);
-        const accessToken = urlParams.get("access_token");
-        const refreshToken = urlParams.get("refresh_token");
-
-        if (accessToken && refreshToken) {
-          // We have tokens from the password reset email, try to set the session
-          const { error } = await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken,
-          });
-
-          if (error) {
-            setError(
-              "Invalid or expired recovery link. Please request a new one."
-            );
-          } else {
-            setIsValidToken(true);
-          }
-        } else {
-          setError(
-            "Invalid or expired recovery link. Please request a new one."
-          );
-        }
+        setError("Invalid or expired recovery link. Please request a new one.");
       }
     };
 

@@ -22,12 +22,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const getSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
+      // Check if we're on a password reset page with tokens in URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const accessToken = urlParams.get("access_token");
+      const refreshToken = urlParams.get("refresh_token");
+
+      if (
+        accessToken &&
+        refreshToken &&
+        window.location.pathname.includes("/reset-password")
+      ) {
+        // We have password reset tokens, set the session
+        const { data, error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+
+        if (error) {
+          console.error(
+            "Error setting session from password reset tokens:",
+            error
+          );
+        }
+
+        setSession(data.session);
+        setUser(data.session?.user ?? null);
+        setLoading(false);
+      } else {
+        // Normal session check
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoading(false);
+      }
     };
 
     getSession();
