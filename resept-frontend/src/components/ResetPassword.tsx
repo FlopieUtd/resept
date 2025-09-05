@@ -16,13 +16,21 @@ export const ResetPassword = () => {
 
   useEffect(() => {
     const checkSession = async () => {
+      console.log("ResetPassword: Checking session...");
       const {
         data: { session },
       } = await supabase.auth.getSession();
 
+      console.log("ResetPassword: Session data:", session);
+      console.log("ResetPassword: User:", session?.user);
+
       if (session?.user) {
+        console.log(
+          "ResetPassword: Valid session found, setting isValidToken to true"
+        );
         setIsValidToken(true);
       } else {
+        console.log("ResetPassword: No valid session, showing error");
         setError("Invalid or expired recovery link. Please request a new one.");
       }
     };

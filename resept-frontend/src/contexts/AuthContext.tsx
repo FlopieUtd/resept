@@ -22,16 +22,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const getSession = async () => {
+      console.log("AuthProvider: Getting session...");
+      console.log("AuthProvider: Current pathname:", window.location.pathname);
+      console.log(
+        "AuthProvider: Current search params:",
+        window.location.search
+      );
+
       // Check if we're on a password reset page with tokens in URL
       const urlParams = new URLSearchParams(window.location.search);
       const accessToken = urlParams.get("access_token");
       const refreshToken = urlParams.get("refresh_token");
+
+      console.log("AuthProvider: Access token found:", !!accessToken);
+      console.log("AuthProvider: Refresh token found:", !!refreshToken);
+      console.log(
+        "AuthProvider: Is reset-password path:",
+        window.location.pathname.includes("/reset-password")
+      );
 
       if (
         accessToken &&
         refreshToken &&
         window.location.pathname.includes("/reset-password")
       ) {
+        console.log("AuthProvider: Processing password reset tokens...");
         // We have password reset tokens, set the session
         const { data, error } = await supabase.auth.setSession({
           access_token: accessToken,
@@ -43,16 +58,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             "Error setting session from password reset tokens:",
             error
           );
+        } else {
+          console.log("AuthProvider: Successfully set session from tokens");
+          console.log("AuthProvider: Session data:", data.session);
+          console.log("AuthProvider: User data:", data.session?.user);
         }
 
         setSession(data.session);
         setUser(data.session?.user ?? null);
         setLoading(false);
       } else {
+        console.log(
+          "AuthProvider: No password reset tokens, doing normal session check..."
+        );
         // Normal session check
         const {
           data: { session },
         } = await supabase.auth.getSession();
+        console.log("AuthProvider: Normal session data:", session);
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
