@@ -32,43 +32,43 @@ const App = () => {
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route
-            path="/password-recovery"
-            element={<PasswordRecovery />}
-          />
+          <Route path="/password-recovery" element={<PasswordRecovery />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route
-            path="/*"
+            path="/"
             element={
               <div className="flex w-full h-[100vh]">
                 <Menu />
                 <div className="ml-[240px] w-full flex">
-                  <Routes>
-                    <Route
-                      path="/"
-                      element={
-                        <ProtectedRoute>
-                          <Home />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/recipes/"
-                      element={
-                        <ProtectedRoute>
-                          <Recipes />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/recipes/:recipeId"
-                      element={
-                        <ProtectedRoute>
-                          <Recipe />
-                        </ProtectedRoute>
-                      }
-                    />
-                  </Routes>
+                  <ProtectedRoute>
+                    <Home />
+                  </ProtectedRoute>
+                </div>
+              </div>
+            }
+          />
+          <Route
+            path="/recipes/"
+            element={
+              <div className="flex w-full h-[100vh]">
+                <Menu />
+                <div className="ml-[240px] w-full flex">
+                  <ProtectedRoute>
+                    <Recipes />
+                  </ProtectedRoute>
+                </div>
+              </div>
+            }
+          />
+          <Route
+            path="/recipes/:recipeId"
+            element={
+              <div className="flex w-full h-[100vh]">
+                <Menu />
+                <div className="ml-[240px] w-full flex">
+                  <ProtectedRoute>
+                    <Recipe />
+                  </ProtectedRoute>
                 </div>
               </div>
             }
