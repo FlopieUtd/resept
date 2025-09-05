@@ -13,6 +13,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
   useEffect(() => {
     if (!loading && !user) {
+      alert("redirecting to login");
       navigate("/login");
     }
   }, [user, loading, navigate]);
