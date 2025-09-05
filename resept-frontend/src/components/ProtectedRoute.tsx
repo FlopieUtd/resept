@@ -8,23 +8,23 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { user, loading } = useAuth();
-  const navigate = useNavigate();
+  // const { user, loading } = useAuth();
+  // const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!loading && !user) {
-      alert("redirecting to login");
-      navigate("/login");
-    }
-  }, [user, loading, navigate]);
+  // useEffect(() => {
+  //   if (!loading && !user) {
+  //     alert("redirecting to login");
+  //     navigate("/login");
+  //   }
+  // }, [user, loading, navigate]);
 
-  if (loading) {
-    return <Loading />;
-  }
+  // if (loading) {
+  //   return <Loading />;
+  // }
 
-  if (!user) {
-    return null;
-  }
+  // if (!user) {
+  //   return null;
+  // }
 
   return <>{children}</>;
 };
