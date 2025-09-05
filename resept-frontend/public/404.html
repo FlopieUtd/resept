@@ -10,11 +10,13 @@
       const path = window.location.pathname;
       const basePath = "/resept";
 
-      // If we're already at the base path, just redirect to index
-      if (path === basePath || path === basePath + "/") {
+      // Check if the path already starts with the basePath
+      if (path.startsWith(basePath)) {
+        // We're already at the base path, just go to index to let React Router handle it
         window.location.href = basePath + "/";
       } else {
-        // Redirect to the main app with the current path (clean URL, not hash)
+        // Redirect to the base path with the current path preserved
+        // This will let React Router handle the routing
         window.location.href = basePath + path;
       }
     </script>
