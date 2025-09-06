@@ -28,11 +28,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         "AuthProvider: Current search params:",
         window.location.search
       );
+      console.log("AuthProvider: Current hash:", window.location.hash);
+      console.log("AuthProvider: Full URL:", window.location.href);
 
       // Check if we're on a password reset page with tokens in URL
       const urlParams = new URLSearchParams(window.location.search);
-      const accessToken = urlParams.get("access_token");
-      const refreshToken = urlParams.get("refresh_token");
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+
+      const accessToken =
+        urlParams.get("access_token") || hashParams.get("access_token");
+      const refreshToken =
+        urlParams.get("refresh_token") || hashParams.get("refresh_token");
 
       console.log("AuthProvider: Access token found:", !!accessToken);
       console.log("AuthProvider: Refresh token found:", !!refreshToken);
