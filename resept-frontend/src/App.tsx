@@ -30,52 +30,50 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <BrowserRouter basename="/resept">
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/password-recovery" element={<PasswordRecovery />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route
-              path="/"
-              element={
-                <div className="flex w-full h-[100vh]">
-                  <Menu />
-                  <div className="ml-[240px] w-full flex">
-                    <ProtectedRoute>
-                      <Home />
-                    </ProtectedRoute>
-                  </div>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/password-recovery" element={<PasswordRecovery />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route
+            path="/"
+            element={
+              <div className="flex w-full h-[100vh]">
+                <Menu />
+                <div className="ml-[240px] w-full flex">
+                  <ProtectedRoute>
+                    <Home />
+                  </ProtectedRoute>
                 </div>
-              }
-            />
-            <Route
-              path="/recipes/"
-              element={
-                <div className="flex w-full h-[100vh]">
-                  <Menu />
-                  <div className="ml-[240px] w-full flex">
-                    <ProtectedRoute>
-                      <Recipes />
-                    </ProtectedRoute>
-                  </div>
+              </div>
+            }
+          />
+          <Route
+            path="/recipes/"
+            element={
+              <div className="flex w-full h-[100vh]">
+                <Menu />
+                <div className="ml-[240px] w-full flex">
+                  <ProtectedRoute>
+                    <Recipes />
+                  </ProtectedRoute>
                 </div>
-              }
-            />
-            <Route
-              path="/recipes/:recipeId"
-              element={
-                <div className="flex w-full h-[100vh]">
-                  <Menu />
-                  <div className="ml-[240px] w-full flex">
-                    <ProtectedRoute>
-                      <Recipe />
-                    </ProtectedRoute>
-                  </div>
+              </div>
+            }
+          />
+          <Route
+            path="/recipes/:recipeId"
+            element={
+              <div className="flex w-full h-[100vh]">
+                <Menu />
+                <div className="ml-[240px] w-full flex">
+                  <ProtectedRoute>
+                    <Recipe />
+                  </ProtectedRoute>
                 </div>
-              }
-            />
-          </Routes>
-        </BrowserRouter>
+              </div>
+            }
+          />
+        </Routes>
       </AuthProvider>
     </QueryClientProvider>
   );
