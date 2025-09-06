@@ -4,6 +4,16 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var redirect = params.get("redirect");
+        if (redirect) {
+          var newUrl = "/resept" + decodeURIComponent(redirect);
+          window.history.replaceState(null, "", newUrl);
+        }
+      })();
+    </script>
     <title>Resept</title>
   </head>
   <body>

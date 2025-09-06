@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Menu } from "./components/Menu";
 import { Recipe } from "./components/Recipe";
@@ -30,50 +30,52 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/password-recovery" element={<PasswordRecovery />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route
-            path="/"
-            element={
-              <div className="flex w-full h-[100vh]">
-                <Menu />
-                <div className="ml-[240px] w-full flex">
-                  <ProtectedRoute>
-                    <Home />
-                  </ProtectedRoute>
+        <BrowserRouter basename="/resept">
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/password-recovery" element={<PasswordRecovery />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route
+              path="/"
+              element={
+                <div className="flex w-full h-[100vh]">
+                  <Menu />
+                  <div className="ml-[240px] w-full flex">
+                    <ProtectedRoute>
+                      <Home />
+                    </ProtectedRoute>
+                  </div>
                 </div>
-              </div>
-            }
-          />
-          <Route
-            path="/recipes/"
-            element={
-              <div className="flex w-full h-[100vh]">
-                <Menu />
-                <div className="ml-[240px] w-full flex">
-                  <ProtectedRoute>
-                    <Recipes />
-                  </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/recipes/"
+              element={
+                <div className="flex w-full h-[100vh]">
+                  <Menu />
+                  <div className="ml-[240px] w-full flex">
+                    <ProtectedRoute>
+                      <Recipes />
+                    </ProtectedRoute>
+                  </div>
                 </div>
-              </div>
-            }
-          />
-          <Route
-            path="/recipes/:recipeId"
-            element={
-              <div className="flex w-full h-[100vh]">
-                <Menu />
-                <div className="ml-[240px] w-full flex">
-                  <ProtectedRoute>
-                    <Recipe />
-                  </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/recipes/:recipeId"
+              element={
+                <div className="flex w-full h-[100vh]">
+                  <Menu />
+                  <div className="ml-[240px] w-full flex">
+                    <ProtectedRoute>
+                      <Recipe />
+                    </ProtectedRoute>
+                  </div>
                 </div>
-              </div>
-            }
-          />
-        </Routes>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
       </AuthProvider>
     </QueryClientProvider>
   );
