@@ -35,10 +35,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const urlParams = new URLSearchParams(window.location.search);
       const hashParams = new URLSearchParams(window.location.hash.substring(1));
 
+      // Also check for tokens in the URL fragment directly
+      const hash = window.location.hash;
       const accessToken =
-        urlParams.get("access_token") || hashParams.get("access_token");
+        urlParams.get("access_token") ||
+        hashParams.get("access_token") ||
+        (hash.includes("access_token=")
+          ? hash.split("access_token=")[1]?.split("&")[0]
+          : null);
       const refreshToken =
-        urlParams.get("refresh_token") || hashParams.get("refresh_token");
+        urlParams.get("refresh_token") ||
+        hashParams.get("refresh_token") ||
+        (hash.includes("refresh_token=")
+          ? hash.split("refresh_token=")[1]?.split("&")[0]
+          : null);
 
       console.log("AuthProvider: Access token found:", !!accessToken);
       console.log("AuthProvider: Refresh token found:", !!refreshToken);
@@ -47,16 +57,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         window.location.pathname.includes("/reset-password")
       );
 
-      if (
-        accessToken &&
-        refreshToken &&
-        window.location.pathname.includes("/reset-password")
-      ) {
+      if (accessToken && window.location.pathname.includes("/reset-password")) {
         console.log("AuthProvider: Processing password reset tokens...");
-        // We have password reset tokens, set the session
-        const { data, error } = await supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken,
+        // We have password reset tokens, try to verify the OTP
+        const { data, error } = await supabase.auth.verifyOtp({
+          token_hash: accessToken,
+          type: "recovery",
         });
 
         if (error) {
@@ -123,9 +129,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const resetPassword = async (email: string) => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `https://flopieutd.github.io/resept/reset-password`,
+    console.log("ResetPassword: Sending reset email to:", email);
+    console.log(
+      "ResetPassword: Redirect URL:",
+      `${window.location.origin}/resept/reset-password/`
+    );
+
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/resept/reset-password/`,
     });
+
+    console.log("ResetPassword: Supabase response data:", data);
+    console.log("ResetPassword: Supabase response error:", error);
+
     if (error) throw error;
   };
 
