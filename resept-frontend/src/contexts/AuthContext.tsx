@@ -70,14 +70,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             "Error setting session from password reset tokens:",
             error
           );
+          setSession(null);
+          setUser(null);
         } else {
           console.log("AuthProvider: Successfully set session from tokens");
           console.log("AuthProvider: Session data:", data.session);
           console.log("AuthProvider: User data:", data.session?.user);
+          setSession(data.session);
+          setUser(data.session?.user ?? null);
         }
-
-        setSession(data.session);
-        setUser(data.session?.user ?? null);
         setLoading(false);
       } else {
         console.log(

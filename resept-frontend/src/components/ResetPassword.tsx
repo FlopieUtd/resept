@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { ArrowLeft } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
-import { supabase } from "../lib/supabase";
 
 export const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -11,32 +10,25 @@ export const ResetPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [isValidToken, setIsValidToken] = useState(false);
-  const { updatePassword } = useAuth();
+  const { updatePassword, user, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkSession = async () => {
-      console.log("ResetPassword: Checking session...");
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+    if (!loading) {
+      console.log("ResetPassword: AuthProvider finished loading");
+      console.log("ResetPassword: User from context:", user);
 
-      console.log("ResetPassword: Session data:", session);
-      console.log("ResetPassword: User:", session?.user);
-
-      if (session?.user) {
+      if (user) {
         console.log(
-          "ResetPassword: Valid session found, setting isValidToken to true"
+          "ResetPassword: Valid user found, setting isValidToken to true"
         );
         setIsValidToken(true);
       } else {
-        console.log("ResetPassword: No valid session, showing error");
+        console.log("ResetPassword: No valid user, showing error");
         setError("Invalid or expired recovery link. Please request a new one.");
       }
-    };
-
-    checkSession();
-  }, []);
+    }
+  }, [loading, user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,6 +62,26 @@ export const ResetPassword = () => {
       setIsLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex w-full h-full justify-center items-center">
+        <div className="max-w-md w-full mx-4">
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                Verifying Recovery Link
+              </h1>
+              <p className="text-gray-600">
+                Please wait while we verify your recovery link...
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!isValidToken) {
     return (
