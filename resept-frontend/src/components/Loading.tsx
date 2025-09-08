@@ -1,12 +1,12 @@
-import lemonImage from "../assets/lemon.png";
+import garlicImage from "../assets/garlic.png";
 
 export const Loading = () => {
   return (
     <div className="flex w-full h-full justify-center items-center">
       <img
-        src={lemonImage}
+        src={garlicImage}
         alt="Loading..."
-        className="w-16 h-16"
+        className="w-16"
         style={{
           animation: "spin 4s steps(12) infinite",
         }}

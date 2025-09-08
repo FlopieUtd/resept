@@ -23,20 +23,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Set loading to false when session/user state changes
-    console.log(
-      "AuthProvider: useEffect triggered - session:",
-      !!session,
-      "user:",
-      !!user
-    );
-    if (session !== undefined || user !== undefined) {
-      console.log("AuthProvider: Setting loading to false");
-      setLoading(false);
-    }
-  }, [session, user]);
-
-  useEffect(() => {
     const getSession = async () => {
       console.log("AuthProvider: Getting session...");
       console.log("AuthProvider: Current pathname:", window.location.pathname);
@@ -107,6 +93,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setSession(session);
         setUser(session?.user ?? null);
       }
+
+      // Set loading to false only after session check is complete
+      console.log(
+        "AuthProvider: Session check complete, setting loading to false"
+      );
+      setLoading(false);
     };
 
     getSession();

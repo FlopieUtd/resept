@@ -1,25 +1,22 @@
+import { type ReactNode } from "react";
+import { Navigate } from "react-router-dom";
+import { Loading } from "./Loading";
+import { useAuth } from "../contexts/AuthContext";
+
 interface ProtectedRouteProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  // const { user, loading } = useAuth();
-  // const navigate = useNavigate();
+  const { user, loading } = useAuth();
 
-  // useEffect(() => {
-  //   if (!loading && !user) {
-  //     alert("redirecting to login");
-  //     navigate("/login");
-  //   }
-  // }, [user, loading, navigate]);
+  if (loading) {
+    return <Loading />;
+  }
 
-  // if (loading) {
-  //   return <Loading />;
-  // }
-
-  // if (!user) {
-  //   return null;
-  // }
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
   return <>{children}</>;
 };

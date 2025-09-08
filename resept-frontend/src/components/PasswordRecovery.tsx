@@ -36,7 +36,7 @@ export const PasswordRecovery = () => {
           <div className="mb-6">
             <Link
               to="/login"
-              className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4"
+              className="inline-flex items-center text-red-600 hover:text-red-800 mb-4"
             >
               <ArrowLeft size={20} className="mr-2" />
               Back to Login
@@ -63,7 +63,7 @@ export const PasswordRecovery = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 placeholder="Enter your email"
                 required
                 disabled={isLoading}
@@ -85,7 +85,7 @@ export const PasswordRecovery = () => {
             <button
               type="submit"
               disabled={isLoading || !email.trim()}
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
               {isLoading ? "Sending..." : "Send Recovery Email"}
             </button>

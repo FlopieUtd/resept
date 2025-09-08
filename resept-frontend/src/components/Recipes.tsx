@@ -127,7 +127,7 @@ export const Recipes = () => {
               </div>
             ) : (
               <div
-                className="grid grid-cols-2 gap-4 pb-[32px]"
+                className="grid grid-cols-2 gap-4 pb-[48px]"
                 key={refreshTrigger}
               >
                 {filteredRecipes.map((recipe) => (
@@ -175,6 +175,7 @@ export const Recipes = () => {
           source_url: "",
         }}
         isSaving={createRecipe.isPending}
+        showImport={true}
       />
     </div>
   );

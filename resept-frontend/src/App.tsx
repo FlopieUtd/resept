@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Menu } from "./components/Menu";
 import { Recipe } from "./components/Recipe";
@@ -32,26 +32,11 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Routes>
+          <Route path="/" element={<Navigate to="/recipes" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/password-recovery" element={<PasswordRecovery />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route
-            path="/"
-            element={
-              <div className="flex w-full h-[100vh]">
-                {!isFullscreen && <Menu />}
-                <div
-                  className={
-                    isFullscreen ? "ml-0 w-full flex" : "ml-[240px] w-full flex"
-                  }
-                >
-                  <ProtectedRoute>
-                    <Recipes />
-                  </ProtectedRoute>
-                </div>
-              </div>
-            }
-          />
+
           <Route
             path="/recipes/"
             element={
@@ -68,6 +53,7 @@ const App = () => {
                 </div>
               </div>
             }
+            index
           />
           <Route
             path="/recipes/:recipeId"

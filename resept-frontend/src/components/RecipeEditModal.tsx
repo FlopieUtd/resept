@@ -123,6 +123,7 @@ interface RecipeEditModalProps {
   isSaving: boolean;
   isDeleting?: boolean;
   title?: string;
+  showImport?: boolean;
 }
 
 export const RecipeEditModal = ({
@@ -134,6 +135,7 @@ export const RecipeEditModal = ({
   isSaving,
   isDeleting = false,
   title = "Bewerk recept",
+  showImport = false,
 }: RecipeEditModalProps) => {
   const [formData, setFormData] = useState<CreateRecipeData>({
     ...initialData,
@@ -334,35 +336,37 @@ export const RecipeEditModal = ({
             </button>
           </div>
 
-          <div className="mb-8 p-6 border-2 border-gray-200 rounded-lg">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
-              Recept importeren van URL
-            </h3>
-            <form onSubmit={handleImportSubmit} className="space-y-4">
-              <div className="flex gap-4">
-                <input
-                  type="url"
-                  value={importUrl}
-                  onChange={(e) => setImportUrl(e.target.value)}
-                  placeholder="Recept URL..."
-                  className="flex-1 px-4 py-3 border-2 border-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                />
-                <button
-                  type="submit"
-                  disabled={isImporting}
-                  className="px-6 py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isImporting ? "Importeren..." : "Importeren"}
-                </button>
-              </div>
-              {importError && (
-                <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-                  {importError}
+          {showImport && (
+            <div className="mb-8 p-6 border-2 border-gray-200 rounded-lg">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                Recept importeren van URL
+              </h3>
+              <form onSubmit={handleImportSubmit} className="space-y-4">
+                <div className="flex gap-4">
+                  <input
+                    type="url"
+                    value={importUrl}
+                    onChange={(e) => setImportUrl(e.target.value)}
+                    placeholder="Recept URL..."
+                    className="flex-1 px-4 py-3 border-2 border-black focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    required
+                  />
+                  <button
+                    type="submit"
+                    disabled={isImporting}
+                    className="px-6 py-3 bg-red-600 text-white font-semibold hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isImporting ? "Importeren..." : "Importeren"}
+                  </button>
                 </div>
-              )}
-            </form>
-          </div>
+                {importError && (
+                  <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                    {importError}
+                  </div>
+                )}
+              </form>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -374,7 +378,7 @@ export const RecipeEditModal = ({
                   type="text"
                   value={formData.title}
                   onChange={(e) => handleInputChange("title", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                   required
                 />
               </div>
@@ -389,7 +393,7 @@ export const RecipeEditModal = ({
                   onChange={(e) =>
                     handleInputChange("recipe_category", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                 />
               </div>
 
@@ -403,7 +407,7 @@ export const RecipeEditModal = ({
                   onChange={(e) =>
                     handleInputChange("recipe_yield", parseInt(e.target.value))
                   }
-                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                   required
                   min="1"
                 />
@@ -419,7 +423,7 @@ export const RecipeEditModal = ({
                   onChange={(e) =>
                     handleInputChange("prep_time", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="bijv. 15 min"
                 />
               </div>
@@ -434,7 +438,7 @@ export const RecipeEditModal = ({
                   onChange={(e) =>
                     handleInputChange("cook_time", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="bijv. 30 min"
                 />
               </div>
@@ -449,7 +453,7 @@ export const RecipeEditModal = ({
                   onChange={(e) =>
                     handleInputChange("total_time", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="bijv. 45 min"
                 />
               </div>
@@ -465,7 +469,7 @@ export const RecipeEditModal = ({
                   handleInputChange("description", e.target.value)
                 }
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
               />
             </div>
 
@@ -479,7 +483,7 @@ export const RecipeEditModal = ({
                 onChange={(e) =>
                   handleInputChange("source_url", e.target.value)
                 }
-                className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                 placeholder="https://example.com/recipe"
               />
             </div>
@@ -492,7 +496,7 @@ export const RecipeEditModal = ({
                 <button
                   type="button"
                   onClick={addIngredient}
-                  className="text-sm text-blue-600 hover:text-blue-800"
+                  className="text-sm text-red-600 hover:text-red-800"
                 >
                   + Toevoegen
                 </button>
@@ -506,7 +510,7 @@ export const RecipeEditModal = ({
                       onChange={(e) =>
                         handleIngredientChange(index, e.target.value)
                       }
-                      className="flex-1 px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="flex-1 px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                       placeholder="Ingrediënt..."
                       required
                     />
@@ -530,7 +534,7 @@ export const RecipeEditModal = ({
                 <button
                   type="button"
                   onClick={addInstruction}
-                  className="text-sm text-blue-600 hover:text-blue-800"
+                  className="text-sm text-red-600 hover:text-red-800"
                 >
                   + Toevoegen
                 </button>
@@ -548,7 +552,7 @@ export const RecipeEditModal = ({
                           handleInstructionChange(index, e.target.value)
                         }
                         rows={2}
-                        className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                         placeholder="Instructie..."
                         required
                       />
@@ -589,7 +593,7 @@ export const RecipeEditModal = ({
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-6 py-2 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-2 bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSaving ? "Opslaan..." : "Opslaan"}
                 </button>

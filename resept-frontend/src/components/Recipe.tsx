@@ -255,6 +255,7 @@ export const Recipe = () => {
         initialData={recipe}
         isSaving={updateRecipe.isPending}
         isDeleting={deleteRecipe.isPending}
+        showImport={false}
       />
     </div>
   );

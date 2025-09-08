@@ -69,7 +69,7 @@ export const ResetPassword = () => {
         <div className="max-w-md w-full mx-4">
           <div className="bg-white p-8 rounded-lg shadow-lg">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto mb-4"></div>
               <h1 className="text-2xl font-bold text-gray-900 mb-2">
                 Verifying Recovery Link
               </h1>
@@ -91,7 +91,7 @@ export const ResetPassword = () => {
             <div className="mb-6">
               <Link
                 to="/login"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4"
+                className="inline-flex items-center text-red-600 hover:text-red-800 mb-4"
               >
                 <ArrowLeft size={20} className="mr-2" />
                 Back to Login
@@ -106,7 +106,7 @@ export const ResetPassword = () => {
             <div className="text-center">
               <Link
                 to="/password-recovery"
-                className="inline-block bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="inline-block bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
               >
                 Request New Recovery Email
               </Link>
@@ -124,7 +124,7 @@ export const ResetPassword = () => {
           <div className="mb-6">
             <Link
               to="/login"
-              className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4"
+              className="inline-flex items-center text-red-600 hover:text-red-800 mb-4"
             >
               <ArrowLeft size={20} className="mr-2" />
               Back to Login
@@ -148,7 +148,7 @@ export const ResetPassword = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 placeholder="Enter new password"
                 required
                 disabled={isLoading}
@@ -168,7 +168,7 @@ export const ResetPassword = () => {
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 placeholder="Confirm new password"
                 required
                 disabled={isLoading}
@@ -187,7 +187,7 @@ export const ResetPassword = () => {
               disabled={
                 isLoading || !password.trim() || !confirmPassword.trim()
               }
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
               {isLoading ? "Updating..." : "Update Password"}
             </button>

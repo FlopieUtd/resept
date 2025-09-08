@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import lemonImage from "../assets/lemon.png";
 import { Link } from "react-router-dom";
+import garlicImage from "../assets/garlic.png";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
@@ -23,13 +23,15 @@ export const Login = () => {
     try {
       if (isSignUp) {
         await signUp(email, password);
-        setError("Check your email to confirm your account!");
+        setError("Controleer je e-mail om je account te bevestigen!");
       } else {
         await signIn(email, password);
         navigate("/");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setError(
+        err instanceof Error ? err.message : "Er is een fout opgetreden"
+      );
     } finally {
       setLoading(false);
     }
@@ -37,11 +39,13 @@ export const Login = () => {
 
   return (
     <div className="flex w-full h-full justify-center items-center">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          {isSignUp ? "Sign Up" : "Sign In"}
+      <div className="w-full max-w-md p-8 bg-white">
+        <h2 className="text-[48px] font-bold mb-6 text-center tracking-[6px]">
+          Resept
         </h2>
-
+        <div className="flex justify-center w-full mb-[48px]">
+          <img src={garlicImage} className="w-[180px] " />
+        </div>
         {successMessage && (
           <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
             {successMessage}
@@ -57,7 +61,7 @@ export const Login = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium mb-1">
-              Email
+              E-mail
             </label>
             <input
               id="email"
@@ -65,7 +69,7 @@ export const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
 
@@ -74,7 +78,7 @@ export const Login = () => {
               htmlFor="password"
               className="block text-sm font-medium mb-1"
             >
-              Password
+              Wachtwoord
             </label>
             <input
               id="password"
@@ -82,43 +86,35 @@ export const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+            className="w-full py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50"
           >
-            {loading ? (
-              <div className="flex items-center justify-center">
-                <img src={lemonImage} alt="Loading..." className="w-6 h-6" />
-              </div>
-            ) : isSignUp ? (
-              "Sign Up"
-            ) : (
-              "Sign In"
-            )}
+            {isSignUp ? "Registreren" : "Inloggen"}
           </button>
         </form>
 
         <div className="mt-4 text-center space-y-2">
           <button
             onClick={() => setIsSignUp(!isSignUp)}
-            className="text-blue-600 hover:text-blue-800 block w-full"
+            className="text-red-600 hover:text-red-800 block w-full"
           >
             {isSignUp
-              ? "Already have an account? Sign In"
-              : "Don't have an account? Sign Up"}
+              ? "Heb je al een account? Inloggen"
+              : "Nog geen account? Registreren"}
           </button>
 
           {!isSignUp && (
             <Link
               to="/password-recovery"
-              className="text-blue-600 hover:text-blue-800 block w-full"
+              className="text-red-600 hover:text-red-800 block w-full"
             >
-              Forgot your password?
+              Wachtwoord vergeten?
             </Link>
           )}
         </div>
