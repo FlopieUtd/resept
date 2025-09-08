@@ -1,4 +1,4 @@
-import { detectRecipeJsonLd } from "./detectRecipeJsonLd";
+import { detectRecipeJsonLd } from "./detectRecipeJsonLd.js";
 
 describe("recipeDetector", () => {
   beforeEach(() => {

@@ -15,12 +15,6 @@ export const Menu = () => {
   return (
     <div className="w-[240px] h-full border-r flex flex-col bg-[#f9f9f9] fixed">
       <Link
-        to="/"
-        className="px-[12px] py-[6px] border-b hover:bg-[#f0f0f0] transition-colors cursor-pointer"
-      >
-        Home
-      </Link>
-      <Link
         to="/recipes"
         className="px-[12px] py-[6px] border-b hover:bg-[#f0f0f0] transition-colors cursor-pointer"
       >

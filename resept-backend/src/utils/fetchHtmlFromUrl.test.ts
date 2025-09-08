@@ -1,4 +1,4 @@
-import { fetchHtmlFromUrl } from "./fetchHtmlFromUrl";
+import { fetchHtmlFromUrl } from "./fetchHtmlFromUrl.js";
 
 // Mock fetch globally
 const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;

@@ -1,4 +1,4 @@
-import { extractTextNodes } from "./extractTextNodes";
+import { extractTextNodes } from "./extractTextNodes.js";
 
 describe("extractTextNodes", () => {
   it("should strip HTML tags from text content", () => {

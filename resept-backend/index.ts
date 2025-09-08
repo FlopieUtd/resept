@@ -16,8 +16,9 @@ app.use((req, res, next) => {
 
 app.use(routes);
 
-const server: Server = app.listen(8787, () =>
-  console.log("API on http://localhost:8787")
+const PORT = process.env.PORT || 8787;
+const server: Server = app.listen(PORT, () =>
+  console.log(`API on http://localhost:${PORT}`)
 );
 
 // Graceful shutdown

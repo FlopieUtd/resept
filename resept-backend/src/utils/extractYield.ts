@@ -1,4 +1,4 @@
-import { YIELD_KEYWORDS } from "./constants";
+import { YIELD_KEYWORDS } from "./constants.js";
 
 export const extractYield = (html: string): number => {
   // Look for yield information in HTML content

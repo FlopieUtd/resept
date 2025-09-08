@@ -1,4 +1,4 @@
-import { transformJsonLdToRecipe } from "./transformJsonLdToRecipe";
+import { transformJsonLdToRecipe } from "./transformJsonLdToRecipe.js";
 
 describe("transformJsonLdToRecipe", () => {
   describe("basic functionality", () => {

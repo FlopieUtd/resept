@@ -1,6 +1,6 @@
-import { TextNode } from "./extractTextNodes";
-import { COOKING_IMPERATIVES } from "./constants";
-import { parseIngredient, type ParsedIngredient } from "./parseIngredient";
+import { TextNode } from "./extractTextNodes.js";
+import { COOKING_IMPERATIVES } from "./constants.js";
+import { parseIngredient, type ParsedIngredient } from "./parseIngredient.js";
 
 interface IngredientGroup {
   ingredientProbability: number;
