@@ -8,6 +8,7 @@ import { PasswordRecovery } from "./components/PasswordRecovery";
 import { ResetPassword } from "./components/ResetPassword";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { useFullscreen } from "./contexts/FullscreenContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,6 +27,7 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
+  const { isFullscreen } = useFullscreen();
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -37,8 +39,12 @@ const App = () => {
             path="/"
             element={
               <div className="flex w-full h-[100vh]">
-                <Menu />
-                <div className="ml-[240px] w-full flex">
+                {!isFullscreen && <Menu />}
+                <div
+                  className={
+                    isFullscreen ? "ml-0 w-full flex" : "ml-[240px] w-full flex"
+                  }
+                >
                   <ProtectedRoute>
                     <Recipes />
                   </ProtectedRoute>
@@ -50,8 +56,12 @@ const App = () => {
             path="/recipes/"
             element={
               <div className="flex w-full h-[100vh]">
-                <Menu />
-                <div className="ml-[240px] w-full flex">
+                {!isFullscreen && <Menu />}
+                <div
+                  className={
+                    isFullscreen ? "ml-0 w-full flex" : "ml-[240px] w-full flex"
+                  }
+                >
                   <ProtectedRoute>
                     <Recipes />
                   </ProtectedRoute>
@@ -63,8 +73,12 @@ const App = () => {
             path="/recipes/:recipeId"
             element={
               <div className="flex w-full h-[100vh]">
-                <Menu />
-                <div className="ml-[240px] w-full flex">
+                {!isFullscreen && <Menu />}
+                <div
+                  className={
+                    isFullscreen ? "ml-0 w-full flex" : "ml-[240px] w-full flex"
+                  }
+                >
                   <ProtectedRoute>
                     <Recipe />
                   </ProtectedRoute>

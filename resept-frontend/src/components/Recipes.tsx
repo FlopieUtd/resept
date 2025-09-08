@@ -4,14 +4,61 @@ import { Loading } from "./Loading";
 import { formatTime } from "../utils/formatTime";
 import { RecipeEditModal } from "./RecipeEditModal";
 import { PlusIcon } from "@phosphor-icons/react";
-import { useState } from "react";
-import { type CreateRecipeData } from "../types";
+import { useMemo, useState } from "react";
+import {
+  type CreateRecipeData,
+  type RecipeInstructionItem,
+  type RecipeInstruction,
+  type RecipeInstructionSection,
+  type IngredientLine,
+} from "../types";
 
 export const Recipes = () => {
   const { data: recipes, isLoading, error, refetch } = useRecipes();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const createRecipe = useCreateRecipe();
+  const [query, setQuery] = useState("");
+
+  const filteredRecipes = useMemo(() => {
+    if (!recipes) return [];
+    const q = query.trim().toLowerCase();
+    if (q === "") return recipes;
+
+    const includes = (text: string) => text.toLowerCase().includes(q);
+
+    const isSection = (
+      item: RecipeInstructionItem
+    ): item is RecipeInstructionSection => {
+      return (item as RecipeInstructionSection).type === "section";
+    };
+
+    const instructionTexts = (items: RecipeInstructionItem[]): string => {
+      return items
+        .map((item) => {
+          if (!item) return "";
+          if (isSection(item)) {
+            return [
+              item.name || "",
+              ...item.steps.map((s: RecipeInstruction) => s?.text || ""),
+            ].join(" ");
+          }
+          return (item as RecipeInstruction).text || "";
+        })
+        .join(" ");
+    };
+
+    return recipes.filter((recipe) => {
+      const titleMatch = includes(recipe.title || "");
+      const ingredientsText = (recipe.ingredients || [])
+        .map((i: IngredientLine) => i.raw || "")
+        .join(" ");
+      const ingredientsMatch = includes(ingredientsText);
+      const instructionsText = instructionTexts(recipe.instructions || []);
+      const instructionsMatch = includes(instructionsText);
+      return titleMatch || ingredientsMatch || instructionsMatch;
+    });
+  }, [recipes, query]);
 
   const handleSave = async (recipeData: CreateRecipeData) => {
     try {
@@ -38,7 +85,7 @@ export const Recipes = () => {
           <div className="flex gap-2">
             <button
               onClick={() => setIsEditModalOpen(true)}
-              className="bg-white text-black p-3 rounded-lg hover:bg-gray-200 transition-colors"
+              className="bg-white text-black p-[8px] rounded-lg hover:bg-gray-200 transition-colors"
             >
               <PlusIcon size={24} />
             </button>
@@ -62,32 +109,51 @@ export const Recipes = () => {
             <div className="text-[24px] text-gray-500">No recipes found</div>
           </div>
         ) : (
-          <div
-            className="grid grid-cols-2 gap-4 pb-[32px]"
-            key={refreshTrigger}
-          >
-            {recipes.map((recipe) => (
-              <Link
-                key={recipe.id}
-                to={`/recipes/${recipe.id}`}
-                className="flex flex-col cursor-pointer bg-[#f9f9f9] hover:bg-[#eee] p-[12px] gap-[6px]"
-              >
-                <h2 className="text-xl font-semibold line-clamp-3 overflow-hidden">
-                  {recipe.title}
-                </h2>
-                <div className="flex gap-[6px] items-center text-[14px]">
-                  {recipe.total_time && (
-                    <div className="">{formatTime(recipe.total_time)}</div>
-                  )}
-                  {recipe.total_time && <div>●</div>}
-                  {recipe.recipe_category && (
-                    <div className="">
-                      {recipe.ingredients.length} ingrediënten
-                    </div>
-                  )}
+          <div className="flex flex-col gap-4">
+            <div className="w-full">
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search recipes..."
+                className="w-full border border-black rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black bg-white"
+              />
+            </div>
+            {filteredRecipes.length === 0 ? (
+              <div className="flex w-full justify-center items-center py-8">
+                <div className="text-[24px] text-gray-500">
+                  No recipes match your search
                 </div>
-              </Link>
-            ))}
+              </div>
+            ) : (
+              <div
+                className="grid grid-cols-2 gap-4 pb-[32px]"
+                key={refreshTrigger}
+              >
+                {filteredRecipes.map((recipe) => (
+                  <Link
+                    key={recipe.id}
+                    to={`/recipes/${recipe.id}`}
+                    className="flex flex-col cursor-pointer bg-[#f9f9f9] hover:bg-[#eee] p-[12px] gap-[6px]"
+                  >
+                    <h2 className="text-xl font-semibold line-clamp-3 overflow-hidden">
+                      {recipe.title}
+                    </h2>
+                    <div className="flex gap-[6px] items-center text-[14px]">
+                      {recipe.total_time && (
+                        <div className="">{formatTime(recipe.total_time)}</div>
+                      )}
+                      {recipe.total_time && <div>●</div>}
+                      {recipe.recipe_category && (
+                        <div className="">
+                          {recipe.ingredients.length} ingrediënten
+                        </div>
+                      )}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

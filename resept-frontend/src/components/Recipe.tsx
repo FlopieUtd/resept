@@ -8,13 +8,18 @@ import {
 import { type RecipeInstructionItem, type CreateRecipeData } from "../types";
 import { Loading } from "./Loading";
 import { RecipeEditModal } from "./RecipeEditModal";
-import { PencilSimple } from "@phosphor-icons/react";
+import {
+  PencilSimple,
+  ArrowsOutSimple,
+  ArrowsInSimple,
+} from "@phosphor-icons/react";
 import { useState } from "react";
 import { useRecipeYield } from "../hooks/useRecipeYield";
 import { extractDomainFromUrl } from "../utils/extractDomainFromUrl";
 import { decodeHtmlEntities } from "../utils/decodeHtmlEntities";
 import { formatTime } from "../utils/formatTime";
 import { isDurationEmpty } from "../utils/isDurationEmpty";
+import { useFullscreen } from "../contexts/FullscreenContext";
 
 export const Recipe = () => {
   const { recipeId } = useParams();
@@ -25,6 +30,7 @@ export const Recipe = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const updateRecipe = useUpdateRecipe();
   const deleteRecipe = useDeleteRecipe();
+  const { isFullscreen, setIsFullscreen } = useFullscreen();
 
   const {
     recipeYield,
@@ -90,14 +96,36 @@ export const Recipe = () => {
           className="flex flex-col border-b-[2px] border-black mb-[24px]"
           key={refreshTrigger}
         >
-          <div className="flex justify-between items-center mb-[12px]">
-            <div className="text-[48px] font-bold">{recipe.title}</div>
-            <button
-              onClick={() => setIsEditModalOpen(true)}
-              className="bg-white text-black p-3 rounded-lg hover:bg-gray-200 transition-colors"
-            >
-              <PencilSimple size={24} />
-            </button>
+          <div className="flex justify-between items-center mb-[12px] gap-[12px]">
+            <div className="text-[48px] font-bold text-balance">
+              {recipe.title}
+            </div>
+            <div className="flex gap-[8px]">
+              <button
+                onClick={() => setIsEditModalOpen(true)}
+                className="bg-white text-black p-[8px] rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                <PencilSimple size={24} />
+              </button>
+              <button
+                onClick={async () => {
+                  if (!document.fullscreenElement) {
+                    await document.documentElement.requestFullscreen();
+                    setIsFullscreen(true);
+                  } else {
+                    await document.exitFullscreen();
+                    setIsFullscreen(false);
+                  }
+                }}
+                className="bg-white text-black p-[8px] rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                {isFullscreen ? (
+                  <ArrowsInSimple size={24} />
+                ) : (
+                  <ArrowsOutSimple size={24} />
+                )}
+              </button>
+            </div>
           </div>
         </div>
         <div className=" mb-[36px] flex flex-col gap-[16px]">
