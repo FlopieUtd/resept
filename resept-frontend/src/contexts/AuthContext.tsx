@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import type { User, Session } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
 
@@ -19,6 +20,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Set loading to false when session/user state changes
+    console.log(
+      "AuthProvider: useEffect triggered - session:",
+      !!session,
+      "user:",
+      !!user
+    );
+    if (session !== undefined || user !== undefined) {
+      console.log("AuthProvider: Setting loading to false");
+      setLoading(false);
+    }
+  }, [session, user]);
 
   useEffect(() => {
     const getSession = async () => {
@@ -79,7 +95,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setSession(data.session);
           setUser(data.session?.user ?? null);
         }
-        setLoading(false);
       } else {
         console.log(
           "AuthProvider: No password reset tokens, doing normal session check..."
@@ -91,7 +106,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.log("AuthProvider: Normal session data:", session);
         setSession(session);
         setUser(session?.user ?? null);
-        setLoading(false);
       }
     };
 
@@ -102,7 +116,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } = supabase.auth.onAuthStateChange(async (_, session) => {
       setSession(session);
       setUser(session?.user ?? null);
-      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -127,6 +140,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
+    navigate("/resept/login");
   };
 
   const resetPassword = async (email: string) => {
