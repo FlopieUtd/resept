@@ -62,7 +62,10 @@ export const Recipes = () => {
             <div className="text-[24px] text-gray-500">No recipes found</div>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4" key={refreshTrigger}>
+          <div
+            className="grid grid-cols-2 gap-4 pb-[32px]"
+            key={refreshTrigger}
+          >
             {recipes.map((recipe) => (
               <Link
                 key={recipe.id}

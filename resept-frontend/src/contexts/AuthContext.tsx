@@ -140,7 +140,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
-    navigate("/resept/login");
+    navigate("/login");
   };
 
   const resetPassword = async (email: string) => {
