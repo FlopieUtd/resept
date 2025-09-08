@@ -28,7 +28,7 @@ export const Menu = () => {
             onClick={handleSignOut}
             className="w-full px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
           >
-            Sign Out
+            Uitloggen
           </button>
         </div>
       )}

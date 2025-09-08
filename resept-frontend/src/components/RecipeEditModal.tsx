@@ -337,7 +337,7 @@ export const RecipeEditModal = ({
           </div>
 
           {showImport && (
-            <div className="mb-8 p-6 border-2 border-gray-200 rounded-lg">
+            <div className="pb-[16px] border-b mb-[16px]">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">
                 Recept importeren van URL
               </h3>

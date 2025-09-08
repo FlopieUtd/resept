@@ -144,7 +144,7 @@ export const Recipes = () => {
                         <div className="">{formatTime(recipe.total_time)}</div>
                       )}
                       {recipe.total_time && <div>●</div>}
-                      {recipe.recipe_category && (
+                      {recipe.ingredients.length > 0 && (
                         <div className="">
                           {recipe.ingredients.length} ingrediënten
                         </div>
