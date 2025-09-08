@@ -1,0 +1,1 @@
+export const RENDER_API_URL = "https://resept-rb0j.onrender.com";
