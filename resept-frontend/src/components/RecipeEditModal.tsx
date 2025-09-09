@@ -167,6 +167,18 @@ export const RecipeEditModal = ({
     });
   }, [initialData]);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
   const handleInputChange = (
     field: keyof CreateRecipeData,
     value: string | number
@@ -324,9 +336,9 @@ export const RecipeEditModal = ({
       className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center p-4 z-50"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white max-w-[960px] w-full max-h-[90vh] overflow-y-auto">
-        <div className="py-[24px] px-[96px]">
-          <div className="flex justify-between items-center mb-6">
+      <div className="bg-white max-w-[960px] w-full max-h-[95vh] overflow-y-auto">
+        <div className="">
+          <div className="flex justify-between items-center mb-6 py-[16px] px-[32px] sticky top-0 bg-white">
             <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
             <button
               onClick={onClose}
@@ -337,7 +349,7 @@ export const RecipeEditModal = ({
           </div>
 
           {showImport && (
-            <div className="pb-[16px] border-b mb-[16px]">
+            <div className="pb-[16px]  border-b mb-[16px] px-[32px]">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">
                 Recept importeren van URL
               </h3>
@@ -368,7 +380,7 @@ export const RecipeEditModal = ({
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6 px-[32px]">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -569,7 +581,7 @@ export const RecipeEditModal = ({
               </div>
             </div>
 
-            <div className="flex justify-between items-center gap-4 pt-4 border-t">
+            <div className="flex justify-between items-center gap-4 pt-4 border-t sticky bottom-0 bg-white py-[16px]">
               <div className="flex gap-2">
                 {onDelete && (
                   <button
