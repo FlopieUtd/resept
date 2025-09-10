@@ -31,32 +31,62 @@ export const extractRecipe = async (url: string): Promise<RecipeResult> => {
     const siteAnalysis = detectSiteType(html);
     if (siteAnalysis.needsBrowser) {
       console.log(`Site detected as needing browser, using headless browser...`);
-      try {
-        const browserOptions: BrowserOptions = {
+      
+      // Try multiple browser configurations for better success rate
+      const browserConfigs = [
+        {
           waitForTimeout: 5000,
           waitForNetworkIdle: true,
           maxWaitTime: 15000,
-        };
-        html = await fetchHtmlWithBrowser(url, browserOptions);
-        console.log("Headless browser fetch completed successfully");
-      } catch (browserError: any) {
-        console.log(
-          "Headless browser failed, trying alternative approaches:",
-          browserError.message
-        );
-        
-        // Try alternative approaches if browser fails
-        try {
-          console.log("Trying alternative HTTP approach...");
-          // Try with different headers and approach
-          const alternativeHtml = await fetchHtmlFromUrl(url);
-          if (alternativeHtml && alternativeHtml.length > html.length) {
-            html = alternativeHtml;
-            console.log("Alternative approach successful");
-          }
-        } catch (altError: any) {
-          console.log("Alternative approach also failed:", altError.message);
+        },
+        {
+          waitForTimeout: 8000,
+          waitForNetworkIdle: true,
+          maxWaitTime: 25000,
+        },
+        {
+          waitForTimeout: 10000,
+          waitForNetworkIdle: false,
+          maxWaitTime: 30000,
         }
+      ];
+
+      let browserSuccess = false;
+      for (let i = 0; i < browserConfigs.length; i++) {
+        try {
+          console.log(`Trying browser configuration ${i + 1}/${browserConfigs.length}...`);
+          html = await fetchHtmlWithBrowser(url, browserConfigs[i]);
+          console.log("Headless browser fetch completed successfully");
+          browserSuccess = true;
+          break;
+        } catch (browserError: any) {
+          console.log(
+            `Browser configuration ${i + 1} failed:`,
+            browserError.message
+          );
+          
+          if (i === browserConfigs.length - 1) {
+            // Last attempt failed, try alternative approaches
+            console.log("All browser configurations failed, trying alternative approaches...");
+            
+            try {
+              console.log("Trying alternative HTTP approach...");
+              // Try with different headers and approach
+              const alternativeHtml = await fetchHtmlFromUrl(url);
+              if (alternativeHtml && alternativeHtml.length > html.length) {
+                html = alternativeHtml;
+                console.log("Alternative approach successful");
+                browserSuccess = true;
+              }
+            } catch (altError: any) {
+              console.log("Alternative approach also failed:", altError.message);
+            }
+          }
+        }
+      }
+
+      if (!browserSuccess) {
+        console.log("All browser and alternative approaches failed, using original HTML");
       }
     }
 
