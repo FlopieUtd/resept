@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { type CreateRecipeData, type ParsedIngredient } from "../types";
 import { API_URL } from "../utils/constants";
+import { Input } from "./Input";
+import { Textarea } from "./Textarea";
+import { X } from "@phosphor-icons/react";
 
 // Simple ingredient parsing function for the frontend
 const parseIngredientFrontend = (text: string): ParsedIngredient => {
@@ -336,33 +339,31 @@ export const RecipeEditModal = ({
       className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center p-4 z-50"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white max-w-[960px] w-full max-h-[95vh] overflow-y-auto">
+      <div className="bg-white max-w-[960px] w-full max-h-[95vh] overflow-y-auto rounded-[4px]">
         <div className="">
-          <div className="flex justify-between items-center mb-6 py-[16px] px-[32px] sticky top-0 bg-white">
+          <div className="flex justify-between items-center mb-6 py-[16px] px-[16px] sticky top-0 bg-white">
             <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
-            <button
-              onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
-            >
-              ×
+            <button onClick={onClose} className="">
+              <X size={24} weight="bold" />
             </button>
           </div>
 
           {showImport && (
-            <div className="pb-[16px]  border-b mb-[16px] px-[32px]">
+            <div className="pb-[16px]  border-b mb-[16px] px-[16px]">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">
                 Recept importeren van URL
               </h3>
               <form onSubmit={handleImportSubmit} className="space-y-4">
                 <div className="flex gap-4">
-                  <input
-                    type="url"
-                    value={importUrl}
-                    onChange={(e) => setImportUrl(e.target.value)}
-                    placeholder="Recept URL..."
-                    className="flex-1 px-4 py-3 border-2 border-black focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                    required
-                  />
+                  <div className="flex-1">
+                    <Input
+                      type="url"
+                      value={importUrl}
+                      onChange={(e) => setImportUrl(e.target.value)}
+                      placeholder="Recept URL..."
+                      required
+                    />
+                  </div>
                   <button
                     type="submit"
                     disabled={isImporting}
@@ -380,122 +381,98 @@ export const RecipeEditModal = ({
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6 px-[32px]">
+          <form onSubmit={handleSubmit} className="space-y-6 px-[16px]">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Titel
-                </label>
-                <input
+                <Input
+                  label="Titel"
                   type="text"
                   value={formData.title}
                   onChange={(e) => handleInputChange("title", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Categorie
-                </label>
-                <input
+                <Input
+                  label="Categorie"
                   type="text"
                   value={formData.recipe_category}
                   onChange={(e) =>
                     handleInputChange("recipe_category", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Opbrengst
-                </label>
-                <input
+                <Input
+                  label="Opbrengst"
                   type="number"
                   value={formData.recipe_yield}
                   onChange={(e) =>
                     handleInputChange("recipe_yield", parseInt(e.target.value))
                   }
-                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                   required
                   min="1"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Voorbereidingstijd
-                </label>
-                <input
+                <Input
+                  label="Voorbereidingstijd"
                   type="text"
                   value={formData.prep_time}
                   onChange={(e) =>
                     handleInputChange("prep_time", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="bijv. 15 min"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Kooktijd
-                </label>
-                <input
+                <Input
+                  label="Kooktijd"
                   type="text"
                   value={formData.cook_time}
                   onChange={(e) =>
                     handleInputChange("cook_time", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="bijv. 30 min"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Totale tijd
-                </label>
-                <input
+                <Input
+                  label="Totale tijd"
                   type="text"
                   value={formData.total_time}
                   onChange={(e) =>
                     handleInputChange("total_time", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="bijv. 45 min"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Beschrijving
-              </label>
-              <textarea
+              <Textarea
+                label="Beschrijving"
                 value={formData.description}
                 onChange={(e) =>
                   handleInputChange("description", e.target.value)
                 }
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Bron URL
-              </label>
-              <input
+              <Input
+                label="Bron URL"
                 type="url"
                 value={formData.source_url}
                 onChange={(e) =>
                   handleInputChange("source_url", e.target.value)
                 }
-                className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                 placeholder="https://example.com/recipe"
               />
             </div>
@@ -516,16 +493,17 @@ export const RecipeEditModal = ({
               <div className="space-y-2">
                 {formData.ingredients.map((ingredient, index) => (
                   <div key={index} className="flex gap-2">
-                    <input
-                      type="text"
-                      value={ingredient.raw}
-                      onChange={(e) =>
-                        handleIngredientChange(index, e.target.value)
-                      }
-                      className="flex-1 px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
-                      placeholder="Ingrediënt..."
-                      required
-                    />
+                    <div className="flex-1">
+                      <Input
+                        type="text"
+                        value={ingredient.raw}
+                        onChange={(e) =>
+                          handleIngredientChange(index, e.target.value)
+                        }
+                        placeholder="Ingrediënt..."
+                        required
+                      />
+                    </div>
                     <button
                       type="button"
                       onClick={() => removeIngredient(index)}
@@ -558,13 +536,12 @@ export const RecipeEditModal = ({
                       <div className="text-sm text-gray-500 mb-1">
                         Stap {index + 1}
                       </div>
-                      <textarea
+                      <Textarea
                         value={"text" in instruction ? instruction.text : ""}
                         onChange={(e) =>
                           handleInstructionChange(index, e.target.value)
                         }
                         rows={2}
-                        className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                         placeholder="Instructie..."
                         required
                       />

@@ -48,6 +48,6 @@ export const fetchHtmlFromUrl = async (url: string): Promise<string> => {
     }
   }
 
-  console.log(`HTML fetched successfully, length: ${html.length} characters`);
+  console.log(`HTML fetched successfully, length: ${html.length} characters`, html);
   return html;
 };

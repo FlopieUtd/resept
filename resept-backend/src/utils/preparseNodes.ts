@@ -245,41 +245,6 @@ export const preparseNodes = (
       group.instructionsProbability > max.instructionsProbability ? group : max
     );
 
-    // // QA logging: Show all first words from instructions group and verb recognition
-    // console.log("\n=== QA: Instructions Group Verb Detection ===");
-    // console.log(
-    //   `Instructions group probability: ${maxInstructionsGroup.instructionsProbability}`
-    // );
-    // console.log(
-    //   `Instructions group nodes: ${maxInstructionsGroup.nodes.length}`
-    // );
-
-    maxInstructionsGroup.nodes.forEach((node, index) => {
-      const text = node.text.trim();
-      const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0);
-
-      const firstWords = sentences
-        .map((sentence) => sentence.trim().split(/\s+/)[0]?.toLowerCase())
-        .filter((word) => word && word.length > 0);
-
-      const allVerbs = Object.values(COOKING_IMPERATIVES).flatMap(
-        (verbGroup) => {
-          const dutchVerbs = Array.isArray(verbGroup.dutch)
-            ? verbGroup.dutch
-            : [verbGroup.dutch];
-          const englishVerbs = Array.isArray(verbGroup.english)
-            ? verbGroup.english
-            : [verbGroup.english];
-          return [...dutchVerbs, ...englishVerbs];
-        }
-      );
-
-      const verbAnalysis = firstWords.map((word) => ({
-        word,
-        isVerb: allVerbs.includes(word),
-      }));
-    });
-
     ingredients.push(
       ...maxIngredientGroup.nodes.map((node) => {
         const raw = node.text;

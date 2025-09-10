@@ -3,6 +3,7 @@ import { useRecipes, useCreateRecipe } from "../lib/recipeService";
 import { Loading } from "./Loading";
 import { formatTime } from "../utils/formatTime";
 import { RecipeEditModal } from "./RecipeEditModal";
+import { Input } from "./Input";
 import { PlusIcon } from "@phosphor-icons/react";
 import { useMemo, useState } from "react";
 import {
@@ -111,12 +112,11 @@ export const Recipes = () => {
         ) : (
           <div className="flex flex-col gap-4">
             <div className="w-full">
-              <input
+              <Input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search recipes..."
-                className="w-full border border-black rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black bg-white"
+                placeholder="Zoek recepten..."
               />
             </div>
             {filteredRecipes.length === 0 ? (
