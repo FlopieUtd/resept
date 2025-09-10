@@ -30,7 +30,7 @@ export const extractRecipe = async (url: string): Promise<RecipeResult> => {
     // Step 1.5: If site needs browser rendering, use headless browser
     const siteAnalysis = detectSiteType(html);
     if (siteAnalysis.needsBrowser) {
-      console.log(`Site detected as SPA, using headless browser...`);
+      console.log(`Site detected as needing browser, using headless browser...`);
       try {
         const browserOptions: BrowserOptions = {
           waitForTimeout: 5000,
@@ -41,9 +41,22 @@ export const extractRecipe = async (url: string): Promise<RecipeResult> => {
         console.log("Headless browser fetch completed successfully");
       } catch (browserError: any) {
         console.log(
-          "Headless browser failed, continuing with original HTML:",
+          "Headless browser failed, trying alternative approaches:",
           browserError.message
         );
+        
+        // Try alternative approaches if browser fails
+        try {
+          console.log("Trying alternative HTTP approach...");
+          // Try with different headers and approach
+          const alternativeHtml = await fetchHtmlFromUrl(url);
+          if (alternativeHtml && alternativeHtml.length > html.length) {
+            html = alternativeHtml;
+            console.log("Alternative approach successful");
+          }
+        } catch (altError: any) {
+          console.log("Alternative approach also failed:", altError.message);
+        }
       }
     }
 

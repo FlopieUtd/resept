@@ -4,8 +4,8 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "postinstall": "npx puppeteer browsers install chrome",
-    "build": "tsc",
+    "postinstall": "npx puppeteer browsers install chrome --path=/opt/render/.cache/puppeteer",
+    "build": "tsc && npx puppeteer browsers install chrome --path=/opt/render/.cache/puppeteer",
     "start": "node dist/index.js",
     "dev": "nodemon --exec \"tsx index.ts\" --watch src --ext ts,js",
     "test": "jest",

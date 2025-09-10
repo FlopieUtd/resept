@@ -31,9 +31,14 @@ const getBrowser = async (): Promise<puppeteer.Browser> => {
       ],
     };
 
+    // Set the cache directory for Render
+    process.env.PUPPETEER_CACHE_DIR = '/opt/render/.cache/puppeteer';
+
     // Try to find Chrome in common locations on Render
     const possiblePaths = [
       process.env.PUPPETEER_EXECUTABLE_PATH,
+      '/opt/render/.cache/puppeteer/chrome/linux-139.0.7258.66/chrome-linux64/chrome',
+      '/opt/render/.cache/puppeteer/chrome/linux-139.0.7258.66/chrome-linux64/Google Chrome for Testing',
       '/usr/bin/google-chrome',
       '/usr/bin/google-chrome-stable',
       '/usr/bin/chromium-browser',
@@ -52,6 +57,33 @@ const getBrowser = async (): Promise<puppeteer.Browser> => {
         }
       } catch (e) {
         // Continue to next path
+      }
+    }
+
+    // If no Chrome found, try to install it dynamically
+    if (!launchOptions.executablePath) {
+      console.log("No Chrome found, attempting to install...");
+      try {
+        const { execSync } = await import('child_process');
+        execSync('npx puppeteer browsers install chrome --path=/opt/render/.cache/puppeteer', { stdio: 'inherit' });
+        console.log("Chrome installation completed");
+        
+        // Try to find the installed Chrome
+        const installedPaths = [
+          '/opt/render/.cache/puppeteer/chrome/linux-139.0.7258.66/chrome-linux64/chrome',
+          '/opt/render/.cache/puppeteer/chrome/linux-139.0.7258.66/chrome-linux64/Google Chrome for Testing',
+        ];
+        
+        for (const path of installedPaths) {
+          const fs = await import('fs');
+          if (fs.existsSync(path)) {
+            launchOptions.executablePath = path;
+            console.log(`Using installed Chrome at: ${path}`);
+            break;
+          }
+        }
+      } catch (installError: any) {
+        console.log("Chrome installation failed:", installError.message);
       }
     }
 
