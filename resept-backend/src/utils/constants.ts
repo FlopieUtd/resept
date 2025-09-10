@@ -231,3 +231,37 @@ export const YIELD_KEYWORDS: Record<
     english: ["for", "of", "makes", "yields", "enough"],
   },
 };
+
+export const UNIT_KEYWORDS: Record<
+  string,
+  {
+    dutch: string | string[];
+    english: string | string[];
+  }
+> = {
+  gram: {
+    dutch: [ "g", 'gr', 'gram'],
+    english: ['g', 'gr', 'gram', 'grams'],
+  },
+  kilogram: {
+    dutch: ['kg', 'kilo', 'kilogram', ],
+    english: ['kg', 'kilo', 'kilo gram', ],
+  },
+  milliliter: {
+    dutch: ['ml', 'milliliter', ],
+    english: ['ml', 'milliliter', ],
+  },
+  liter: {
+    dutch: ['l', 'liter', ],
+    english: ['l', 'liter', ],
+  },
+  teaspoon: {
+    dutch: ['tl','theelepel', ],
+    english: ['tsp','teaspoon',],
+  },
+  tablespoon: {
+    dutch: ['el','eetlepel', ],
+    english: ['tbsp', 'tablespoon'],
+  },
+};
+

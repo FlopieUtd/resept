@@ -49,7 +49,7 @@ export const getRecipe = async (
       .update({ last_visited: now })
       .eq("id", recipeId)
       .eq("user_id", userId)
-      .then(({ error }) => {
+      .then(({ error }: { error: any }) => {
         if (error) {
           console.error("Error updating last_visited:", error);
         }

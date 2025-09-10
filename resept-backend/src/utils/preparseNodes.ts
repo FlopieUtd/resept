@@ -1,5 +1,5 @@
 import { TextNode } from "./extractTextNodes.js";
-import { COOKING_IMPERATIVES } from "./constants.js";
+import { COOKING_IMPERATIVES, UNIT_KEYWORDS } from "./constants.js";
 import { parseIngredient, type ParsedIngredient } from "./parseIngredient.js";
 
 interface IngredientGroup {
@@ -12,6 +12,23 @@ interface ParsedResult {
   ingredients: { raw: string; parsed: ParsedIngredient }[];
   instructions: { text: string }[];
 }
+
+const containsUnitKeyword = (text: string): boolean => {
+  const normalizedText = text.toLowerCase().trim();
+  
+  // Get all unit keywords from both Dutch and English, removing duplicates
+  const allUnitKeywords = [...new Set(Object.values(UNIT_KEYWORDS).flatMap((unitGroup) => {
+    const dutchUnits = Array.isArray(unitGroup.dutch) ? unitGroup.dutch : [unitGroup.dutch];
+    const englishUnits = Array.isArray(unitGroup.english) ? unitGroup.english : [unitGroup.english];
+    return [...dutchUnits, ...englishUnits];
+  }))];
+
+  // Check if any unit keyword is found as a whole word (surrounded by word boundaries)
+  return allUnitKeywords.some((keyword) => {
+    const regex = new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+    return regex.test(normalizedText);
+  });
+};
 
 export const preparseNodes = (
   textNodes: TextNode[]
@@ -58,11 +75,16 @@ export const preparseNodes = (
                 const wordCount = node.text.trim().split(/\s+/).length;
                 return wordCount < 10 && wordCount > 1;
               }).length;
+            const nodesWithUnitKeywords = currentGroup.filter((node) =>
+              containsUnitKeyword(node.text)
+            ).length;
 
             const factor1 = nodesStartingWithNumber / currentGroup.length;
             const factor2 =
               nodesWithLessThan10WordsAndMoreThan1Word / currentGroup.length;
-            const probability = (factor1 + factor2) / 2;
+            const factor3 = nodesWithUnitKeywords / currentGroup.length;
+            const oldFactors = (factor1 + factor2) / 2; // Average of first two factors (0-1)
+            const probability = oldFactors * 0.5 + factor3 * 0.5; // True 50/50 split
 
             result.push({
               ingredientProbability: probability,
@@ -88,11 +110,16 @@ export const preparseNodes = (
             return wordCount < 10 && wordCount > 1;
           }
         ).length;
+        const nodesWithUnitKeywords = currentGroup.filter((node) =>
+          containsUnitKeyword(node.text)
+        ).length;
 
         const factor1 = nodesStartingWithNumber / currentGroup.length;
         const factor2 =
           nodesWithLessThan10WordsAndMoreThan1Word / currentGroup.length;
-        const probability = (factor1 + factor2) / 2;
+        const factor3 = nodesWithUnitKeywords / currentGroup.length;
+        const oldFactors = (factor1 + factor2) / 2; // Average of first two factors (0-1)
+        const probability = oldFactors * 0.5 + factor3 * 0.5; // True 50/50 split
 
         result.push({
           ingredientProbability: probability,
@@ -118,11 +145,16 @@ export const preparseNodes = (
         return wordCount < 10 && wordCount > 1;
       }
     ).length;
+    const nodesWithUnitKeywords = currentGroup.filter((node) =>
+      containsUnitKeyword(node.text)
+    ).length;
 
     const factor1 = nodesStartingWithNumber / currentGroup.length;
     const factor2 =
       nodesWithLessThan10WordsAndMoreThan1Word / currentGroup.length;
-    const probability = (factor1 + factor2) / 2;
+    const factor3 = nodesWithUnitKeywords / currentGroup.length;
+    const oldFactors = (factor1 + factor2) / 2; // Average of first two factors (0-1)
+    const probability = oldFactors * 0.5 + factor3 * 0.5; // True 50/50 split
 
     result.push({
       ingredientProbability: probability,
