@@ -24,7 +24,13 @@ const getBrowser = async (): Promise<puppeteer.Browser> => {
         "--disable-background-timer-throttling",
         "--disable-backgrounding-occluded-windows",
         "--disable-renderer-backgrounding",
+        "--disable-web-security",
+        "--disable-features=VizDisplayCompositor",
+        "--single-process",
+        "--no-zygote",
       ],
+      // Use the installed Chrome binary
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
     });
   }
   return browser;
