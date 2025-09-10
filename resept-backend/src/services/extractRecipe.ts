@@ -35,52 +35,88 @@ export const extractRecipe = async (url: string): Promise<RecipeResult> => {
       // Try multiple browser configurations for better success rate
       const browserConfigs = [
         {
-          waitForTimeout: 5000,
-          waitForNetworkIdle: true,
-          maxWaitTime: 15000,
-        },
-        {
           waitForTimeout: 8000,
           waitForNetworkIdle: true,
           maxWaitTime: 25000,
         },
         {
-          waitForTimeout: 10000,
+          waitForTimeout: 12000,
+          waitForNetworkIdle: true,
+          maxWaitTime: 35000,
+        },
+        {
+          waitForTimeout: 15000,
           waitForNetworkIdle: false,
-          maxWaitTime: 30000,
+          maxWaitTime: 45000,
         }
       ];
 
+      // Also try different URL variations for Cloudflare-protected sites
+      const urlVariations = [
+        url,
+        url + '?v=' + Date.now(),
+        url + '?t=' + Math.random().toString(36).substring(7),
+        url.replace('https://', 'https://www.'),
+        url.replace('www.', '')
+      ].filter((url, index, self) => self.indexOf(url) === index); // Remove duplicates
+
       let browserSuccess = false;
-      for (let i = 0; i < browserConfigs.length; i++) {
-        try {
-          console.log(`Trying browser configuration ${i + 1}/${browserConfigs.length}...`);
-          html = await fetchHtmlWithBrowser(url, browserConfigs[i]);
-          console.log("Headless browser fetch completed successfully");
-          browserSuccess = true;
-          break;
-        } catch (browserError: any) {
-          console.log(
-            `Browser configuration ${i + 1} failed:`,
-            browserError.message
-          );
-          
-          if (i === browserConfigs.length - 1) {
-            // Last attempt failed, try alternative approaches
-            console.log("All browser configurations failed, trying alternative approaches...");
+      let bestHtml = html;
+      
+      // Try each URL variation with each browser configuration
+      for (const urlVariation of urlVariations) {
+        if (browserSuccess) break;
+        
+        for (let i = 0; i < browserConfigs.length; i++) {
+          try {
+            console.log(`Trying URL: ${urlVariation} with browser configuration ${i + 1}/${browserConfigs.length}...`);
+            const resultHtml = await fetchHtmlWithBrowser(urlVariation, browserConfigs[i]);
             
-            try {
-              console.log("Trying alternative HTTP approach...");
-              // Try with different headers and approach
-              const alternativeHtml = await fetchHtmlFromUrl(url);
-              if (alternativeHtml && alternativeHtml.length > html.length) {
-                html = alternativeHtml;
-                console.log("Alternative approach successful");
-                browserSuccess = true;
-              }
-            } catch (altError: any) {
-              console.log("Alternative approach also failed:", altError.message);
+            // Check if we got actual content (not just Cloudflare challenge)
+            const isCloudflareChallenge = resultHtml.includes("Just a moment...") || 
+                                        resultHtml.includes("Verifying you are human") ||
+                                        resultHtml.includes("challenge-platform");
+            
+            if (!isCloudflareChallenge && resultHtml.length > 5000) {
+              html = resultHtml;
+              console.log("Headless browser fetch completed successfully with real content");
+              browserSuccess = true;
+              break;
+            } else if (resultHtml.length > bestHtml.length) {
+              bestHtml = resultHtml;
+              console.log(`Got more content (${resultHtml.length} chars) but still Cloudflare challenge, keeping as fallback`);
             }
+          } catch (browserError: any) {
+            console.log(
+              `URL ${urlVariation} with browser configuration ${i + 1} failed:`,
+              browserError.message
+            );
+          }
+        }
+      }
+
+      // If we didn't get real content, use the best we found
+      if (!browserSuccess && bestHtml.length > html.length) {
+        html = bestHtml;
+        console.log("Using best available content despite Cloudflare challenge");
+      }
+
+      // If still no success, try alternative approaches
+      if (!browserSuccess) {
+        console.log("All browser approaches failed, trying alternative HTTP approaches...");
+        
+        for (const urlVariation of urlVariations) {
+          try {
+            console.log(`Trying alternative HTTP approach for: ${urlVariation}`);
+            const alternativeHtml = await fetchHtmlFromUrl(urlVariation);
+            if (alternativeHtml && alternativeHtml.length > html.length) {
+              html = alternativeHtml;
+              console.log("Alternative HTTP approach successful");
+              browserSuccess = true;
+              break;
+            }
+          } catch (altError: any) {
+            console.log(`Alternative HTTP approach failed for ${urlVariation}:`, altError.message);
           }
         }
       }

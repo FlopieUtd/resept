@@ -13,6 +13,7 @@ interface BrowserOptions {
 }
 
 let browser: Browser | null = null;
+let pageContext: Page | null = null;
 
 const getBrowser = async (): Promise<Browser> => {
   if (!browser) {
@@ -136,7 +137,17 @@ export const fetchHtmlWithBrowser = async (
   console.log(`Browser: Fetching ${url} with headless browser...`);
 
   const browser = await getBrowser();
-  const page = await browser.newPage();
+  
+  // Try to reuse existing page context for better session persistence
+  let page: Page;
+  if (pageContext && !pageContext.isClosed()) {
+    page = pageContext;
+    console.log("Browser: Reusing existing page context for session persistence");
+  } else {
+    page = await browser.newPage();
+    pageContext = page;
+    console.log("Browser: Created new page context");
+  }
 
   try {
     // Set realistic viewport and user agent
@@ -194,13 +205,59 @@ export const fetchHtmlWithBrowser = async (
     });
 
     // Add random delay before navigation to mimic human behavior
-    const randomDelay = Math.random() * 2000 + 1000; // 1-3 seconds
+    const randomDelay = Math.random() * 3000 + 2000; // 2-5 seconds
     await new Promise(resolve => setTimeout(resolve, randomDelay));
 
-    // Navigate to the page
+    // Set up additional stealth measures before navigation
+    await page.evaluateOnNewDocument(() => {
+      // Override Date to appear more human-like
+      const originalDate = Date;
+      Date = class extends originalDate {
+        constructor(...args: any[]) {
+          if (args.length === 0) {
+            // Add some randomness to the current time
+            super(originalDate.now() + Math.random() * 1000);
+          } else {
+            super(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+          }
+        }
+      } as any;
+
+      // Mock more realistic screen properties
+      Object.defineProperty(screen, 'availHeight', { get: () => 1055 + Math.floor(Math.random() * 100) });
+      Object.defineProperty(screen, 'availWidth', { get: () => 1920 + Math.floor(Math.random() * 100) });
+      Object.defineProperty(screen, 'height', { get: () => 1080 + Math.floor(Math.random() * 100) });
+      Object.defineProperty(screen, 'width', { get: () => 1920 + Math.floor(Math.random() * 100) });
+
+      // Mock realistic memory info
+      Object.defineProperty(navigator, 'deviceMemory', { get: () => 8 });
+      Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => 8 });
+
+      // Mock realistic connection info
+      Object.defineProperty(navigator, 'connection', {
+        get: () => ({
+          effectiveType: '4g',
+          downlink: 10,
+          rtt: 50,
+          saveData: false
+        })
+      });
+
+      // Mock realistic battery API
+      Object.defineProperty(navigator, 'getBattery', {
+        value: () => Promise.resolve({
+          charging: true,
+          chargingTime: 0,
+          dischargingTime: Infinity,
+          level: 0.8 + Math.random() * 0.2
+        })
+      });
+    });
+
+    // Navigate to the page with more realistic settings
     await page.goto(url, {
-      waitUntil: "domcontentloaded",
-      timeout: 30000,
+      waitUntil: "networkidle2",
+      timeout: 60000,
     });
 
     console.log("Browser: Page loaded, waiting for content...");
@@ -222,17 +279,54 @@ export const fetchHtmlWithBrowser = async (
     });
 
     if (isCloudflareChallenge) {
-      console.log("Browser: Cloudflare challenge detected, waiting for completion...");
+      console.log("Browser: Cloudflare challenge detected, implementing advanced bypass...");
       
-      // Add human-like behavior during challenge
+      // Step 1: Simulate realistic human behavior
       await page.evaluate(() => {
-        // Simulate some user interaction
-        document.dispatchEvent(new Event('mousemove'));
-        document.dispatchEvent(new Event('click'));
+        // Simulate realistic mouse movements
+        const events = ['mousemove', 'mousedown', 'mouseup', 'click', 'scroll'];
+        events.forEach(eventType => {
+          const event = new MouseEvent(eventType, {
+            clientX: Math.random() * window.innerWidth,
+            clientY: Math.random() * window.innerHeight,
+            bubbles: true,
+            cancelable: true
+          });
+          document.dispatchEvent(event);
+        });
       });
 
+      // Step 2: Wait and simulate more human behavior
+      await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 3000));
+      
+      // Step 3: Try to interact with any visible elements
       try {
-        // Wait for the challenge to complete by waiting for the page to change
+        const clickableElements = await page.$$('button, a, input[type="button"], input[type="submit"]');
+        if (clickableElements.length > 0) {
+          const randomElement = clickableElements[Math.floor(Math.random() * clickableElements.length)];
+          await randomElement.click();
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      } catch (e) {
+        // Ignore click errors
+      }
+
+      // Step 4: Try to solve any visible challenges
+      try {
+        // Look for Turnstile or other challenge widgets
+        const turnstileWidget = await page.$('[data-sitekey]');
+        if (turnstileWidget) {
+          console.log("Browser: Found Turnstile widget, attempting to solve...");
+          await turnstileWidget.click();
+          await new Promise(resolve => setTimeout(resolve, 5000));
+        }
+      } catch (e) {
+        // Ignore widget interaction errors
+      }
+
+      // Step 5: Wait for challenge completion with multiple strategies
+      try {
+        // Strategy 1: Wait for content change
         await page.waitForFunction(
           () => {
             const bodyText = document.body.innerHTML;
@@ -240,20 +334,56 @@ export const fetchHtmlWithBrowser = async (
                    !bodyText.includes("Enable JavaScript and cookies to continue") &&
                    !bodyText.includes("Verifying you are human") &&
                    !bodyText.includes("challenge-platform") &&
-                   bodyText.length > 5000; // Ensure we have substantial content
+                   bodyText.length > 10000; // Ensure we have substantial content
           },
-          { timeout: 45000 } // Wait up to 45 seconds for Cloudflare challenge
+          { timeout: 30000 }
         );
-        console.log("Browser: Cloudflare challenge completed");
-      } catch (error) {
-        console.log("Browser: Cloudflare challenge timeout, continuing with current content...");
+        console.log("Browser: Cloudflare challenge completed via content change");
+      } catch (error1) {
+        console.log("Browser: Content change strategy failed, trying URL change...");
         
-        // Try to trigger any remaining JavaScript
-        await page.evaluate(() => {
-          // Trigger any lazy-loaded content
-          window.dispatchEvent(new Event('load'));
-          window.dispatchEvent(new Event('DOMContentLoaded'));
-        });
+        try {
+          // Strategy 2: Wait for URL change (redirect after challenge)
+          await page.waitForFunction(
+            () => {
+              return !window.location.href.includes('__cf_chl_tk') && 
+                     !window.location.href.includes('__cf_chl_rt_tk');
+            },
+            { timeout: 20000 }
+          );
+          console.log("Browser: Cloudflare challenge completed via URL change");
+        } catch (error2) {
+          console.log("Browser: URL change strategy failed, trying network activity...");
+          
+          try {
+            // Strategy 3: Wait for network activity to settle
+            await page.waitForFunction(
+              () => {
+                const performanceEntries = performance.getEntriesByType('navigation');
+                return performanceEntries.length > 0 && 
+                       (performanceEntries[0] as PerformanceNavigationTiming).loadEventEnd > 0;
+              },
+              { timeout: 15000 }
+            );
+            console.log("Browser: Cloudflare challenge completed via network activity");
+          } catch (error3) {
+            console.log("Browser: All challenge strategies failed, continuing with current content...");
+            
+            // Final attempt: Try to trigger any remaining JavaScript
+            await page.evaluate(() => {
+              // Trigger all possible events
+              const events = ['load', 'DOMContentLoaded', 'readystatechange', 'pageshow'];
+              events.forEach(eventType => {
+                window.dispatchEvent(new Event(eventType));
+                document.dispatchEvent(new Event(eventType));
+              });
+              
+              // Try to trigger any lazy loading
+              window.scrollTo(0, document.body.scrollHeight);
+              setTimeout(() => window.scrollTo(0, 0), 100);
+            });
+          }
+        }
       }
     }
 
@@ -335,11 +465,17 @@ export const fetchHtmlWithBrowser = async (
     console.error("Browser: Error fetching HTML:", error);
     throw error;
   } finally {
-    await page.close();
+    // Don't close the page if we're reusing it for session persistence
+    // The page will be closed when closeBrowser() is called
   }
 };
 
 export const closeBrowser = async (): Promise<void> => {
+  if (pageContext && !pageContext.isClosed()) {
+    await pageContext.close();
+    pageContext = null;
+    console.log("Browser: Page context closed");
+  }
   if (browser) {
     await browser.close();
     browser = null;
