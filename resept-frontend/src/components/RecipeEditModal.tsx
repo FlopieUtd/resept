@@ -3,6 +3,7 @@ import { type CreateRecipeData, type ParsedIngredient } from "../types";
 import { API_URL } from "../utils/constants";
 import { Input } from "./Input";
 import { Textarea } from "./Textarea";
+import { Button } from "./Button";
 import { X } from "@phosphor-icons/react";
 
 // Simple ingredient parsing function for the frontend
@@ -364,13 +365,9 @@ export const RecipeEditModal = ({
                       required
                     />
                   </div>
-                  <button
-                    type="submit"
-                    disabled={isImporting}
-                    className="px-6 py-3 bg-red-600 text-white font-semibold hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isImporting ? "Importeren..." : "Importeren"}
-                  </button>
+                  <Button type="submit" loading={isImporting}>
+                    Importeren
+                  </Button>
                 </div>
                 {importError && (
                   <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
@@ -561,31 +558,23 @@ export const RecipeEditModal = ({
             <div className="flex justify-between items-center gap-4 border-t sticky bottom-0 bg-white py-[24px]">
               <div className="flex gap-2">
                 {onDelete && (
-                  <button
+                  <Button
                     type="button"
                     onClick={onDelete}
-                    disabled={isDeleting}
-                    className="px-6 py-2 bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    loading={isDeleting}
+                    variant="danger"
                   >
-                    {isDeleting ? "Verwijderen..." : "Verwijderen"}
-                  </button>
+                    Verwijderen
+                  </Button>
                 )}
               </div>
               <div className="flex gap-4">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="px-6 py-2 text-gray-600 border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
-                >
+                <Button type="button" onClick={onClose} variant="secondary">
                   Annuleren
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSaving}
-                  className="px-6 py-2 bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSaving ? "Opslaan..." : "Opslaan"}
-                </button>
+                </Button>
+                <Button type="submit" loading={isSaving}>
+                  Opslaan
+                </Button>
               </div>
             </div>
           </form>

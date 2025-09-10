@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { ArrowLeft } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
+import { Input } from "./Input";
 
 export const PasswordRecovery = () => {
   const [email, setEmail] = useState("");
@@ -51,24 +52,15 @@ export const PasswordRecovery = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Email Address
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                placeholder="Enter your email"
-                required
-                disabled={isLoading}
-              />
-            </div>
+            <Input
+              label="Email Address"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              required
+              disabled={isLoading}
+            />
 
             {message && (
               <div className="p-3 bg-green-100 border border-green-400 text-green-700 rounded-md">

@@ -20,6 +20,7 @@ import { decodeHtmlEntities } from "../utils/decodeHtmlEntities";
 import { formatTime } from "../utils/formatTime";
 import { isDurationEmpty } from "../utils/isDurationEmpty";
 import { useFullscreen } from "../contexts/FullscreenContext";
+import { useRecentRecipes } from "../contexts/RecentRecipesContext";
 
 export const Recipe = () => {
   const { recipeId } = useParams();
@@ -31,6 +32,7 @@ export const Recipe = () => {
   const updateRecipe = useUpdateRecipe();
   const deleteRecipe = useDeleteRecipe();
   const { isFullscreen, setIsFullscreen } = useFullscreen();
+  const { addRecentRecipe } = useRecentRecipes();
 
   const {
     recipeYield,
@@ -55,6 +57,12 @@ export const Recipe = () => {
       document.title = "Resept";
     };
   }, [recipe?.title]);
+
+  useEffect(() => {
+    if (recipe) {
+      addRecentRecipe(recipe);
+    }
+  }, [recipe, addRecentRecipe]);
 
   if (isLoading) {
     return <Loading />;
