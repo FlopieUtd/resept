@@ -11,7 +11,7 @@ let browser: puppeteer.Browser | null = null;
 
 const getBrowser = async (): Promise<puppeteer.Browser> => {
   if (!browser) {
-    browser = await puppeteer.launch({
+    const launchOptions: any = {
       headless: true,
       args: [
         "--no-sandbox",
@@ -29,9 +29,33 @@ const getBrowser = async (): Promise<puppeteer.Browser> => {
         "--single-process",
         "--no-zygote",
       ],
-      // Use the installed Chrome binary
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-    });
+    };
+
+    // Try to find Chrome in common locations on Render
+    const possiblePaths = [
+      process.env.PUPPETEER_EXECUTABLE_PATH,
+      '/usr/bin/google-chrome',
+      '/usr/bin/google-chrome-stable',
+      '/usr/bin/chromium-browser',
+      '/usr/bin/chromium',
+      '/opt/google/chrome/chrome',
+      '/opt/google/chrome/google-chrome',
+    ].filter(Boolean);
+
+    for (const path of possiblePaths) {
+      try {
+        const fs = await import('fs');
+        if (path && fs.existsSync(path)) {
+          launchOptions.executablePath = path;
+          console.log(`Using Chrome at: ${path}`);
+          break;
+        }
+      } catch (e) {
+        // Continue to next path
+      }
+    }
+
+    browser = await puppeteer.launch(launchOptions);
   }
   return browser;
 };
