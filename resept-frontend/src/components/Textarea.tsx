@@ -9,7 +9,7 @@ interface TextareaProps
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ label, error, className = "", ...props }, ref) => {
     const baseClasses =
-      "w-full border border-black rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black bg-white resize-vertical";
+      "w-full border border-neutral-400 focus:border-black rounded-[4px] px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black bg-white resize-vertical";
     const errorClasses = error ? "border-red-500 focus:ring-red-500" : "";
     const combinedClasses =
       `${baseClasses} ${errorClasses} ${className}`.trim();
