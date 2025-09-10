@@ -3,8 +3,14 @@ import {
   useContext,
   useState,
   useEffect,
+  useRef,
   type ReactNode,
 } from "react";
+
+interface WakeLockSentinel {
+  release(): Promise<void>;
+  addEventListener(type: "release", listener: () => void): void;
+}
 
 interface FullscreenContextType {
   isFullscreen: boolean;
@@ -17,16 +23,50 @@ const FullscreenContext = createContext<FullscreenContextType | undefined>(
 
 export const FullscreenProvider = ({ children }: { children: ReactNode }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const wakeLockRef = useRef<WakeLockSentinel | null>(null);
+
+  const requestWakeLock = async () => {
+    try {
+      if ("wakeLock" in navigator && navigator.wakeLock) {
+        const wakeLock = (navigator as any).wakeLock;
+        wakeLockRef.current = await wakeLock.request("screen");
+        if (wakeLockRef.current) {
+          wakeLockRef.current.addEventListener("release", () => {
+            wakeLockRef.current = null;
+          });
+        }
+      }
+    } catch (err) {
+      console.warn("Wake Lock API not supported or failed:", err);
+    }
+  };
+
+  const releaseWakeLock = async () => {
+    if (wakeLockRef.current) {
+      try {
+        await wakeLockRef.current.release();
+        wakeLockRef.current = null;
+      } catch (err) {
+        console.warn("Failed to release wake lock:", err);
+      }
+    }
+  };
 
   useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
+    const handleFullscreenChange = async () => {
+      const isCurrentlyFullscreen = !!document.fullscreenElement;
+      setIsFullscreen(isCurrentlyFullscreen);
+
+      if (isCurrentlyFullscreen) {
+        await requestWakeLock();
+      } else {
+        await releaseWakeLock();
+      }
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && document.fullscreenElement) {
         document.exitFullscreen();
-        setIsFullscreen(false);
       }
     };
 
@@ -36,6 +76,7 @@ export const FullscreenProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
       document.removeEventListener("keydown", handleKeyDown);
+      releaseWakeLock();
     };
   }, []);
 
