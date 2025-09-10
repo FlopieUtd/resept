@@ -62,6 +62,13 @@ export const fetchHtmlWithBrowser = async (
       "Upgrade-Insecure-Requests": "1",
     });
 
+    // Disable web security and enable JavaScript for Cloudflare challenges
+    await page.evaluateOnNewDocument(() => {
+      Object.defineProperty(navigator, 'webdriver', {
+        get: () => undefined,
+      });
+    });
+
     // Navigate to the page
     await page.goto(url, {
       waitUntil: "domcontentloaded",
@@ -69,6 +76,30 @@ export const fetchHtmlWithBrowser = async (
     });
 
     console.log("Browser: Page loaded, waiting for content...");
+
+    // Check for Cloudflare challenge and wait for it to complete
+    const isCloudflareChallenge = await page.evaluate(() => {
+      return document.body.innerHTML.includes("Just a moment...") ||
+             document.body.innerHTML.includes("Enable JavaScript and cookies to continue") ||
+             document.body.innerHTML.includes("_cf_chl_opt");
+    });
+
+    if (isCloudflareChallenge) {
+      console.log("Browser: Cloudflare challenge detected, waiting for completion...");
+      try {
+        // Wait for the challenge to complete by waiting for the page to change
+        await page.waitForFunction(
+          () => {
+            return !document.body.innerHTML.includes("Just a moment...") &&
+                   !document.body.innerHTML.includes("Enable JavaScript and cookies to continue");
+          },
+          { timeout: 30000 } // Wait up to 30 seconds for Cloudflare challenge
+        );
+        console.log("Browser: Cloudflare challenge completed");
+      } catch (error) {
+        console.log("Browser: Cloudflare challenge timeout, continuing with current content...");
+      }
+    }
 
     // Wait for content to populate
     if (waitForSelector) {

@@ -86,9 +86,9 @@ export const extractRecipe = async (url: string): Promise<RecipeResult> => {
       }
     }
 
-    // Step 4: No JSON-LD found, use LLM to extract recipe components from clean HTML
+    // Step 4: No JSON-LD found, extract recipe components from HTML
     console.log(
-      "No JSON-LD found, using LLM to extract recipe components from HTML..."
+      "No JSON-LD found, extracting recipe components from HTML..."
     );
     const textNodes = extractTextNodes(html);
 

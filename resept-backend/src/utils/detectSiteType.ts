@@ -7,6 +7,13 @@ interface SiteAnalysis {
 export const detectSiteType = (html: string): SiteAnalysis => {
   const textContent = html.replace(/<[^>]+>/g, "").trim();
 
+  // Detect Cloudflare challenge pages
+  const isCloudflareChallenge = 
+    html.includes("Just a moment...") ||
+    html.includes("Enable JavaScript and cookies to continue") ||
+    html.includes("_cf_chl_opt") ||
+    html.includes("challenge-platform");
+
   // More flexible root div detection using regex
   const rootDivPattern = /<div[^>]*id=["'](root|app|__next)["'][^>]*>/i;
   const hasRootDiv = rootDivPattern.test(html);
@@ -31,14 +38,15 @@ export const detectSiteType = (html: string): SiteAnalysis => {
     textLength: textContent.length,
     hasRootDiv,
     hasFrameworkMarkers,
+    isCloudflareChallenge,
     isSPA,
     isMinimal,
-    needsBrowser: isSPA || isMinimal,
+    needsBrowser: isSPA || isMinimal || isCloudflareChallenge,
   });
 
   return {
     isSPA,
     isMinimal,
-    needsBrowser: isSPA || isMinimal,
+    needsBrowser: isSPA || isMinimal || isCloudflareChallenge,
   };
 };
