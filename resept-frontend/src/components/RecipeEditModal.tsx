@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { type CreateRecipeData, type ParsedIngredient } from "../types";
-import { RENDER_API_URL } from "../utils/constants";
+import { API_URL } from "../utils/constants";
 
 // Simple ingredient parsing function for the frontend
 const parseIngredientFrontend = (text: string): ParsedIngredient => {
@@ -268,7 +268,7 @@ export const RecipeEditModal = ({
     setIsImporting(true);
 
     try {
-      const response = await fetch(`${RENDER_API_URL}/extract`, {
+      const response = await fetch(`${API_URL}/extract`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,1 +1,1 @@
-export const RENDER_API_URL = "https://resept-rb0j.onrender.com";
+export const API_URL = import.meta.env.VITE_API_URL || "https://resept-rb0j.onrender.com";

@@ -13,7 +13,7 @@ interface ParsedResult {
   instructions: { text: string }[];
 }
 
-export const preparseIngredientNodes = (
+export const preparseNodes = (
   textNodes: TextNode[]
 ): ParsedResult => {
   if (textNodes.length === 0) {
@@ -213,14 +213,14 @@ export const preparseIngredientNodes = (
       group.instructionsProbability > max.instructionsProbability ? group : max
     );
 
-    // QA logging: Show all first words from instructions group and verb recognition
-    console.log("\n=== QA: Instructions Group Verb Detection ===");
-    console.log(
-      `Instructions group probability: ${maxInstructionsGroup.instructionsProbability}`
-    );
-    console.log(
-      `Instructions group nodes: ${maxInstructionsGroup.nodes.length}`
-    );
+    // // QA logging: Show all first words from instructions group and verb recognition
+    // console.log("\n=== QA: Instructions Group Verb Detection ===");
+    // console.log(
+    //   `Instructions group probability: ${maxInstructionsGroup.instructionsProbability}`
+    // );
+    // console.log(
+    //   `Instructions group nodes: ${maxInstructionsGroup.nodes.length}`
+    // );
 
     maxInstructionsGroup.nodes.forEach((node, index) => {
       const text = node.text.trim();
@@ -246,11 +246,7 @@ export const preparseIngredientNodes = (
         word,
         isVerb: allVerbs.includes(word),
       }));
-
-      console.log(`\nNode ${index + 1}: "${text}"`);
-      console.log(`  First words: ${JSON.stringify(verbAnalysis)}`);
     });
-    console.log("=== End QA ===\n");
 
     ingredients.push(
       ...maxIngredientGroup.nodes.map((node) => {

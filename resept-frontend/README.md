@@ -9,6 +9,17 @@ npm install
 npm run dev
 ```
 
+### Environment Variables
+
+For local development, create a `.env.local` file in the `resept-frontend` directory:
+
+```bash
+# Backend API URL for local development
+VITE_API_URL=http://localhost:8787
+```
+
+If no `.env.local` file is present, the app will use the production Render URL by default.
+
 ## Building for Production
 
 ```bash

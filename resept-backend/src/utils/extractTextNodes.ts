@@ -52,7 +52,12 @@ export const extractTextNodes = (html: string): TextNode[] => {
         if (node.type === "text") {
           const text = (node as any).data as string;
           if (text && text.trim()) {
-            buffer += stripHtmlTags(text);
+            // Add space before text if buffer already has content
+            if (buffer.trim()) {
+              buffer += " " + stripHtmlTags(text);
+            } else {
+              buffer += stripHtmlTags(text);
+            }
           }
         } else if (node.type === "tag") {
           const name = (node as any).name?.toLowerCase();
@@ -72,7 +77,12 @@ export const extractTextNodes = (html: string): TextNode[] => {
             const $span = $cleanWithBrDivs(node);
             const spanText = $span.text().trim();
             if (spanText) {
-              buffer += " " + stripHtmlTags(spanText);
+              // Add space before span content if buffer is not empty
+              if (buffer.trim()) {
+                buffer += " " + stripHtmlTags(spanText);
+              } else {
+                buffer += stripHtmlTags(spanText);
+              }
             }
           } else {
             if (buffer.trim()) {
