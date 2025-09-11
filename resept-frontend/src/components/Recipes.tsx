@@ -82,7 +82,9 @@ export const Recipes = () => {
     <div className="flex w-full h-full justify-center">
       <div className="flex w-full max-w-[1080px] mx-[24px] my-[48px] flex-col">
         <div className="flex justify-between items-center mb-6 w-full border-b-2 border-black pb-[12px]">
-          <h1 className="text-3xl font-bold">Recepten</h1>
+          <h1 className="text-3xl font-bold">
+            {recipes ? recipes.length : ""} Recepten
+          </h1>
           <div className="flex gap-2">
             <button
               onClick={() => setIsEditModalOpen(true)}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { type CreateRecipeData, type ParsedIngredient } from "../types";
 import { API_URL } from "../utils/constants";
 import { Input } from "./Input";
@@ -156,20 +156,24 @@ export const RecipeEditModal = ({
   const [importUrl, setImportUrl] = useState("");
   const [importError, setImportError] = useState("");
   const [isImporting, setIsImporting] = useState(false);
+  const prevIsOpen = useRef(isOpen);
 
   useEffect(() => {
-    setFormData({
-      ...initialData,
-      ingredients:
-        initialData.ingredients.length > 0
-          ? initialData.ingredients
-          : [{ raw: "" }],
-      instructions:
-        initialData.instructions.length > 0
-          ? initialData.instructions
-          : [{ text: "" }],
-    });
-  }, [initialData]);
+    if (isOpen && !prevIsOpen.current) {
+      setFormData({
+        ...initialData,
+        ingredients:
+          initialData.ingredients.length > 0
+            ? initialData.ingredients
+            : [{ raw: "" }],
+        instructions:
+          initialData.instructions.length > 0
+            ? initialData.instructions
+            : [{ text: "" }],
+      });
+    }
+    prevIsOpen.current = isOpen;
+  }, [isOpen, initialData]);
 
   useEffect(() => {
     if (isOpen) {
@@ -285,7 +289,7 @@ export const RecipeEditModal = ({
       if (response.ok) {
         const transformedData: CreateRecipeData = {
           title: data.title || "Untitled Recipe",
-          recipe_yield: data.recipe_yield || 1,
+          recipe_yield: data.recipe_yield || "",
           recipe_category: data.recipe_category || "Recepten",
           description: data.description || "",
           prep_time: data.prep_time || "",
@@ -337,10 +341,10 @@ export const RecipeEditModal = ({
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center p-4 z-50"
+      className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-[2px] flex items-center justify-center p-4 z-50"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white max-w-[1080px] w-full max-h-[95vh] overflow-y-auto rounded-[4px]">
+      <div className="bg-white max-w-[1080px] w-full max-h-[95vh] overflow-y-auto rounded-[4px] shadow-xl">
         <div className="">
           <div className="flex justify-between items-center mb-6 py-[24px] px-[24px] sticky top-0 bg-white">
             <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
