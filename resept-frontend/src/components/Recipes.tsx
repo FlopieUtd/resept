@@ -152,14 +152,14 @@ export const Recipes = () => {
                       {recipe.title}
                     </h2>
                     <div className="flex gap-[6px] items-center text-[14px]">
-                      {recipe.total_time && (
-                        <div className="">{formatTime(recipe.total_time)}</div>
-                      )}
-                      {recipe.total_time && <div>●</div>}
                       {recipe.ingredients.length > 0 && (
                         <div className="">
                           {recipe.ingredients.length} ingrediënten
                         </div>
+                      )}
+                      {recipe.total_time && <div>●</div>}
+                      {recipe.total_time && (
+                        <div className="">{formatTime(recipe.total_time)}</div>
                       )}
                     </div>
                   </Link>
