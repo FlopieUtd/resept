@@ -9,11 +9,6 @@ export interface IngredientLine {
   parsed?: ParsedIngredient;
 }
 
-export interface ScaledIngredient extends IngredientLine {
-  scaledAmount?: number;
-  scaledAmountMax?: number;
-}
-
 export interface RecipeInstruction {
   text: string;
 }
@@ -28,23 +23,6 @@ export type RecipeInstructionItem =
   | RecipeInstruction
   | RecipeInstructionSection;
 
-export interface DatabaseRecipe {
-  id: string;
-  user_id: string;
-  title: string;
-  recipe_yield: number;
-  recipe_category: string;
-  description: string;
-  prep_time: string;
-  cook_time: string;
-  total_time: string;
-  ingredients: IngredientLine[];
-  instructions: RecipeInstructionItem[];
-  source_url: string;
-  created_at: string;
-  updated_at: string;
-}
-
 export interface CreateRecipeData {
   title: string;
   recipe_yield: number;
@@ -56,4 +34,10 @@ export interface CreateRecipeData {
   ingredients: IngredientLine[];
   instructions: RecipeInstructionItem[];
   source_url: string;
+}
+
+export enum Language {
+  NL = 'nl',
+  EN = 'en',
+  UNKNOWN = 'unknown'
 }

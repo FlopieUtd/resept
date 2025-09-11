@@ -24,15 +24,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const getSession = async () => {
-      console.log("AuthProvider: Getting session...");
-      console.log("AuthProvider: Current pathname:", window.location.pathname);
-      console.log(
-        "AuthProvider: Current search params:",
-        window.location.search
-      );
-      console.log("AuthProvider: Current hash:", window.location.hash);
-      console.log("AuthProvider: Full URL:", window.location.href);
-
       // Check if we're on a password reset page with tokens in URL
       const urlParams = new URLSearchParams(window.location.search);
       const hashParams = new URLSearchParams(window.location.hash.substring(1));
@@ -45,22 +36,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         (hash.includes("access_token=")
           ? hash.split("access_token=")[1]?.split("&")[0]
           : null);
-      const refreshToken =
-        urlParams.get("refresh_token") ||
-        hashParams.get("refresh_token") ||
-        (hash.includes("refresh_token=")
-          ? hash.split("refresh_token=")[1]?.split("&")[0]
-          : null);
-
-      console.log("AuthProvider: Access token found:", !!accessToken);
-      console.log("AuthProvider: Refresh token found:", !!refreshToken);
-      console.log(
-        "AuthProvider: Is reset-password path:",
-        window.location.pathname.includes("/reset-password")
-      );
 
       if (accessToken && window.location.pathname.includes("/reset-password")) {
-        console.log("AuthProvider: Processing password reset tokens...");
         // We have password reset tokens, try to verify the OTP
         const { data, error } = await supabase.auth.verifyOtp({
           token_hash: accessToken,
@@ -75,29 +52,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setSession(null);
           setUser(null);
         } else {
-          console.log("AuthProvider: Successfully set session from tokens");
-          console.log("AuthProvider: Session data:", data.session);
-          console.log("AuthProvider: User data:", data.session?.user);
           setSession(data.session);
           setUser(data.session?.user ?? null);
         }
       } else {
-        console.log(
-          "AuthProvider: No password reset tokens, doing normal session check..."
-        );
         // Normal session check
         const {
           data: { session },
         } = await supabase.auth.getSession();
-        console.log("AuthProvider: Normal session data:", session);
         setSession(session);
         setUser(session?.user ?? null);
       }
 
       // Set loading to false only after session check is complete
-      console.log(
-        "AuthProvider: Session check complete, setting loading to false"
-      );
       setLoading(false);
     };
 
@@ -136,18 +103,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const resetPassword = async (email: string) => {
-    console.log("ResetPassword: Sending reset email to:", email);
-    console.log(
-      "ResetPassword: Redirect URL:",
-      `${window.location.origin}/resept/reset-password/`
-    );
-
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/resept/reset-password/`,
     });
-
-    console.log("ResetPassword: Supabase response data:", data);
-    console.log("ResetPassword: Supabase response error:", error);
 
     if (error) throw error;
   };

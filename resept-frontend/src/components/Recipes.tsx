@@ -24,41 +24,51 @@ export const Recipes = () => {
   const filteredRecipes = useMemo(() => {
     if (!recipes) return [];
     const q = query.trim().toLowerCase();
-    if (q === "") return recipes;
 
-    const includes = (text: string) => text.toLowerCase().includes(q);
+    let filtered = recipes;
 
-    const isSection = (
-      item: RecipeInstructionItem
-    ): item is RecipeInstructionSection => {
-      return (item as RecipeInstructionSection).type === "section";
-    };
+    if (q !== "") {
+      const includes = (text: string) => text.toLowerCase().includes(q);
 
-    const instructionTexts = (items: RecipeInstructionItem[]): string => {
-      return items
-        .map((item) => {
-          if (!item) return "";
-          if (isSection(item)) {
-            return [
-              item.name || "",
-              ...item.steps.map((s: RecipeInstruction) => s?.text || ""),
-            ].join(" ");
-          }
-          return (item as RecipeInstruction).text || "";
-        })
-        .join(" ");
-    };
+      const isSection = (
+        item: RecipeInstructionItem
+      ): item is RecipeInstructionSection => {
+        return (item as RecipeInstructionSection).type === "section";
+      };
 
-    return recipes.filter((recipe) => {
-      const titleMatch = includes(recipe.title || "");
-      const ingredientsText = (recipe.ingredients || [])
-        .map((i: IngredientLine) => i.raw || "")
-        .join(" ");
-      const ingredientsMatch = includes(ingredientsText);
-      const instructionsText = instructionTexts(recipe.instructions || []);
-      const instructionsMatch = includes(instructionsText);
-      return titleMatch || ingredientsMatch || instructionsMatch;
-    });
+      const instructionTexts = (items: RecipeInstructionItem[]): string => {
+        return items
+          .map((item) => {
+            if (!item) return "";
+            if (isSection(item)) {
+              return [
+                item.name || "",
+                ...item.steps.map((s: RecipeInstruction) => s?.text || ""),
+              ].join(" ");
+            }
+            return (item as RecipeInstruction).text || "";
+          })
+          .join(" ");
+      };
+
+      filtered = recipes.filter((recipe) => {
+        const titleMatch = includes(recipe.title || "");
+        const ingredientsText = (recipe.ingredients || [])
+          .map((i: IngredientLine) => i.raw || "")
+          .join(" ");
+        const ingredientsMatch = includes(ingredientsText);
+        const instructionsText = instructionTexts(recipe.instructions || []);
+        const instructionsMatch = includes(instructionsText);
+        return titleMatch || ingredientsMatch || instructionsMatch;
+      });
+    }
+
+    return filtered.sort((a, b) =>
+      (a.title || "").localeCompare(b.title || "", undefined, {
+        numeric: true,
+        sensitivity: "base",
+      })
+    );
   }, [recipes, query]);
 
   const handleSave = async (recipeData: CreateRecipeData) => {

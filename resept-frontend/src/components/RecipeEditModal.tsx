@@ -344,7 +344,7 @@ export const RecipeEditModal = ({
       className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-[2px] flex items-center justify-center p-4 z-50"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white max-w-[1080px] w-full max-h-[95vh] overflow-y-auto rounded-[4px] shadow-xl">
+      <div className="bg-white max-w-[1080px] w-full max-h-[95vh] overflow-y-auto rounded-[8px] shadow-xl">
         <div className="">
           <div className="flex justify-between items-center mb-6 py-[24px] px-[24px] sticky top-0 bg-white">
             <h2 className="text-2xl font-bold text-gray-800">{title}</h2>

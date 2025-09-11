@@ -16,16 +16,9 @@ export const ResetPassword = () => {
 
   useEffect(() => {
     if (!loading) {
-      console.log("ResetPassword: AuthProvider finished loading");
-      console.log("ResetPassword: User from context:", user);
-
       if (user) {
-        console.log(
-          "ResetPassword: Valid user found, setting isValidToken to true"
-        );
         setIsValidToken(true);
       } else {
-        console.log("ResetPassword: No valid user, showing error");
         setError("Invalid or expired recovery link. Please request a new one.");
       }
     }

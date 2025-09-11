@@ -231,8 +231,6 @@ export const preparseNodes = (
     }
   }
 
-  console.log(JSON.stringify(filteredResult, null, 2));
-
   const ingredients: { raw: string; parsed: ParsedIngredient }[] = [];
   const instructions: { text: string }[] = [];
 

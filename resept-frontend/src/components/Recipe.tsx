@@ -21,6 +21,8 @@ import { formatTime } from "../utils/formatTime";
 import { isDurationEmpty } from "../utils/isDurationEmpty";
 import { useFullscreen } from "../contexts/FullscreenContext";
 import { useRecentRecipes } from "../contexts/RecentRecipesContext";
+import { LABELS } from "../utils/constants";
+import { useLanguageDetection } from "../hooks/useLanguageDetection";
 
 export const Recipe = () => {
   const { recipeId } = useParams();
@@ -33,6 +35,14 @@ export const Recipe = () => {
   const deleteRecipe = useDeleteRecipe();
   const { isFullscreen, setIsFullscreen } = useFullscreen();
   const { addRecentRecipe } = useRecentRecipes();
+
+  const detectedLanguage = useLanguageDetection(
+    recipe?.title || "",
+    recipe?.description || "",
+    recipe?.instructions || []
+  );
+
+  const t = LABELS[detectedLanguage];
 
   const {
     recipeYield,
@@ -162,7 +172,7 @@ export const Recipe = () => {
                 </button>
                 <div className="flex py-[4px] px-[12px] min-w-[106px] justify-center">
                   {recipeYield || 0}{" "}
-                  {recipeYield === 1 ? "persoon" : "personen"}
+                  {recipeYield === 1 ? t.personSingular : t.personPlural}
                 </div>
                 <button
                   onClick={incrementRecipeYield}
@@ -174,23 +184,23 @@ export const Recipe = () => {
             )}
             {recipe.prep_time && !isDurationEmpty(recipe.prep_time) && (
               <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
-                Bereiding: {formatTime(recipe.prep_time)}
+                {t.prep}: {formatTime(recipe.prep_time)}
               </div>
             )}
             {recipe.cook_time && !isDurationEmpty(recipe.cook_time) && (
               <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
-                Kooktijd: {formatTime(recipe.cook_time)}
+                {t.cook}: {formatTime(recipe.cook_time)}
               </div>
             )}
             {recipe.total_time && !isDurationEmpty(recipe.total_time) && (
               <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
-                Totaal: {formatTime(recipe.total_time)}
+                {t.total}: {formatTime(recipe.total_time)}
               </div>
             )}
             {recipe.source_url && (
               <a href={recipe.source_url} target="_blank">
                 <div className="bg-[#f9f9f9] hover:bg-[#eee] py-[4px] px-[16px] text-[14px]">
-                  Bron: {extractDomainFromUrl(recipe.source_url)}
+                  {t.source}: {extractDomainFromUrl(recipe.source_url)}
                 </div>{" "}
               </a>
             )}
@@ -200,7 +210,7 @@ export const Recipe = () => {
         <div className="flex gap-[36px] pb-[72px]">
           <div className="w-1/3 flex flex-col gap-[24px]">
             <div className="text-[24px] pb-[12px] font-bold border-b-[2px] border-black tracking-[1px]">
-              Ingrediënten
+              {t.ingredients}
             </div>
             <ul>
               {scaledIngredients.map((ingredient, index: number) => (
@@ -231,7 +241,7 @@ export const Recipe = () => {
           </div>
           <div className="w-2/3 flex flex-col gap-[24px]">
             <div className="text-[24px] pb-[12px] font-bold border-b-[2px] border-black tracking-[1px]">
-              Instructies
+              {t.instructions}
             </div>
             <div className="font-radley text-[18px]">
               {recipe.instructions.map(
@@ -269,7 +279,7 @@ export const Recipe = () => {
         onClose={() => setIsEditModalOpen(false)}
         onSave={handleSave}
         onDelete={handleDelete}
-        title="Bewerk recept"
+        title={t.editRecipe}
         initialData={recipe}
         isSaving={updateRecipe.isPending}
         isDeleting={deleteRecipe.isPending}
