@@ -276,7 +276,7 @@ export const RecipeEditModal = ({
     setIsImporting(true);
 
     try {
-      const response = await fetch(`${API_URL}/extract`, {
+      const response = await fetch(`${API_URL}/extract-from-url`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

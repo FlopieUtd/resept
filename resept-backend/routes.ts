@@ -1,11 +1,21 @@
 import express, { Request, Response, Router } from "express";
-import { extractRecipe } from "./src/services/extractRecipe.js";
+import { extractRecipeFromUrl, extractRecipeFromHtml } from "./src/services/recipeExtractionService.js";
 import { updateRecipe } from "./src/services/updateRecipe.js";
 
 const router: Router = express.Router();
 
-interface ExtractRequest {
+interface ExtractFromUrlRequest {
   url: string;
+}
+
+interface ExtractFromHtmlRequest {
+  html: string;
+  url?: string;
+  metadata?: {
+    userAgent?: string;
+    timestamp?: string;
+    extensionVersion?: string;
+  };
 }
 
 interface UpdateRecipeRequest {
@@ -20,13 +30,13 @@ router.get("/test", (req: Request, res: Response) => {
 });
 
 router.post(
-  "/extract",
-  async (req: Request<{}, {}, ExtractRequest>, res: Response) => {
+  "/extract-from-url",
+  async (req: Request<{}, {}, ExtractFromUrlRequest>, res: Response) => {
     try {
       const { url } = req.body || {};
       if (!url) return res.status(400).json({ error: "Missing URL" });
 
-      const result = await extractRecipe(url);
+      const result = await extractRecipeFromUrl(url);
 
       if (result.success) {
         return res.status(200).json(result.data);
@@ -34,8 +44,35 @@ router.post(
         return res.status(404).json({ error: result.error });
       }
     } catch (err) {
-      console.error("💥 Error in extract:", err);
-      return res.status(500).json({ error: "Extract failed" });
+      console.error("💥 Error in extract-from-url:", err);
+      return res.status(500).json({ error: "Extract from URL failed" });
+    }
+  }
+);
+
+router.post(
+  "/extract-from-html",
+  async (req: Request<{}, {}, ExtractFromHtmlRequest>, res: Response) => {
+    try {
+      const { html, url, metadata } = req.body || {};
+      if (!html) return res.status(400).json({ error: "Missing HTML content" });
+
+      console.log("📄 Extracting recipe from HTML", {
+        htmlLength: html.length,
+        url: url || "not provided",
+        metadata: metadata || "not provided"
+      });
+
+      const result = await extractRecipeFromHtml(html, url);
+
+      if (result.success) {
+        return res.status(200).json(result.data);
+      } else {
+        return res.status(400).json({ error: result.error });
+      }
+    } catch (err) {
+      console.error("💥 Error in extract-from-html:", err);
+      return res.status(500).json({ error: "Extract from HTML failed" });
     }
   }
 );

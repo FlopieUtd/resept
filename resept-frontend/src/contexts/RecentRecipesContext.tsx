@@ -6,7 +6,7 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import { type DatabaseRecipe } from "../types";
+// import { type DatabaseRecipe } from "../types";
 
 interface RecentRecipe {
   id: string;
@@ -16,7 +16,7 @@ interface RecentRecipe {
 
 interface RecentRecipesContextType {
   recentRecipes: RecentRecipe[];
-  addRecentRecipe: (recipe: DatabaseRecipe) => void;
+  addRecentRecipe: (recipe: any) => void;
   clearRecentRecipes: () => void;
   removeRecentRecipe: (recipeId: string) => void;
 }
@@ -52,7 +52,7 @@ export const RecentRecipesProvider = ({
     }
   }, []);
 
-  const addRecentRecipe = useCallback((recipe: DatabaseRecipe) => {
+  const addRecentRecipe = useCallback((recipe: any) => {
     setRecentRecipes((prev) => {
       const now = Date.now();
       const newRecentRecipe: RecentRecipe = {

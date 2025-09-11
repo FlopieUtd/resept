@@ -1,0 +1,169 @@
+import { fetchHtmlFromUrl } from "../utils/fetchHtmlFromUrl.js";
+import { fetchHtmlWithBrowser } from "../utils/fetchHtmlWithBrowser.js";
+import { detectSiteType } from "../utils/detectSiteType.js";
+import { detectRecipeJsonLd } from "../utils/detectRecipeJsonLd.js";
+import { transformJsonLdToRecipe } from "../utils/transformJsonLdToRecipe.js";
+import { extractTextNodes } from "../utils/extractTextNodes.js";
+import { preparseNodes } from "../utils/preparseNodes.js";
+import { extractTitle } from "../utils/extractTitle.js";
+import { extractYield } from "../utils/extractYield.js";
+
+export interface RecipeResult {
+  success: boolean;
+  error: string | null;
+  data: any | null;
+}
+
+interface BrowserOptions {
+  waitForTimeout: number;
+  waitForNetworkIdle: boolean;
+  maxWaitTime: number;
+}
+
+export const processRecipeExtraction = async (html: string, url?: string): Promise<RecipeResult> => {
+  try {
+    console.log("Processing recipe extraction from HTML");
+
+    // Step 1: Detect recipe JSON-LD
+    const jsonLdRecipes = detectRecipeJsonLd(html);
+
+    // Step 2: Transform JSON-LD to desired recipe format
+    if (jsonLdRecipes && jsonLdRecipes.length > 0) {
+      // Take the first recipe if multiple are found
+      const jsonLdRecipe = jsonLdRecipes[0];
+      const recipe = transformJsonLdToRecipe(jsonLdRecipe, url || "");
+
+      // Check if the recipe was successfully transformed and has valid ingredients and instructions
+      if (recipe) {
+        const hasValidIngredients =
+          recipe.ingredients &&
+          Array.isArray(recipe.ingredients) &&
+          recipe.ingredients.length > 0;
+
+        const hasValidInstructions =
+          recipe.instructions &&
+          Array.isArray(recipe.instructions) &&
+          recipe.instructions.length > 0;
+
+        if (hasValidIngredients && hasValidInstructions) {
+          return {
+            success: true,
+            error: null,
+            data: recipe,
+          };
+        } else {
+          console.log(
+            "JSON-LD recipe has empty ingredients or instructions, falling back to HTML extraction"
+          );
+        }
+      } else {
+        console.log(
+          "Failed to transform JSON-LD recipe, falling back to HTML extraction"
+        );
+      }
+    }
+
+    // Step 3: No JSON-LD found, extract recipe components from HTML
+    console.log(
+      "No JSON-LD found, extracting recipe components from HTML..."
+    );
+    const textNodes = extractTextNodes(html);
+
+    console.log(html)
+    const parsedNodes = preparseNodes(textNodes);
+    const title = extractTitle(html, url || "");
+    const recipeYield = extractYield(html);
+
+    return {
+      success: true,
+      error: null,
+      data: {
+        title,
+        ingredients: parsedNodes.ingredients,
+        instructions: parsedNodes.instructions,
+        recipe_yield: recipeYield,
+      },
+    };
+  } catch (error: any) {
+    console.error("Error extracting recipe:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to extract recipe",
+      data: null,
+    };
+  }
+};
+
+export const extractRecipeFromUrl = async (url: string): Promise<RecipeResult> => {
+  try {
+    console.log("Ready to extract from URL");
+
+    // Step 1: Try fast HTML fetch first
+    let html: string = await fetchHtmlFromUrl(url);
+
+    // Step 1.5: If site needs browser rendering, use headless browser
+    const siteAnalysis = detectSiteType(html);
+    if (siteAnalysis.needsBrowser) {
+      console.log(`Site detected as SPA, using headless browser...`);
+      try {
+        const browserOptions: BrowserOptions = {
+          waitForTimeout: 5000,
+          waitForNetworkIdle: true,
+          maxWaitTime: 15000,
+        };
+        html = await fetchHtmlWithBrowser(url, browserOptions);
+        console.log("Headless browser fetch completed successfully");
+      } catch (browserError: any) {
+        console.log(
+          "Headless browser failed, continuing with original HTML:",
+          browserError.message
+        );
+      }
+    }
+
+    // Step 2: Process the extracted HTML
+    return await processRecipeExtraction(html, url);
+  } catch (error: any) {
+    console.error("Error extracting recipe from URL:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to extract recipe from URL",
+      data: null,
+    };
+  }
+};
+
+export const extractRecipeFromHtml = async (html: string, url?: string): Promise<RecipeResult> => {
+  try {
+    console.log("Ready to extract from HTML");
+    
+    // Validate HTML content
+    if (!html || html.trim().length === 0) {
+      return {
+        success: false,
+        error: "HTML content is empty",
+        data: null,
+      };
+    }
+
+    // Check HTML size limit (10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (html.length > maxSize) {
+      return {
+        success: false,
+        error: "HTML content is too large (max 10MB)",
+        data: null,
+      };
+    }
+
+    // Process the HTML directly
+    return await processRecipeExtraction(html, url);
+  } catch (error: any) {
+    console.error("Error extracting recipe from HTML:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to extract recipe from HTML",
+      data: null,
+    };
+  }
+};
