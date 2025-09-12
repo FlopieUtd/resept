@@ -1,3 +1,3 @@
-import { extractRecipeFromUrl } from "./recipeExtractionService.js";
+import { extractRecipeFromHtml } from "./recipeExtractionService.js";
 
-export { extractRecipeFromUrl as extractRecipe };
+export { extractRecipeFromHtml as extractRecipe };

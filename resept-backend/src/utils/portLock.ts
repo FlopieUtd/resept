@@ -1,7 +1,7 @@
 import { execSync } from "child_process";
 import { Server } from "http";
 
-const PORT = process.env.PORT || 8787;
+const PORT = parseInt(process.env.PORT || "8787", 10);
 
 export const killExistingProcessOnPort = (port: number = PORT): void => {
   try {
