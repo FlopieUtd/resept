@@ -50,7 +50,7 @@ const App = () => {
                     className={
                       isFullscreen
                         ? "ml-0 w-full flex"
-                        : "ml-[240px] w-full flex"
+                        : "lg:ml-[240px] w-full flex"
                     }
                   >
                     <ProtectedRoute>
@@ -70,7 +70,7 @@ const App = () => {
                     className={
                       isFullscreen
                         ? "ml-0 w-full flex"
-                        : "ml-[240px] w-full flex"
+                        : "lg:ml-[240px] w-full flex"
                     }
                   >
                     <ProtectedRoute>

@@ -90,7 +90,7 @@ export const Recipes = () => {
 
   return (
     <div className="flex w-full h-full justify-center">
-      <div className="flex w-full max-w-[1080px] mx-[24px] my-[48px] flex-col">
+      <div className="flex w-full max-w-[1080px] m-[24px] flex-col">
         <div className="flex justify-between items-center mb-6 w-full border-b-2 border-black pb-[12px]">
           <h1 className="text-3xl font-bold">
             {recipes ? recipes.length : ""} Recepten
@@ -139,7 +139,7 @@ export const Recipes = () => {
               </div>
             ) : (
               <div
-                className="grid grid-cols-2 gap-4 pb-[48px]"
+                className="grid sm:grid-cols-2 gap-4 pb-[24px]"
                 key={refreshTrigger}
               >
                 {filteredRecipes.map((recipe) => (

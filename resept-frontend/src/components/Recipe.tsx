@@ -161,7 +161,7 @@ export const Recipe = () => {
             <div className="font-radley text-[18px]">{recipe.description}</div>
           )}
 
-          <div className="flex gap-[12px] ">
+          <div className="flex gap-[12px] flex-wrap">
             {recipe.recipe_yield && (
               <div className="bg-[#f9f9f9] text-[14px] flex">
                 <button
