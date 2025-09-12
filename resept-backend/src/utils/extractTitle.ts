@@ -2,12 +2,9 @@ export const extractTitle = (html: string, url: string): string => {
   // Strip all non-alphabetical chars from URL and render in human readable format
   const urlTitle = extractTitleFromUrl(url);
 
-  if (!urlTitle) {
-    return "";
-  }
-
-  // First, try to find heading elements (h1, h2, h3, h4, h5, h6)
+  // First, try to find heading elements (h1, h2, h3, h4, h5, h6) - prioritize by hierarchy
   const headingTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
+  let firstHeading = "";
 
   for (const tag of headingTags) {
     const headingRegex = new RegExp(`<${tag}[^>]*>([^<]*)</${tag}>`, "gi");
@@ -19,39 +16,56 @@ export const extractTitle = (html: string, url: string): string => {
           .replace(new RegExp(`<${tag}[^>]*>|</${tag}>`, "gi"), "")
           .trim();
 
-        // Check if URL title appears in this heading (case insensitive)
-        if (headingText.toLowerCase().includes(urlTitle.toLowerCase())) {
-          return headingText; // Return the heading content
+        // Store the first heading found
+        if (headingText && !firstHeading) {
+          firstHeading = headingText;
+        }
+
+        // If URL title exists and matches this heading, prefer it
+        if (
+          urlTitle &&
+          headingText.toLowerCase().includes(urlTitle.toLowerCase())
+        ) {
+          return headingText;
         }
       }
     }
   }
 
-  // If no heading contains the URL title, check other elements (but exclude title tag)
-  const elementRegex = />([^<]+)</g;
-  const textNodes = html.match(elementRegex);
-
-  if (textNodes) {
-    for (const textNode of textNodes) {
-      const textContent = textNode.replace(/[<>]/g, "").trim();
-
-      // Skip if this looks like it's from a title tag
-      if (
-        textContent.toLowerCase().includes("title") &&
-        textContent.length < 100
-      ) {
-        continue;
-      }
-
-      // Check if URL title appears in this text node (case insensitive)
-      if (textContent.toLowerCase().includes(urlTitle.toLowerCase())) {
-        return textContent; // Return the content of the text node
-      }
-    }
+  // If we found a heading but no URL match, return the first heading
+  if (firstHeading) {
+    return firstHeading;
   }
 
-  // Fallback: return the URL title
-  return urlTitle;
+  // If no headings found, try to match URL title with other elements
+  if (urlTitle) {
+    const elementRegex = />([^<]+)</g;
+    const textNodes = html.match(elementRegex);
+
+    if (textNodes) {
+      for (const textNode of textNodes) {
+        const textContent = textNode.replace(/[<>]/g, "").trim();
+
+        // Skip if this looks like it's from a title tag
+        if (
+          textContent.toLowerCase().includes("title") &&
+          textContent.length < 100
+        ) {
+          continue;
+        }
+
+        // Check if URL title appears in this text node (case insensitive)
+        if (textContent.toLowerCase().includes(urlTitle.toLowerCase())) {
+          return textContent; // Return the content of the text node
+        }
+      }
+    }
+
+    // Fallback: return the URL title
+    return urlTitle;
+  }
+
+  return "";
 };
 
 const extractTitleFromUrl = (url: string): string => {

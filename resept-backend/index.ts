@@ -1,11 +1,30 @@
+import "dotenv/config";
 import express, { Application } from "express";
 import { Server } from "http";
 import cors from "cors";
 import routes from "./routes.js";
 import { closeBrowser } from "./src/utils/fetchHtmlWithBrowser.js";
+import {
+  createServerWithPortLock,
+  setupGracefulShutdown,
+} from "./src/utils/portLock.js";
 
 const app: Application = express();
-app.use(cors());
+
+// Configure CORS to allow extension requests
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173", // Frontend dev server
+      /^moz-extension:\/\/.*/, // Firefox extensions
+      /^chrome-extension:\/\/.*/, // Chrome extensions
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  })
+);
+
 app.use(express.json({ limit: "1mb" }));
 
 // Add request logging middleware
@@ -16,26 +35,21 @@ app.use((req, res, next) => {
 
 app.use(routes);
 
-const PORT = process.env.PORT || 8787;
-const server: Server = app.listen(PORT, () =>
-  console.log(`API on http://localhost:${PORT}`)
-);
+const PORT = parseInt(process.env.PORT || "8787", 10);
 
-// Graceful shutdown
+// Create server with port locking
+const server: Server = createServerWithPortLock(app, PORT);
+
+// Setup graceful shutdown with browser cleanup
+setupGracefulShutdown(server, PORT);
+
+// Additional cleanup for browser
 process.on("SIGINT", async () => {
-  console.log("Shutting down gracefully...");
+  console.log("🧹 Cleaning up browser...");
   await closeBrowser();
-  server.close(() => {
-    console.log("Server closed");
-    process.exit(0);
-  });
 });
 
 process.on("SIGTERM", async () => {
-  console.log("Shutting down gracefully...");
+  console.log("🧹 Cleaning up browser...");
   await closeBrowser();
-  server.close(() => {
-    console.log("Server closed");
-    process.exit(0);
-  });
 });

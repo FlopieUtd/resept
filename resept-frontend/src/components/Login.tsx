@@ -27,7 +27,23 @@ export const Login = () => {
         setError("Controleer je e-mail om je account te bevestigen!");
       } else {
         await signIn(email, password);
-        navigate("/");
+
+        // Check if this is an extension login
+        const extensionRedirectUri = localStorage.getItem(
+          "extension_redirect_uri"
+        );
+        if (extensionRedirectUri) {
+          // Clear the stored redirect URI
+          localStorage.removeItem("extension_redirect_uri");
+          // Redirect back to extension auth page
+          navigate(
+            `/auth/extension?redirect_uri=${encodeURIComponent(
+              extensionRedirectUri
+            )}`
+          );
+        } else {
+          navigate("/");
+        }
       }
     } catch (err) {
       setError(

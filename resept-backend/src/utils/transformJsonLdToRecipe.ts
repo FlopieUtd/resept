@@ -77,10 +77,10 @@ export const transformJsonLdToRecipe = (
     return null;
   }
 
-  console.log(
-    "Transforming JSON-LD recipe:",
-    JSON.stringify(jsonLdRecipe, null, 2)
-  );
+  // console.log(
+  //   "Transforming JSON-LD recipe:",
+  //   JSON.stringify(jsonLdRecipe, null, 2)
+  // );
 
   // Handle @graph structure - find the Recipe object
   let recipe = jsonLdRecipe;
@@ -90,7 +90,6 @@ export const transformJsonLdToRecipe = (
     );
     if (recipeItem) {
       recipe = recipeItem;
-      console.log("Found recipe in @graph:", JSON.stringify(recipe, null, 2));
     }
   }
 

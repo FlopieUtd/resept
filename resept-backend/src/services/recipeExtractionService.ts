@@ -1,4 +1,4 @@
-import { fetchHtmlFromUrl } from "../utils/fetchHtmlFromUrl.js";
+import { fetchHtmlFromUrl as fetchHtmlFromUrlUtil } from "../utils/fetchHtmlFromUrl.js";
 import { fetchHtmlWithBrowser } from "../utils/fetchHtmlWithBrowser.js";
 import { detectSiteType } from "../utils/detectSiteType.js";
 import { detectRecipeJsonLd } from "../utils/detectRecipeJsonLd.js";
@@ -20,7 +20,10 @@ interface BrowserOptions {
   maxWaitTime: number;
 }
 
-export const processRecipeExtraction = async (html: string, url?: string): Promise<RecipeResult> => {
+export const processRecipeExtraction = async (
+  html: string,
+  url?: string
+): Promise<RecipeResult> => {
   try {
     console.log("Processing recipe extraction from HTML");
 
@@ -64,12 +67,9 @@ export const processRecipeExtraction = async (html: string, url?: string): Promi
     }
 
     // Step 3: No JSON-LD found, extract recipe components from HTML
-    console.log(
-      "No JSON-LD found, extracting recipe components from HTML..."
-    );
+    console.log("No JSON-LD found, extracting recipe components from HTML...");
     const textNodes = extractTextNodes(html);
 
-    console.log(html)
     const parsedNodes = preparseNodes(textNodes);
     const title = extractTitle(html, url || "");
     const recipeYield = extractYield(html);
@@ -94,12 +94,18 @@ export const processRecipeExtraction = async (html: string, url?: string): Promi
   }
 };
 
-export const extractRecipeFromUrl = async (url: string): Promise<RecipeResult> => {
+export const fetchHtmlFromUrl = async (
+  url: string
+): Promise<{
+  success: boolean;
+  error: string | null;
+  data: { html: string } | null;
+}> => {
   try {
-    console.log("Ready to extract from URL");
+    console.log("Ready to fetch HTML from URL");
 
     // Step 1: Try fast HTML fetch first
-    let html: string = await fetchHtmlFromUrl(url);
+    let html: string = await fetchHtmlFromUrlUtil(url);
 
     // Step 1.5: If site needs browser rendering, use headless browser
     const siteAnalysis = detectSiteType(html);
@@ -121,22 +127,28 @@ export const extractRecipeFromUrl = async (url: string): Promise<RecipeResult> =
       }
     }
 
-    // Step 2: Process the extracted HTML
-    return await processRecipeExtraction(html, url);
+    return {
+      success: true,
+      error: null,
+      data: { html },
+    };
   } catch (error: any) {
-    console.error("Error extracting recipe from URL:", error);
+    console.error("Error fetching HTML from URL:", error);
     return {
       success: false,
-      error: error.message || "Failed to extract recipe from URL",
+      error: error.message || "Failed to fetch HTML from URL",
       data: null,
     };
   }
 };
 
-export const extractRecipeFromHtml = async (html: string, url?: string): Promise<RecipeResult> => {
+export const extractRecipeFromHtml = async (
+  html: string,
+  url?: string
+): Promise<RecipeResult> => {
   try {
-    console.log("Ready to extract from HTML");
-    
+    console.log("Ready to extract from HTML", html);
+
     // Validate HTML content
     if (!html || html.trim().length === 0) {
       return {

@@ -8,6 +8,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "nodemon --exec \"tsx index.ts\" --watch src --ext ts,js",
+    "dev:clean": "./scripts/dev-clean.sh",
     "test": "jest",
     "test:watch": "jest --watch"
   },
@@ -17,10 +18,14 @@
   "description": "",
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",
+    "@types/jsonwebtoken": "^9.0.10",
     "cheerio": "^1.1.2",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "franc": "^6.2.0",
+    "iconv-lite": "^0.7.0",
+    "jsonwebtoken": "^9.0.2",
     "node-fetch": "^3.3.2",
     "ollama": "^0.5.17",
     "puppeteer": "^24.16.0",
