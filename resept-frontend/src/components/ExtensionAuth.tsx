@@ -63,6 +63,33 @@ export const ExtensionAuth = () => {
           setMessage(
             "Extension authenticated successfully! You can now close this tab and use the extension."
           );
+
+          // Send message to extension
+          console.log("📤 Frontend sending message to extension:", {
+            type: "EXTENSION_AUTH_SUCCESS",
+            hasJwtToken: !!accessToken,
+            hasRefreshToken: !!refreshToken,
+            tokenExpiresAt: expiresAt?.toString() || "",
+          });
+
+          // Send message to extension via window.postMessage
+          console.log("📤 Sending message via window.postMessage");
+          window.postMessage(
+            {
+              type: "EXTENSION_AUTH_SUCCESS",
+              tokens: {
+                jwtToken: accessToken,
+                refreshToken: refreshToken,
+                tokenExpiresAt: expiresAt?.toString() || "",
+              },
+            },
+            "*"
+          );
+
+          // Auto-close after a short delay (disabled for debugging)
+          // setTimeout(() => {
+          //   window.close();
+          // }, 2000);
         }
       } catch (error) {
         if (isMounted) {
