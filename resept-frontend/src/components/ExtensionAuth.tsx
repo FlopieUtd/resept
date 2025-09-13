@@ -14,18 +14,10 @@ export const ExtensionAuth = () => {
 
     const handleAuth = async () => {
       try {
-        console.log("🔍 [EXTENSION_AUTH] Starting extension auth process");
         const urlParams = new URLSearchParams(window.location.search);
         const redirectUri = urlParams.get("redirect_uri");
 
-        console.log("🔗 [EXTENSION_AUTH] URL params:", {
-          redirectUri: redirectUri,
-          fullUrl: window.location.href,
-          search: window.location.search,
-        });
-
         if (!redirectUri) {
-          console.log("❌ [EXTENSION_AUTH] No redirect URI found");
           if (isMounted) {
             setStatus("error");
             setMessage("Invalid redirect URI");
@@ -35,9 +27,6 @@ export const ExtensionAuth = () => {
 
         // If user is not logged in, redirect to login page
         if (!user || !session) {
-          console.log(
-            "👤 [EXTENSION_AUTH] User not logged in, redirecting to login"
-          );
           if (isMounted) {
             setStatus("redirecting");
             setMessage("Redirecting to login page...");
@@ -45,14 +34,10 @@ export const ExtensionAuth = () => {
 
           // Store the redirect URI in localStorage so we can come back after login
           localStorage.setItem("extension_redirect_uri", redirectUri);
-          console.log(
-            "💾 [EXTENSION_AUTH] Stored redirect URI in localStorage"
-          );
 
           // Redirect to login page
           setTimeout(() => {
             if (isMounted) {
-              console.log("🔄 [EXTENSION_AUTH] Redirecting to login page");
               window.location.href = "/login";
             }
           }, 1000);
@@ -60,16 +45,9 @@ export const ExtensionAuth = () => {
         }
 
         // User is logged in, proceed with token exchange
-        console.log("✅ [EXTENSION_AUTH] User is logged in, processing tokens");
         const accessToken = session.access_token;
         const refreshToken = session.refresh_token;
         const expiresAt = session.expires_at;
-
-        console.log("🔑 [EXTENSION_AUTH] Tokens:", {
-          hasAccessToken: !!accessToken,
-          hasRefreshToken: !!refreshToken,
-          expiresAt: expiresAt,
-        });
 
         // Store the tokens in localStorage for extension compatibility
         localStorage.setItem("extension_token", accessToken);
@@ -80,8 +58,6 @@ export const ExtensionAuth = () => {
         );
         localStorage.setItem("jwtToken", accessToken);
 
-        console.log("💾 [EXTENSION_AUTH] Tokens stored in localStorage");
-
         if (isMounted) {
           setStatus("success");
           setMessage(
@@ -89,7 +65,6 @@ export const ExtensionAuth = () => {
           );
         }
       } catch (error) {
-        console.error("💥 [EXTENSION_AUTH] Error during auth process:", error);
         if (isMounted) {
           setStatus("error");
           setMessage("Authentication failed");

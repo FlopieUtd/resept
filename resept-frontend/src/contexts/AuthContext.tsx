@@ -56,12 +56,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setUser(data.session?.user ?? null);
         }
       } else {
-        // Normal session check
+        // Normal session check with indefinite persistence
         const {
           data: { session },
         } = await supabase.auth.getSession();
-        setSession(session);
-        setUser(session?.user ?? null);
+
+        // If session exists but is close to expiry, refresh it
+        if (session && session.expires_at) {
+          const now = Math.floor(Date.now() / 1000);
+          const timeUntilExpiry = session.expires_at - now;
+
+          // If token expires in less than 1 hour, refresh it
+          if (timeUntilExpiry < 3600) {
+            console.log("🔄 Token expiring soon, refreshing...");
+            const { data: refreshData } = await supabase.auth.refreshSession();
+            if (refreshData.session) {
+              setSession(refreshData.session);
+              setUser(refreshData.session.user);
+            }
+          } else {
+            setSession(session);
+            setUser(session.user);
+          }
+        } else {
+          setSession(session);
+          setUser(session?.user ?? null);
+        }
       }
 
       // Set loading to false only after session check is complete
@@ -77,7 +97,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(session?.user ?? null);
     });
 
-    return () => subscription.unsubscribe();
+    // Set up periodic token refresh to ensure indefinite login
+    const refreshInterval = setInterval(async () => {
+      const {
+        data: { session: currentSession },
+      } = await supabase.auth.getSession();
+      if (currentSession && currentSession.expires_at) {
+        const now = Math.floor(Date.now() / 1000);
+        const timeUntilExpiry = currentSession.expires_at - now;
+
+        // Refresh if token expires in less than 24 hours
+        if (timeUntilExpiry < 86400) {
+          console.log(
+            "🔄 Periodic refresh: Token expiring soon, refreshing..."
+          );
+          await supabase.auth.refreshSession();
+        }
+      }
+    }, 3600000); // Check every hour
+
+    return () => {
+      subscription.unsubscribe();
+      clearInterval(refreshInterval);
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {
