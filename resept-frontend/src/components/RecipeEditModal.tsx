@@ -5,7 +5,6 @@ import { Input } from "./Input";
 import { Textarea } from "./Textarea";
 import { Button } from "./Button";
 import { X } from "@phosphor-icons/react";
-import { useAuth } from "../contexts/AuthContext";
 
 // Simple ingredient parsing function for the frontend
 const parseIngredientFrontend = (text: string): ParsedIngredient => {
@@ -142,7 +141,6 @@ export const RecipeEditModal = ({
   title = "Bewerk recept",
   showImport = false,
 }: RecipeEditModalProps) => {
-  const { session } = useAuth();
   const [formData, setFormData] = useState<CreateRecipeData>({
     ...initialData,
     ingredients:
