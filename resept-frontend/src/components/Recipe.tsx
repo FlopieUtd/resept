@@ -166,7 +166,7 @@ export const Recipe = () => {
                 >
                   -
                 </button>
-                <div className="flex py-[4px] px-[12px] min-w-[106px] justify-center">
+                <div className="flex py-[4px] min-w-[100px] justify-center text-center">
                   {detectedLanguage === Language.NL ? (
                     <>
                       {recipeYield || 0}{" "}
