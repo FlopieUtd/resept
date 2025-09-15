@@ -4,7 +4,7 @@ import { detectSiteType } from "../utils/detectSiteType.js";
 import { detectRecipeJsonLd } from "../utils/detectRecipeJsonLd.js";
 import { transformJsonLdToRecipe } from "../utils/transformJsonLdToRecipe.js";
 import { extractTextNodes } from "../utils/extractTextNodes.js";
-import { preparseNodes } from "../utils/preparseNodes.js";
+import { parseNodes } from "../utils/parseNodes.js";
 import { extractTitle } from "../utils/extractTitle.js";
 import { extractYield } from "../utils/extractYield.js";
 
@@ -70,7 +70,7 @@ export const processRecipeExtraction = async (
     console.log("No JSON-LD found, extracting recipe components from HTML...");
     const textNodes = extractTextNodes(html);
 
-    const parsedNodes = preparseNodes(textNodes);
+    const parsedNodes = parseNodes(textNodes);
     const title = extractTitle(html, url || "");
     const recipeYield = extractYield(textNodes);
 

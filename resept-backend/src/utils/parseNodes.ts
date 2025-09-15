@@ -11,8 +11,6 @@ interface IngredientGroup {
 interface ParsedResult {
   ingredients: { raw: string; parsed: ParsedIngredient }[];
   instructions: { text: string }[];
-  selectedIngredientProbability: number;
-  selectedInstructionsProbability: number;
 }
 
 const containsUnitKeyword = (text: string): boolean => {
@@ -43,7 +41,7 @@ const containsUnitKeyword = (text: string): boolean => {
   });
 };
 
-export const preparseNodes = (textNodes: TextNode[]): ParsedResult => {
+export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
   if (textNodes.length === 0) {
     return { ingredients: [], instructions: [] };
   }
