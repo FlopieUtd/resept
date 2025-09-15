@@ -29,7 +29,6 @@ app.use(express.json({ limit: "1mb" }));
 
 // Add request logging middleware
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
   next();
 });
 
@@ -45,11 +44,9 @@ setupGracefulShutdown(server, PORT);
 
 // Additional cleanup for browser
 process.on("SIGINT", async () => {
-  console.log("🧹 Cleaning up browser...");
   await closeBrowser();
 });
 
 process.on("SIGTERM", async () => {
-  console.log("🧹 Cleaning up browser...");
   await closeBrowser();
 });

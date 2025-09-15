@@ -1,10 +1,8 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { useRecentRecipes } from "../contexts/RecentRecipesContext";
 
 export const Menu = () => {
   const { user, signOut } = useAuth();
-  const { recentRecipes } = useRecentRecipes();
 
   const handleSignOut = async () => {
     try {
@@ -22,21 +20,6 @@ export const Menu = () => {
       >
         Recepten
       </Link>
-
-      {recentRecipes.length > 0 && (
-        <div className="">
-          {recentRecipes.map((recipe) => (
-            <Link
-              key={recipe.id}
-              to={`/recipes/${recipe.id}`}
-              className="px-[12px] py-[6px] border-b hover:bg-[#f0f0f0] cursor-pointer flex w-full"
-              title={recipe.title}
-            >
-              {recipe.title}
-            </Link>
-          ))}
-        </div>
-      )}
 
       {user && (
         <div className="mt-auto p-3 border-t">

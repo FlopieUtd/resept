@@ -68,7 +68,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
           // If token expires in less than 1 hour, refresh it
           if (timeUntilExpiry < 3600) {
-            console.log("🔄 Token expiring soon, refreshing...");
             const { data: refreshData } = await supabase.auth.refreshSession();
             if (refreshData.session) {
               setSession(refreshData.session);
@@ -108,9 +107,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         // Refresh if token expires in less than 24 hours
         if (timeUntilExpiry < 86400) {
-          console.log(
-            "🔄 Periodic refresh: Token expiring soon, refreshing..."
-          );
           await supabase.auth.refreshSession();
         }
       }

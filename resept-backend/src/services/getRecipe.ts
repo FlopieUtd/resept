@@ -42,19 +42,6 @@ export const getRecipe = async (
       };
     }
 
-    // Update last_visited timestamp (fire and forget - don't wait for this)
-    const now = new Date().toISOString();
-    supabase
-      .from("recipes")
-      .update({ last_visited: now })
-      .eq("id", recipeId)
-      .eq("user_id", userId)
-      .then(({ error }: { error: any }) => {
-        if (error) {
-          console.error("Error updating last_visited:", error);
-        }
-      });
-
     return {
       success: true,
       error: null,

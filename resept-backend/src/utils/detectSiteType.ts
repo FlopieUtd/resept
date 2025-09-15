@@ -8,7 +8,7 @@ export const detectSiteType = (html: string): SiteAnalysis => {
   const textContent = html.replace(/<[^>]+>/g, "").trim();
 
   // Detect Cloudflare challenge pages
-  const isCloudflareChallenge = 
+  const isCloudflareChallenge =
     html.includes("Just a moment...") ||
     html.includes("Enable JavaScript and cookies to continue") ||
     html.includes("_cf_chl_opt") ||
@@ -32,17 +32,6 @@ export const detectSiteType = (html: string): SiteAnalysis => {
 
   const isSPA = hasRootDiv && (isShort || hasLittleText) && hasFrameworkMarkers;
   const isMinimal = isShort && hasLittleText;
-
-  console.log("Site Analysis:", {
-    length: html.length,
-    textLength: textContent.length,
-    hasRootDiv,
-    hasFrameworkMarkers,
-    isCloudflareChallenge,
-    isSPA,
-    isMinimal,
-    needsBrowser: isSPA || isMinimal || isCloudflareChallenge,
-  });
 
   return {
     isSPA,

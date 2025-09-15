@@ -8,7 +8,6 @@ import { PasswordRecovery } from "./components/PasswordRecovery";
 import { ResetPassword } from "./components/ResetPassword";
 import { ExtensionAuth } from "./components/ExtensionAuth";
 import { AuthProvider } from "./contexts/AuthContext";
-import { RecentRecipesProvider } from "./contexts/RecentRecipesContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useFullscreen } from "./contexts/FullscreenContext";
 
@@ -33,55 +32,53 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <RecentRecipesProvider>
-          <Routes>
-            <Route path="/" element={<Navigate to="/recipes" replace />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/password-recovery" element={<PasswordRecovery />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/auth/extension" element={<ExtensionAuth />} />
+        <Routes>
+          <Route path="/" element={<Navigate to="/recipes" replace />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/password-recovery" element={<PasswordRecovery />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/auth/extension" element={<ExtensionAuth />} />
 
-            <Route
-              path="/recipes/"
-              element={
-                <div className="flex w-full h-[100vh]">
-                  {!isFullscreen && <Menu />}
-                  <div
-                    className={
-                      isFullscreen
-                        ? "ml-0 w-full flex"
-                        : "lg:ml-[240px] w-full flex"
-                    }
-                  >
-                    <ProtectedRoute>
-                      <Recipes />
-                    </ProtectedRoute>
-                  </div>
+          <Route
+            path="/recipes/"
+            element={
+              <div className="flex w-full h-[100vh]">
+                {!isFullscreen && <Menu />}
+                <div
+                  className={
+                    isFullscreen
+                      ? "ml-0 w-full flex"
+                      : "lg:ml-[240px] w-full flex"
+                  }
+                >
+                  <ProtectedRoute>
+                    <Recipes />
+                  </ProtectedRoute>
                 </div>
-              }
-              index
-            />
-            <Route
-              path="/recipes/:recipeId"
-              element={
-                <div className="flex w-full h-[100vh]">
-                  {!isFullscreen && <Menu />}
-                  <div
-                    className={
-                      isFullscreen
-                        ? "ml-0 w-full flex"
-                        : "lg:ml-[240px] w-full flex"
-                    }
-                  >
-                    <ProtectedRoute>
-                      <Recipe />
-                    </ProtectedRoute>
-                  </div>
+              </div>
+            }
+            index
+          />
+          <Route
+            path="/recipes/:recipeId"
+            element={
+              <div className="flex w-full h-[100vh]">
+                {!isFullscreen && <Menu />}
+                <div
+                  className={
+                    isFullscreen
+                      ? "ml-0 w-full flex"
+                      : "lg:ml-[240px] w-full flex"
+                  }
+                >
+                  <ProtectedRoute>
+                    <Recipe />
+                  </ProtectedRoute>
                 </div>
-              }
-            />
-          </Routes>
-        </RecentRecipesProvider>
+              </div>
+            }
+          />
+        </Routes>
       </AuthProvider>
     </QueryClientProvider>
   );

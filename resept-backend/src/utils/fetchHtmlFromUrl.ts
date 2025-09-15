@@ -1,6 +1,4 @@
 export const fetchHtmlFromUrl = async (url: string): Promise<string> => {
-  console.log("Step 1: Fetching HTML from URL...");
-
   // First try with basic headers
   let response = await fetch(url, {
     redirect: "follow",

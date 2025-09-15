@@ -5,7 +5,11 @@ import {
   useDeleteRecipe,
   useRecipes,
 } from "../lib/recipeService";
-import { type RecipeInstructionItem, type CreateRecipeData } from "../types";
+import {
+  type RecipeInstructionItem,
+  type CreateRecipeData,
+  Language,
+} from "../types";
 import { Loading } from "./Loading";
 import { RecipeEditModal } from "./RecipeEditModal";
 import {
@@ -20,7 +24,6 @@ import { decodeHtmlEntities } from "../utils/decodeHtmlEntities";
 import { formatTime } from "../utils/formatTime";
 import { isDurationEmpty } from "../utils/isDurationEmpty";
 import { useFullscreen } from "../contexts/FullscreenContext";
-import { useRecentRecipes } from "../contexts/RecentRecipesContext";
 import { LABELS } from "../utils/constants";
 import { useLanguageDetection } from "../hooks/useLanguageDetection";
 
@@ -34,7 +37,6 @@ export const Recipe = () => {
   const updateRecipe = useUpdateRecipe();
   const deleteRecipe = useDeleteRecipe();
   const { isFullscreen, setIsFullscreen } = useFullscreen();
-  const { addRecentRecipe } = useRecentRecipes();
 
   const detectedLanguage = useLanguageDetection(
     recipe?.title || "",
@@ -67,12 +69,6 @@ export const Recipe = () => {
       document.title = "Resept";
     };
   }, [recipe?.title]);
-
-  useEffect(() => {
-    if (recipe) {
-      addRecentRecipe(recipe);
-    }
-  }, [recipe, addRecentRecipe]);
 
   if (isLoading) {
     return <Loading />;
@@ -125,9 +121,9 @@ export const Recipe = () => {
           key={refreshTrigger}
         >
           <div className="flex justify-between items-center mb-[12px] gap-[12px]">
-            <div className="text-[48px] font-bold text-balance">
+            <h1 className="text-[48px] font-bold text-balance">
               {recipe.title}
-            </div>
+            </h1>
             <div className="flex gap-[8px]">
               <button
                 onClick={() => setIsEditModalOpen(true)}
@@ -171,8 +167,16 @@ export const Recipe = () => {
                   -
                 </button>
                 <div className="flex py-[4px] px-[12px] min-w-[106px] justify-center">
-                  {recipeYield || 0}{" "}
-                  {recipeYield === 1 ? t.personSingular : t.personPlural}
+                  {detectedLanguage === Language.NL ? (
+                    <>
+                      {recipeYield || 0}{" "}
+                      {recipeYield === 1 ? t.personSingular : t.personPlural}
+                    </>
+                  ) : (
+                    <>
+                      {t.serves} {recipeYield || 0}
+                    </>
+                  )}
                 </div>
                 <button
                   onClick={incrementRecipeYield}

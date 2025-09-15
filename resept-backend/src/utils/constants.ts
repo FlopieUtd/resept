@@ -223,12 +223,24 @@ export const YIELD_KEYWORDS: Record<
   }
 > = {
   yield: {
-    dutch: ["portie", "porties", "personen", "persoon", "stukken", "stuk"],
-    english: ["serving", "servings", "person", "people", "piece", "pieces"],
-  },
-  yield_numbers: {
-    dutch: ["voor", "van", "bereid", "maakt", "genoege"],
-    english: ["for", "of", "makes", "yields", "enough"],
+    dutch: [
+      "portie",
+      "porties",
+      "personen",
+      "persoon",
+      "voor",
+      "stuk",
+      "stuks",
+    ],
+    english: [
+      "yield",
+      "serves",
+      "serving",
+      "servings",
+      "person",
+      "people",
+      "for",
+    ],
   },
 };
 
@@ -240,28 +252,27 @@ export const UNIT_KEYWORDS: Record<
   }
 > = {
   gram: {
-    dutch: [ "g", 'gr', 'gram'],
-    english: ['g', 'gr', 'gram', 'grams'],
+    dutch: ["g", "gr", "gram"],
+    english: ["g", "gr", "gram", "grams"],
   },
   kilogram: {
-    dutch: ['kg', 'kilo', 'kilogram', ],
-    english: ['kg', 'kilo', 'kilo gram', ],
+    dutch: ["kg", "kilo", "kilogram"],
+    english: ["kg", "kilo", "kilo gram"],
   },
   milliliter: {
-    dutch: ['ml', 'milliliter', ],
-    english: ['ml', 'milliliter', ],
+    dutch: ["ml", "milliliter"],
+    english: ["ml", "milliliter"],
   },
   liter: {
-    dutch: ['l', 'liter', ],
-    english: ['l', 'liter', ],
+    dutch: ["l", "liter"],
+    english: ["l", "liter"],
   },
   teaspoon: {
-    dutch: ['tl','theelepel', ],
-    english: ['tsp','teaspoon',],
+    dutch: ["tl", "theelepel"],
+    english: ["tsp", "teaspoon"],
   },
   tablespoon: {
-    dutch: ['el','eetlepel', ],
-    english: ['tbsp', 'tablespoon'],
+    dutch: ["el", "eetlepel"],
+    english: ["tbsp", "tablespoon"],
   },
 };
-

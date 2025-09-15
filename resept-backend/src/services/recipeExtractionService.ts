@@ -72,7 +72,7 @@ export const processRecipeExtraction = async (
 
     const parsedNodes = preparseNodes(textNodes);
     const title = extractTitle(html, url || "");
-    const recipeYield = extractYield(html);
+    const recipeYield = extractYield(textNodes);
 
     return {
       success: true,
@@ -147,8 +147,6 @@ export const extractRecipeFromHtml = async (
   url?: string
 ): Promise<RecipeResult> => {
   try {
-    console.log("Ready to extract from HTML", html);
-
     // Validate HTML content
     if (!html || html.trim().length === 0) {
       return {

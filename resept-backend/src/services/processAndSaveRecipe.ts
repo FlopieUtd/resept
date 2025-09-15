@@ -17,15 +17,9 @@ interface ProcessAndSaveRecipeResult {
 export const processAndSaveRecipe = async (
   request: ProcessAndSaveRecipeRequest
 ): Promise<ProcessAndSaveRecipeResult> => {
+  console.log("Processing and saving recipe");
   try {
     const { html, url, userId } = request;
-    console.log("REQUYEST", request);
-
-    console.log("🔄 Processing and saving recipe", {
-      htmlLength: html.length,
-      url: url || "not provided",
-      userId: userId,
-    });
 
     // Step 1: Extract recipe from HTML
     const extractionResult = await extractRecipeFromHtml(html, url);
@@ -40,11 +34,6 @@ export const processAndSaveRecipe = async (
     }
 
     const extractedRecipe = extractionResult.data;
-    console.log("✅ Recipe extracted successfully:", {
-      title: extractedRecipe.title,
-      ingredientsCount: extractedRecipe.ingredients?.length || 0,
-      instructionsCount: extractedRecipe.instructions?.length || 0,
-    });
 
     // Step 2: Transform to CreateRecipeData format
     const recipeData: CreateRecipeData = {
@@ -60,14 +49,6 @@ export const processAndSaveRecipe = async (
       source_url: url || "",
     };
 
-    console.log("📝 Recipe data prepared for saving:", {
-      title: recipeData.title,
-      yield: recipeData.recipe_yield,
-      category: recipeData.recipe_category,
-      ingredientsCount: recipeData.ingredients.length,
-      instructionsCount: recipeData.instructions.length,
-    });
-
     // Step 3: Save to Supabase
     const saveResult = await createRecipe({
       recipeData,
@@ -82,11 +63,6 @@ export const processAndSaveRecipe = async (
         data: null,
       };
     }
-
-    console.log("✅ Recipe saved to Supabase successfully:", {
-      recipeId: saveResult.data?.id,
-      title: saveResult.data?.title,
-    });
 
     return {
       success: true,

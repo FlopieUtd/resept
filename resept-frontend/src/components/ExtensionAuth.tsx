@@ -64,16 +64,6 @@ export const ExtensionAuth = () => {
             "Extension authenticated successfully! You can now close this tab and use the extension."
           );
 
-          // Send message to extension
-          console.log("📤 Frontend sending message to extension:", {
-            type: "EXTENSION_AUTH_SUCCESS",
-            hasJwtToken: !!accessToken,
-            hasRefreshToken: !!refreshToken,
-            tokenExpiresAt: expiresAt?.toString() || "",
-          });
-
-          // Send message to extension via window.postMessage
-          console.log("📤 Sending message via window.postMessage");
           window.postMessage(
             {
               type: "EXTENSION_AUTH_SUCCESS",
@@ -93,6 +83,7 @@ export const ExtensionAuth = () => {
         }
       } catch (error) {
         if (isMounted) {
+          console.error("Authentication failed", error);
           setStatus("error");
           setMessage("Authentication failed");
         }

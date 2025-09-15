@@ -1,6 +1,7 @@
-import { Language } from '../types';
+import { Language } from "../types";
 
-export const API_URL = import.meta.env.VITE_API_URL || "https://resept-rb0j.onrender.com";
+export const API_URL =
+  import.meta.env.VITE_API_URL || "https://resept-rb0j.onrender.com";
 
 export const LABELS = {
   [Language.NL]: {
@@ -12,6 +13,7 @@ export const LABELS = {
     source: "Bron",
     personSingular: "persoon",
     personPlural: "personen",
+    serves: "Porties",
     editRecipe: "Bewerk recept",
   },
   [Language.EN]: {
@@ -23,6 +25,7 @@ export const LABELS = {
     source: "Source",
     personSingular: "person",
     personPlural: "people",
+    serves: "Serves",
     editRecipe: "Edit recipe",
   },
   [Language.UNKNOWN]: {
@@ -34,6 +37,7 @@ export const LABELS = {
     source: "Source",
     personSingular: "person",
     personPlural: "people",
+    serves: "Serves",
     editRecipe: "Edit recipe",
   },
 } as const;

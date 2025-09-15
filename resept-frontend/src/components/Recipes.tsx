@@ -146,7 +146,7 @@ export const Recipes = () => {
                   <Link
                     key={recipe.id}
                     to={`/recipes/${recipe.id}`}
-                    className="flex flex-col cursor-pointer bg-[#f9f9f9] hover:bg-[#eee] p-[12px] gap-[6px]"
+                    className="flex flex-col cursor-pointer bg-[#f9f9f9]  hover:bg-white hover:border-black border-2 border-[#f9f9f9] p-[12px] gap-[6px]"
                   >
                     <h2 className="text-xl font-semibold line-clamp-3 overflow-hidden">
                       {recipe.title}

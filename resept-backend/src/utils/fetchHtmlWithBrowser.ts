@@ -83,7 +83,6 @@ const getBrowser = async (): Promise<Browser> => {
         const fs = await import("fs");
         if (path && fs.existsSync(path)) {
           launchOptions.executablePath = path;
-          console.log(`Using Chrome at: ${path}`);
           break;
         }
       } catch (e) {
@@ -93,14 +92,12 @@ const getBrowser = async (): Promise<Browser> => {
 
     // If no Chrome found, try to install it dynamically
     if (!launchOptions.executablePath) {
-      console.log("No Chrome found, attempting to install...");
       try {
         const { execSync } = await import("child_process");
         execSync(
           "npx puppeteer browsers install chrome --path=/opt/render/.cache/puppeteer",
           { stdio: "inherit" }
         );
-        console.log("Chrome installation completed");
 
         // Try to find the installed Chrome
         const installedPaths = [
@@ -112,13 +109,10 @@ const getBrowser = async (): Promise<Browser> => {
           const fs = await import("fs");
           if (fs.existsSync(path)) {
             launchOptions.executablePath = path;
-            console.log(`Using installed Chrome at: ${path}`);
             break;
           }
         }
-      } catch (installError: any) {
-        console.log("Chrome installation failed:", installError.message);
-      }
+      } catch (installError: any) {}
     }
 
     browser = await puppeteer.launch(launchOptions);
@@ -137,21 +131,15 @@ export const fetchHtmlWithBrowser = async (
     maxWaitTime = 15000,
   } = options;
 
-  console.log(`Browser: Fetching ${url} with headless browser...`);
-
   const browser = await getBrowser();
 
   // Try to reuse existing page context for better session persistence
   let page: Page;
   if (pageContext && !pageContext.isClosed()) {
     page = pageContext;
-    console.log(
-      "Browser: Reusing existing page context for session persistence"
-    );
   } else {
     page = await browser.newPage();
     pageContext = page;
-    console.log("Browser: Created new page context");
   }
 
   try {
@@ -285,8 +273,6 @@ export const fetchHtmlWithBrowser = async (
       timeout: 60000,
     });
 
-    console.log("Browser: Page loaded, waiting for content...");
-
     // Add human-like mouse movement and scrolling
     await page.mouse.move(100, 100);
     await page.mouse.move(200, 200);
@@ -308,10 +294,6 @@ export const fetchHtmlWithBrowser = async (
     });
 
     if (isCloudflareChallenge) {
-      console.log(
-        "Browser: Cloudflare challenge detected, implementing advanced bypass..."
-      );
-
       // Step 1: Simulate realistic human behavior
       await page.evaluate(() => {
         // Simulate realistic mouse movements
@@ -354,9 +336,6 @@ export const fetchHtmlWithBrowser = async (
         // Look for Turnstile or other challenge widgets
         const turnstileWidget = await page.$("[data-sitekey]");
         if (turnstileWidget) {
-          console.log(
-            "Browser: Found Turnstile widget, attempting to solve..."
-          );
           await turnstileWidget.click();
           await new Promise((resolve) => setTimeout(resolve, 5000));
         }
@@ -380,14 +359,7 @@ export const fetchHtmlWithBrowser = async (
           },
           { timeout: 30000 }
         );
-        console.log(
-          "Browser: Cloudflare challenge completed via content change"
-        );
       } catch (error1) {
-        console.log(
-          "Browser: Content change strategy failed, trying URL change..."
-        );
-
         try {
           // Strategy 2: Wait for URL change (redirect after challenge)
           await page.waitForFunction(
@@ -399,12 +371,7 @@ export const fetchHtmlWithBrowser = async (
             },
             { timeout: 20000 }
           );
-          console.log("Browser: Cloudflare challenge completed via URL change");
         } catch (error2) {
-          console.log(
-            "Browser: URL change strategy failed, trying network activity..."
-          );
-
           try {
             // Strategy 3: Wait for network activity to settle
             await page.waitForFunction(
@@ -419,14 +386,7 @@ export const fetchHtmlWithBrowser = async (
               },
               { timeout: 15000 }
             );
-            console.log(
-              "Browser: Cloudflare challenge completed via network activity"
-            );
           } catch (error3) {
-            console.log(
-              "Browser: All challenge strategies failed, continuing with current content..."
-            );
-
             // Final attempt: Try to trigger any remaining JavaScript
             await page.evaluate(() => {
               // Trigger all possible events
@@ -454,12 +414,7 @@ export const fetchHtmlWithBrowser = async (
     if (waitForSelector) {
       try {
         await page.waitForSelector(waitForSelector, { timeout: maxWaitTime });
-        console.log(`Browser: Found selector ${waitForSelector}`);
-      } catch (error) {
-        console.log(
-          `Browser: Selector ${waitForSelector} not found, continuing...`
-        );
-      }
+      } catch (error) {}
     }
 
     // Wait for network to be idle (no pending requests)
@@ -483,10 +438,7 @@ export const fetchHtmlWithBrowser = async (
           },
           { timeout: maxWaitTime }
         );
-        console.log("Browser: Network is idle");
-      } catch (error) {
-        console.log("Browser: Network idle timeout, continuing...");
-      }
+      } catch (error) {}
     }
 
     // Additional human-like behavior before final content extraction
@@ -519,13 +471,9 @@ export const fetchHtmlWithBrowser = async (
 
     // Get the final HTML content
     const html = await page.content();
-    console.log(
-      `Browser: HTML fetched successfully, length: ${html.length} characters`
-    );
 
     return html;
   } catch (error) {
-    console.error("Browser: Error fetching HTML:", error);
     throw error;
   } finally {
     // Don't close the page if we're reusing it for session persistence
@@ -537,11 +485,9 @@ export const closeBrowser = async (): Promise<void> => {
   if (pageContext && !pageContext.isClosed()) {
     await pageContext.close();
     pageContext = null;
-    console.log("Browser: Page context closed");
   }
   if (browser) {
     await browser.close();
     browser = null;
-    console.log("Browser: Browser closed");
   }
 };

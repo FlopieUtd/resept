@@ -1,70 +1,84 @@
 import { YIELD_KEYWORDS } from "./constants.js";
+import { TextNode } from "./extractTextNodes.js";
 
-export const extractYield = (html: string): number => {
-  // Look for yield information in HTML content
-  const yieldPatterns = [
-    // Pattern: "4 personen" or "4 personen"
-    /(\d+)\s*(?:personen?|persoon)/gi,
-    // Pattern: "voor 4 personen" or "voor 4 personen"
-    /voor\s+(\d+)\s*(?:personen?|persoon)/gi,
-    // Pattern: "4 porties" or "4 porties"
-    /(\d+)\s*(?:porties?|portie)/gi,
-    // Pattern: "maakt 4 stuks" or "maakt 4 stuks"
-    /maakt\s+(\d+)\s*(?:stuks?|stuk)/gi,
-    // Pattern: "yields 4 servings" or "yields 4 servings"
-    /yields?\s+(\d+)\s*(?:servings?|serving)/gi,
-    // Pattern: "4 servings" or "4 servings"
-    /(\d+)\s*(?:servings?|serving)/gi,
-    // Pattern: "serves 4" or "serves 4"
-    /serves?\s+(\d+)/gi,
-    // Pattern: "for 4 people" or "for 4 people"
-    /for\s+(\d+)\s*(?:people?|person)/gi,
+const extractNumbersFromSentence = (sentence: string): number[] => {
+  const numberRegex = /\d+(?:\.\d+)?/g;
+  const matches = sentence.match(numberRegex);
+
+  if (!matches) return [];
+
+  return matches
+    .map((match) => parseFloat(match))
+    .filter((num) => num > 0 && num < 1000);
+};
+
+const scoreYieldSentence = (sentence: string, numbers: number[]): number => {
+  if (numbers.length === 0) return 0;
+
+  const lowerSentence = sentence.toLowerCase();
+  const words = lowerSentence.split(/\s+/).filter((word) => word.length > 0);
+
+  if (words.length === 0) return 0;
+
+  const yieldKeywords = [
+    ...YIELD_KEYWORDS.yield.dutch,
+    ...YIELD_KEYWORDS.yield.english,
   ];
 
-  for (const pattern of yieldPatterns) {
-    const match = html.match(pattern);
-    if (match && match[1]) {
-      const number = parseInt(match[1], 10);
-      if (number > 0 && number < 100) {
-        // Reasonable range for recipe yield
-        return number;
-      }
+  let yieldKeywordCount = 0;
+  yieldKeywords.forEach((keyword) => {
+    if (lowerSentence.includes(keyword.toLowerCase())) {
+      yieldKeywordCount++;
     }
-  }
+  });
 
-  // Look for yield keywords with numbers in proximity
+  if (yieldKeywordCount === 0) return 0;
+
+  const yieldKeywordRatio = yieldKeywordCount / words.length;
+  const reasonableNumbers = numbers.filter((num) => num >= 1 && num <= 50);
+
+  if (reasonableNumbers.length === 0) return 0;
+
+  return yieldKeywordRatio * 100;
+};
+
+const selectBestYield = (
+  candidates: { text: string; score: number }[]
+): number => {
+  if (candidates.length === 0) return 0;
+
+  const bestCandidate = candidates.reduce((best, current) =>
+    current.score > best.score ? current : best
+  );
+
+  if (bestCandidate.score === 0) return 0;
+
+  const numbers = extractNumbersFromSentence(bestCandidate.text);
+  return numbers.length > 0 ? Math.round(numbers[0]) : 0;
+};
+
+export const extractYield = (textNodes: TextNode[]): number => {
   const allYieldKeywords = [
     ...YIELD_KEYWORDS.yield.dutch,
     ...YIELD_KEYWORDS.yield.english,
-    ...YIELD_KEYWORDS.yield_numbers.dutch,
-    ...YIELD_KEYWORDS.yield_numbers.english,
   ];
 
-  for (const keyword of allYieldKeywords) {
-    const keywordRegex = new RegExp(keyword, "gi");
-    const matches = html.match(keywordRegex);
+  const yieldTextNodes = textNodes.filter((node) => {
+    const lowerText = node.text.toLowerCase();
+    return allYieldKeywords.some((keyword) =>
+      lowerText.includes(keyword.toLowerCase())
+    );
+  });
 
-    if (matches) {
-      // Look for numbers near the keyword
-      const contextRegex = new RegExp(
-        `[^\\d]*${keyword}[^\\d]*(\\d+)[^\\d]*`,
-        "gi"
-      );
-      const contextMatches = html.match(contextRegex);
+  if (yieldTextNodes.length === 0) return 0;
 
-      if (contextMatches) {
-        for (const contextMatch of contextMatches) {
-          const numberMatch = contextMatch.match(/(\d+)/);
-          if (numberMatch) {
-            const number = parseInt(numberMatch[1], 10);
-            if (number > 0 && number < 100) {
-              return number;
-            }
-          }
-        }
-      }
-    }
-  }
+  const candidates = yieldTextNodes.map((node) => {
+    const numbers = extractNumbersFromSentence(node.text);
+    const score = scoreYieldSentence(node.text, numbers);
+    return { text: node.text, score };
+  });
 
-  return 0;
+  console.log("Candidates", JSON.stringify(candidates, null, 2));
+
+  return selectBestYield(candidates);
 };
