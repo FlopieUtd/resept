@@ -275,4 +275,12 @@ export const UNIT_KEYWORDS: Record<
     dutch: ["el", "eetlepel"],
     english: ["tbsp", "tablespoon"],
   },
+  piece: {
+    dutch: ["st", "stuk", "stuks"],
+    english: ["pcs", "piece", "pieces"],
+  },
+  clove: {
+    dutch: ["teen", "teentje"],
+    english: ["clove", "cloves"],
+  },
 };

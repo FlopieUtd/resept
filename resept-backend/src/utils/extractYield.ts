@@ -1,15 +1,75 @@
 import { YIELD_KEYWORDS } from "./constants.js";
 import { TextNode } from "./extractTextNodes.js";
 
+const NUMBER_WORDS: Record<string, number> = {
+  one: 1,
+  two: 2,
+  three: 3,
+  four: 4,
+  five: 5,
+  six: 6,
+  seven: 7,
+  eight: 8,
+  nine: 9,
+  ten: 10,
+  eleven: 11,
+  twelve: 12,
+  thirteen: 13,
+  fourteen: 14,
+  fifteen: 15,
+  sixteen: 16,
+  seventeen: 17,
+  eighteen: 18,
+  nineteen: 19,
+  twenty: 20,
+  een: 1,
+  twee: 2,
+  drie: 3,
+  vier: 4,
+  vijf: 5,
+  zes: 6,
+  zeven: 7,
+  acht: 8,
+  negen: 9,
+  tien: 10,
+  elf: 11,
+  twaalf: 12,
+  dertien: 13,
+  veertien: 14,
+  vijftien: 15,
+  zestien: 16,
+  zeventien: 17,
+  achttien: 18,
+  negentien: 19,
+  twintig: 20,
+};
+
 const extractNumbersFromSentence = (sentence: string): number[] => {
-  const numberRegex = /\d+(?:\.\d+)?/g;
-  const matches = sentence.match(numberRegex);
+  const digitRegex = /(?<![A-Za-z])\d+(?:\.\d+)?(?![A-Za-z])/g;
+  const digitMatches = sentence.match(digitRegex) || [];
+  const digitNumbers = digitMatches.map((m) => parseFloat(m));
 
-  if (!matches) return [];
+  const lower = sentence.toLowerCase();
+  const escapedKeys = Object.keys(NUMBER_WORDS).map((k) =>
+    k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  );
+  const wordRegex = new RegExp(
+    `(^|[^A-Za-z])(${escapedKeys.join("|")})([^A-Za-z]|$)`,
+    "gi"
+  );
+  const wordNumbers: number[] = [];
+  let match: RegExpExecArray | null;
+  while ((match = wordRegex.exec(lower)) !== null) {
+    const word = match[2].toLowerCase();
+    const value = NUMBER_WORDS[word];
+    if (typeof value === "number") {
+      wordNumbers.push(value);
+    }
+  }
 
-  return matches
-    .map((match) => parseFloat(match))
-    .filter((num) => num > 0 && num < 1000);
+  return [...digitNumbers, ...wordNumbers].filter(
+    (num) => num > 0 && num < 1000
+  );
 };
 
 const scoreYieldSentence = (sentence: string, numbers: number[]): number => {
@@ -27,7 +87,9 @@ const scoreYieldSentence = (sentence: string, numbers: number[]): number => {
 
   let yieldKeywordCount = 0;
   yieldKeywords.forEach((keyword) => {
-    if (lowerSentence.includes(keyword.toLowerCase())) {
+    const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const regex = new RegExp(`(^|[^A-Za-z])${escaped}([^A-Za-z]|$)`, "i");
+    if (regex.test(lowerSentence)) {
       yieldKeywordCount++;
     }
   });
@@ -65,9 +127,11 @@ export const extractYield = (textNodes: TextNode[]): number => {
 
   const yieldTextNodes = textNodes.filter((node) => {
     const lowerText = node.text.toLowerCase();
-    return allYieldKeywords.some((keyword) =>
-      lowerText.includes(keyword.toLowerCase())
-    );
+    return allYieldKeywords.some((keyword) => {
+      const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const regex = new RegExp(`(^|[^A-Za-z])${escaped}([^A-Za-z]|$)`, "i");
+      return regex.test(lowerText);
+    });
   });
 
   if (yieldTextNodes.length === 0) return 0;

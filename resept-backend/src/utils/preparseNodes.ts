@@ -11,28 +11,39 @@ interface IngredientGroup {
 interface ParsedResult {
   ingredients: { raw: string; parsed: ParsedIngredient }[];
   instructions: { text: string }[];
+  selectedIngredientProbability: number;
+  selectedInstructionsProbability: number;
 }
 
 const containsUnitKeyword = (text: string): boolean => {
   const normalizedText = text.toLowerCase().trim();
-  
+
   // Get all unit keywords from both Dutch and English, removing duplicates
-  const allUnitKeywords = [...new Set(Object.values(UNIT_KEYWORDS).flatMap((unitGroup) => {
-    const dutchUnits = Array.isArray(unitGroup.dutch) ? unitGroup.dutch : [unitGroup.dutch];
-    const englishUnits = Array.isArray(unitGroup.english) ? unitGroup.english : [unitGroup.english];
-    return [...dutchUnits, ...englishUnits];
-  }))];
+  const allUnitKeywords = [
+    ...new Set(
+      Object.values(UNIT_KEYWORDS).flatMap((unitGroup) => {
+        const dutchUnits = Array.isArray(unitGroup.dutch)
+          ? unitGroup.dutch
+          : [unitGroup.dutch];
+        const englishUnits = Array.isArray(unitGroup.english)
+          ? unitGroup.english
+          : [unitGroup.english];
+        return [...dutchUnits, ...englishUnits];
+      })
+    ),
+  ];
 
   // Check if any unit keyword is found as a whole word (surrounded by word boundaries)
   return allUnitKeywords.some((keyword) => {
-    const regex = new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+    const regex = new RegExp(
+      `\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
+      "i"
+    );
     return regex.test(normalizedText);
   });
 };
 
-export const preparseNodes = (
-  textNodes: TextNode[]
-): ParsedResult => {
+export const preparseNodes = (textNodes: TextNode[]): ParsedResult => {
   if (textNodes.length === 0) {
     return { ingredients: [], instructions: [] };
   }
@@ -59,11 +70,13 @@ export const preparseNodes = (
           // First time seeing this interrupting element type
           interruptingElementType = node.elementType;
           consecutiveInterruptions = 1;
-          // Continue with current group (don't start new group yet)
+          // Add to current group (don't start new group yet)
+          currentGroup.push(node);
         } else if (node.elementType === interruptingElementType) {
           // Same interrupting element type, increment count
           consecutiveInterruptions++;
-          // Continue with current group
+          // Add to current group
+          currentGroup.push(node);
         } else {
           // Different interrupting element type - start new group
           if (currentGroup.length > 0) {
@@ -230,6 +243,8 @@ export const preparseNodes = (
       );
     }
   }
+
+  console.log("Filtered result: ", JSON.stringify(filteredResult, null, 2));
 
   const ingredients: { raw: string; parsed: ParsedIngredient }[] = [];
   const instructions: { text: string }[] = [];
