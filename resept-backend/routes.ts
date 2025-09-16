@@ -132,6 +132,14 @@ router.post(
       if (result.success) {
         return res.status(200).json(result.data);
       } else {
+        // Check if it's a "No recipe detected" error
+        if (result.error === "No recipe detected") {
+          return res.status(200).json({
+            success: false,
+            error: "No recipe detected",
+            redirectTo: "/no-recipe",
+          });
+        }
         return res.status(400).json({ error: result.error });
       }
     } catch (err) {

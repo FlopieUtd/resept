@@ -11,6 +11,8 @@ interface IngredientGroup {
 interface ParsedResult {
   ingredients: { raw: string; parsed: ParsedIngredient }[];
   instructions: { text: string }[];
+  maxIngredientProbability: number;
+  maxInstructionsProbability: number;
 }
 
 const containsUnitKeyword = (text: string): boolean => {
@@ -43,7 +45,12 @@ const containsUnitKeyword = (text: string): boolean => {
 
 export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
   if (textNodes.length === 0) {
-    return { ingredients: [], instructions: [] };
+    return {
+      ingredients: [],
+      instructions: [],
+      maxIngredientProbability: 0,
+      maxInstructionsProbability: 0,
+    };
   }
 
   const result: IngredientGroup[] = [];
@@ -266,7 +273,19 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
     instructions.push(
       ...maxInstructionsGroup.nodes.map((node) => ({ text: node.text }))
     );
+
+    return {
+      ingredients,
+      instructions,
+      maxIngredientProbability: maxIngredientGroup.ingredientProbability,
+      maxInstructionsProbability: maxInstructionsGroup.instructionsProbability,
+    };
   }
 
-  return { ingredients, instructions };
+  return {
+    ingredients,
+    instructions,
+    maxIngredientProbability: 0,
+    maxInstructionsProbability: 0,
+  };
 };

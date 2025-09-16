@@ -74,6 +74,25 @@ export const processRecipeExtraction = async (
     const title = extractTitle(html, url || "");
     const recipeYield = extractYield(textNodes);
 
+    // Validate recipe based on probability scores
+    const RECIPE_VALIDATION_THRESHOLD = 0.3; // Adjust this threshold as needed
+    const isRecipeValid =
+      parsedNodes.maxIngredientProbability >= RECIPE_VALIDATION_THRESHOLD &&
+      parsedNodes.maxInstructionsProbability >= RECIPE_VALIDATION_THRESHOLD;
+
+    if (!isRecipeValid) {
+      console.log("Recipe validation failed - low probability scores:", {
+        ingredientProbability: parsedNodes.maxIngredientProbability,
+        instructionsProbability: parsedNodes.maxInstructionsProbability,
+        threshold: RECIPE_VALIDATION_THRESHOLD,
+      });
+      return {
+        success: false,
+        error: "No recipe detected",
+        data: null,
+      };
+    }
+
     return {
       success: true,
       error: null,
