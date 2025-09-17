@@ -265,15 +265,15 @@ export const UNIT_KEYWORDS: Record<
   },
   liter: {
     dutch: ["l", "liter"],
-    english: ["l", "liter"],
+    english: ["l", "liter", "liters"],
   },
   teaspoon: {
     dutch: ["tl", "theelepel"],
-    english: ["tsp", "teaspoon"],
+    english: ["tsp", "teaspoon", "teaspoons"],
   },
   tablespoon: {
     dutch: ["el", "eetlepel"],
-    english: ["tbsp", "tablespoon"],
+    english: ["tbsp", "tablespoon", "tablespoons"],
   },
   piece: {
     dutch: ["st", "stuk", "stuks"],
@@ -282,5 +282,9 @@ export const UNIT_KEYWORDS: Record<
   clove: {
     dutch: ["teen", "teentje"],
     english: ["clove", "cloves"],
+  },
+  pinch: {
+    dutch: ["mespunt", "mespuntje"],
+    english: ["pinch", "pinches"],
   },
 };

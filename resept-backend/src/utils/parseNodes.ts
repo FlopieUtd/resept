@@ -60,6 +60,49 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
   let interruptingElementType: string | null = null;
   let consecutiveInterruptions = 0;
 
+  const computeIngredientProbability = (nodes: TextNode[]): number => {
+    const nodesStartingWithNumber = nodes.filter((node) =>
+      /^\d/.test(node.text.trim())
+    ).length;
+    const nodesWithLessThan10WordsAndMoreThan1Word = nodes.filter((node) => {
+      const wordCount = node.text.trim().split(/\s+/).length;
+      return wordCount < 10 && wordCount > 1;
+    }).length;
+    const nodesWithUnitKeywords = nodes.filter((node) =>
+      containsUnitKeyword(node.text)
+    ).length;
+
+    const factor1 = nodesStartingWithNumber / nodes.length;
+    const factor2 = nodesWithLessThan10WordsAndMoreThan1Word / nodes.length;
+    const factor3 = nodesWithUnitKeywords / nodes.length;
+    const oldFactors = (factor1 + factor2) / 2;
+    const probability = oldFactors * 0.5 + factor3 * 0.5;
+    return probability;
+  };
+
+  const finalizeGroupHomogeneous = () => {
+    if (currentGroup.length === 0) return;
+    let startIndex = 0;
+    while (startIndex < currentGroup.length) {
+      const startType = currentGroup[startIndex].elementType;
+      let endIndex = startIndex + 1;
+      while (
+        endIndex < currentGroup.length &&
+        currentGroup[endIndex].elementType === startType
+      ) {
+        endIndex++;
+      }
+      const subGroup = currentGroup.slice(startIndex, endIndex);
+      const probability = computeIngredientProbability(subGroup);
+      result.push({
+        ingredientProbability: probability,
+        instructionsProbability: 0,
+        nodes: [...subGroup],
+      });
+      startIndex = endIndex;
+    }
+  };
+
   for (let i = 0; i < textNodes.length; i++) {
     const node = textNodes[i];
 
@@ -85,30 +128,7 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
         } else {
           // Different interrupting element type - start new group
           if (currentGroup.length > 0) {
-            const nodesStartingWithNumber = currentGroup.filter((node) =>
-              /^\d/.test(node.text.trim())
-            ).length;
-            const nodesWithLessThan10WordsAndMoreThan1Word =
-              currentGroup.filter((node) => {
-                const wordCount = node.text.trim().split(/\s+/).length;
-                return wordCount < 10 && wordCount > 1;
-              }).length;
-            const nodesWithUnitKeywords = currentGroup.filter((node) =>
-              containsUnitKeyword(node.text)
-            ).length;
-
-            const factor1 = nodesStartingWithNumber / currentGroup.length;
-            const factor2 =
-              nodesWithLessThan10WordsAndMoreThan1Word / currentGroup.length;
-            const factor3 = nodesWithUnitKeywords / currentGroup.length;
-            const oldFactors = (factor1 + factor2) / 2; // Average of first two factors (0-1)
-            const probability = oldFactors * 0.5 + factor3 * 0.5; // True 50/50 split
-
-            result.push({
-              ingredientProbability: probability,
-              instructionsProbability: 0,
-              nodes: [...currentGroup],
-            });
+            finalizeGroupHomogeneous();
           }
           currentGroup = [node];
           currentElementType = node.elementType;
@@ -119,31 +139,7 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
     } else {
       // Different depth - finalize current group and start new one
       if (currentGroup.length > 0) {
-        const nodesStartingWithNumber = currentGroup.filter((node) =>
-          /^\d/.test(node.text.trim())
-        ).length;
-        const nodesWithLessThan10WordsAndMoreThan1Word = currentGroup.filter(
-          (node) => {
-            const wordCount = node.text.trim().split(/\s+/).length;
-            return wordCount < 10 && wordCount > 1;
-          }
-        ).length;
-        const nodesWithUnitKeywords = currentGroup.filter((node) =>
-          containsUnitKeyword(node.text)
-        ).length;
-
-        const factor1 = nodesStartingWithNumber / currentGroup.length;
-        const factor2 =
-          nodesWithLessThan10WordsAndMoreThan1Word / currentGroup.length;
-        const factor3 = nodesWithUnitKeywords / currentGroup.length;
-        const oldFactors = (factor1 + factor2) / 2; // Average of first two factors (0-1)
-        const probability = oldFactors * 0.5 + factor3 * 0.5; // True 50/50 split
-
-        result.push({
-          ingredientProbability: probability,
-          instructionsProbability: 0,
-          nodes: [...currentGroup],
-        });
+        finalizeGroupHomogeneous();
       }
       currentGroup = [node];
       currentDepth = node.depth;
@@ -154,31 +150,7 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
   }
 
   if (currentGroup.length > 0) {
-    const nodesStartingWithNumber = currentGroup.filter((node) =>
-      /^\d/.test(node.text.trim())
-    ).length;
-    const nodesWithLessThan10WordsAndMoreThan1Word = currentGroup.filter(
-      (node) => {
-        const wordCount = node.text.trim().split(/\s+/).length;
-        return wordCount < 10 && wordCount > 1;
-      }
-    ).length;
-    const nodesWithUnitKeywords = currentGroup.filter((node) =>
-      containsUnitKeyword(node.text)
-    ).length;
-
-    const factor1 = nodesStartingWithNumber / currentGroup.length;
-    const factor2 =
-      nodesWithLessThan10WordsAndMoreThan1Word / currentGroup.length;
-    const factor3 = nodesWithUnitKeywords / currentGroup.length;
-    const oldFactors = (factor1 + factor2) / 2; // Average of first two factors (0-1)
-    const probability = oldFactors * 0.5 + factor3 * 0.5; // True 50/50 split
-
-    result.push({
-      ingredientProbability: probability,
-      instructionsProbability: 0,
-      nodes: [...currentGroup],
-    });
+    finalizeGroupHomogeneous();
   }
 
   const filteredResult = result.filter((group) => group.nodes.length >= 2);
