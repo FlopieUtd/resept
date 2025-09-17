@@ -16,7 +16,7 @@ export const Menu = () => {
     <div className="w-[240px] h-full border-r flex-col bg-[#f9f9f9] fixed lg:flex hidden">
       <Link
         to="/recipes"
-        className="px-[12px] py-[6px] border-b hover:bg-[#f0f0f0] cursor-pointer font-bold"
+        className="px-[12px] py-[6px] border-b hover:bg-[#f0f0f0] cursor-pointer"
       >
         Recepten
       </Link>
