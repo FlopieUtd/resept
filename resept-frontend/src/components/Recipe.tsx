@@ -30,7 +30,7 @@ import { useLanguageDetection } from "../hooks/useLanguageDetection";
 export const Recipe = () => {
   const { recipeId } = useParams();
   const navigate = useNavigate();
-  const { data: recipe, isLoading, error } = useRecipe(recipeId!);
+  const { data: recipe, isLoading, error, isFetching } = useRecipe(recipeId!);
   const { refetch: refetchRecipes } = useRecipes();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -70,7 +70,7 @@ export const Recipe = () => {
     };
   }, [recipe?.title]);
 
-  if (isLoading) {
+  if (isLoading && !recipe) {
     return <Loading />;
   }
 

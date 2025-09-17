@@ -33,6 +33,7 @@ export const useRecipes = () => {
 
 export const useRecipe = (recipeId: string) => {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
 
   return useQuery({
     queryKey: ["recipe", recipeId],
@@ -57,6 +58,24 @@ export const useRecipe = (recipeId: string) => {
     enabled: !!user && !!recipeId,
     retry: 2,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    initialData: () => {
+      const recipes = queryClient.getQueryData(["recipes"]);
+      if (Array.isArray(recipes)) {
+        return recipes.find((recipe: any) => recipe.id === recipeId);
+      }
+      return undefined;
+    },
+    initialDataUpdatedAt: () => {
+      const recipes = queryClient.getQueryData(["recipes"]);
+      if (Array.isArray(recipes)) {
+        const recipe = recipes.find((recipe: any) => recipe.id === recipeId);
+        if (recipe) {
+          return queryClient.getQueryState(["recipes"])?.dataUpdatedAt || 0;
+        }
+      }
+      return 0;
+    },
+    staleTime: 5 * 60 * 1000,
   });
 };
 
