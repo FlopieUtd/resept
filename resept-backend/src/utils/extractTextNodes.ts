@@ -1,4 +1,5 @@
 import * as cheerio from "cheerio";
+import { normalizeListItemPrefix } from "./normalizeText.js";
 
 export interface TextNode {
   depth: number;
@@ -66,7 +67,7 @@ export const extractTextNodes = (html: string): TextNode[] => {
               const parentTag = $el.prop("tagName")?.toLowerCase() || "unknown";
               textNodes.push({
                 depth: adjustedDepth,
-                text: stripHtmlTags(buffer.trim()),
+                text: normalizeListItemPrefix(stripHtmlTags(buffer.trim())),
                 elementType: parentTag,
               });
             }
@@ -89,7 +90,7 @@ export const extractTextNodes = (html: string): TextNode[] => {
               const parentTag = $el.prop("tagName")?.toLowerCase() || "unknown";
               textNodes.push({
                 depth: adjustedDepth,
-                text: stripHtmlTags(buffer.trim()),
+                text: normalizeListItemPrefix(stripHtmlTags(buffer.trim())),
                 elementType: parentTag,
               });
               buffer = "";
@@ -103,7 +104,7 @@ export const extractTextNodes = (html: string): TextNode[] => {
         const parentTag = $el.prop("tagName")?.toLowerCase() || "unknown";
         textNodes.push({
           depth: adjustedDepth,
-          text: stripHtmlTags(buffer.trim()),
+          text: normalizeListItemPrefix(stripHtmlTags(buffer.trim())),
           elementType: parentTag,
         });
       }

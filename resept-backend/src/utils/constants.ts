@@ -213,6 +213,14 @@ export const COOKING_IMPERATIVES: Record<
     dutch: "zet",
     english: "set",
   },
+  drain: {
+    dutch: "spoel",
+    english: "drain",
+  },
+  return: {
+    english: ["return"],
+    dutch: [],
+  },
 };
 
 export const YIELD_KEYWORDS: Record<
@@ -286,5 +294,13 @@ export const UNIT_KEYWORDS: Record<
   pinch: {
     dutch: ["mespunt", "mespuntje"],
     english: ["pinch", "pinches"],
+  },
+  ounce: {
+    english: ["oz", "ounce", "ounces"],
+    dutch: ["ons"],
+  },
+  cups: {
+    dutch: [],
+    english: ["cup", "cups"],
   },
 };
