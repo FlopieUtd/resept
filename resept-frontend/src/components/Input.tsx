@@ -14,7 +14,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       `${baseClasses} ${errorClasses} ${className}`.trim();
 
     return (
-      <div className="w-full">
+      <div className="w-full text-[14px]">
         {label && (
           <label className="block text-sm font-medium text-gray-700 mb-1">
             {label}

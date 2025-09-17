@@ -28,7 +28,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     ref
   ) => {
     const baseClasses =
-      "w-full border border-neutral-400 focus:border-black rounded-[4px] px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black bg-white h-[42px]";
+      "w-full border border-neutral-400 focus:border-black rounded-[4px] px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black bg-white h-[39px]";
     const errorClasses = error ? "border-red-500 focus:ring-red-500" : "";
     const combinedClasses =
       `${baseClasses} ${errorClasses} ${className}`.trim();
@@ -87,9 +87,9 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     };
 
     return (
-      <div className="w-full" ref={containerRef}>
+      <div className="w-full text-[14px]" ref={containerRef}>
         {label && (
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1 text-[14px]">
             {label}
           </label>
         )}

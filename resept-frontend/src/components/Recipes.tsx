@@ -172,14 +172,16 @@ export const Recipes = () => {
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            <div className="w-full flex gap-2 items-center">
-              <Input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Zoek recepten..."
-              />
-              <div className="w-[260px]">
+            <div className="w-full flex gap-3 items-center">
+              <div className="w-[75%]">
+                <Input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Zoek recepten..."
+                />
+              </div>
+              <div className="w-[25%]">
                 <Select
                   value={sortKey}
                   onChange={(e) =>
