@@ -346,7 +346,7 @@ export const RecipeEditModal = ({
     >
       <div className="bg-white max-w-[1080px] w-full max-h-[95vh] overflow-y-auto rounded-[8px] shadow-xl">
         <div className="">
-          <div className="flex justify-between items-center mb-6 py-[24px] px-[24px] sticky top-0 bg-white">
+          <div className="flex justify-between items-center mb-6 py-[16px] px-[16px] sticky top-0 bg-white">
             <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
             <button onClick={onClose} className="">
               <X size={24} weight="bold" />
@@ -354,12 +354,12 @@ export const RecipeEditModal = ({
           </div>
 
           {showImport && (
-            <div className="pb-[16px]  border-b mb-[16px] px-[24px]">
+            <div className="pb-[16px]  border-b mb-[16px] px-[16px]">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">
                 Recept importeren van URL
               </h3>
               <form onSubmit={handleImportSubmit} className="space-y-4">
-                <div className="flex gap-4">
+                <div className="flex gap-[12px]">
                   <div className="flex-1">
                     <Input
                       type="url"
@@ -382,8 +382,8 @@ export const RecipeEditModal = ({
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6 px-[24px]">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="space-y-6 px-[16px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-[12px]">
               <div>
                 <Input
                   label="Titel"
@@ -559,7 +559,7 @@ export const RecipeEditModal = ({
               </div>
             </div>
 
-            <div className="flex justify-between items-center gap-4 border-t sticky bottom-0 bg-white py-[24px]">
+            <div className="flex justify-between items-center gap-[12px] border-t sticky bottom-0 bg-white py-[16px]">
               <div className="flex gap-2">
                 {onDelete && (
                   <Button
@@ -572,7 +572,7 @@ export const RecipeEditModal = ({
                   </Button>
                 )}
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-[12px]">
                 <Button type="button" onClick={onClose} variant="secondary">
                   Annuleren
                 </Button>

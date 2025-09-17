@@ -13,10 +13,10 @@ export const Menu = () => {
   };
 
   return (
-    <div className="w-[240px] h-full border-r flex-col bg-[#f9f9f9] fixed lg:flex hidden">
+    <div className="w-[240px] h-full border-r flex-col bg-[#f9f9f9] fixed lg:flex hidden text-[14px]">
       <Link
         to="/recipes"
-        className="px-[12px] py-[6px] border-b hover:bg-[#f0f0f0] cursor-pointer"
+        className="px-[12px] py-[8px] border-b hover:bg-[#f0f0f0] cursor-pointer"
       >
         Recepten
       </Link>

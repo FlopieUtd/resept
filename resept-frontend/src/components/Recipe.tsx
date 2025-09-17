@@ -162,7 +162,7 @@ export const Recipe = () => {
               <div className="bg-[#f9f9f9] text-[14px] flex">
                 <button
                   onClick={decrementRecipeYield}
-                  className="py-[4px] px-[12px] hover:bg-[#eee]"
+                  className="py-[4px] flex justify-center w-[29px] hover:bg-[#eee]"
                 >
                   -
                 </button>
@@ -180,7 +180,7 @@ export const Recipe = () => {
                 </div>
                 <button
                   onClick={incrementRecipeYield}
-                  className="py-[4px] px-[12px] hover:bg-[#eee]"
+                  className="py-[4px] flex justify-center w-[29px] hover:bg-[#eee]"
                 >
                   +
                 </button>

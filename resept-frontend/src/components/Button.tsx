@@ -18,7 +18,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseClasses =
-      "focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed rounded-[4px] px-[24px] py-[11px] text-sm";
+      "focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed rounded-[4px] px-[24px] py-[9px] text-sm";
 
     const variantClasses = {
       primary: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
