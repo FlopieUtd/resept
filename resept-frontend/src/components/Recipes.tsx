@@ -59,7 +59,7 @@ export const Recipes = () => {
     let filtered = recipes;
 
     if (q !== "") {
-      const includes = (text: string) => text.toLowerCase().includes(q);
+      const words = q.split(/\s+/).filter(Boolean);
 
       const isSection = (
         item: RecipeInstructionItem
@@ -83,14 +83,14 @@ export const Recipes = () => {
       };
 
       filtered = recipes.filter((recipe) => {
-        const titleMatch = includes(recipe.title || "");
+        const title = recipe.title || "";
         const ingredientsText = (recipe.ingredients || [])
           .map((i: IngredientLine) => i.raw || "")
           .join(" ");
-        const ingredientsMatch = includes(ingredientsText);
         const instructionsText = instructionTexts(recipe.instructions || []);
-        const instructionsMatch = includes(instructionsText);
-        return titleMatch || ingredientsMatch || instructionsMatch;
+        const haystack =
+          `${title} ${ingredientsText} ${instructionsText}`.toLowerCase();
+        return words.every((w) => haystack.includes(w));
       });
     }
 
