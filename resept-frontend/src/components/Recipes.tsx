@@ -6,6 +6,7 @@ import { RecipeEditModal } from "./RecipeEditModal";
 import { Input } from "./Input";
 import { PlusIcon } from "@phosphor-icons/react";
 import { useMemo, useState } from "react";
+import { Select } from "./Select";
 import {
   type CreateRecipeData,
   type RecipeInstructionItem,
@@ -20,6 +21,36 @@ export const Recipes = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const createRecipe = useCreateRecipe();
   const [query, setQuery] = useState("");
+  const [sortKey, setSortKey] = useState<
+    "alpha" | "date" | "ingredients" | "time"
+  >("alpha");
+
+  type RecipeListItem = {
+    id: string;
+    title?: string;
+    created_at: string;
+    ingredients: IngredientLine[];
+    total_time?: string;
+    instructions?: RecipeInstructionItem[];
+  };
+
+  const durationToMinutes = (timeString: string | null | undefined) => {
+    if (!timeString) return 0;
+    const iso = timeString.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/i);
+    if (iso) {
+      const hours = parseInt(iso[1] || "0");
+      const minutes = parseInt(iso[2] || "0");
+      const seconds = parseInt(iso[3] || "0");
+      return hours * 60 + minutes + Math.round(seconds / 60);
+    }
+    const hourLike = timeString.match(/(\d+)\s*(h|u)/i);
+    const minLike = timeString.match(/(\d+)\s*m/i);
+    const hours = hourLike ? parseInt(hourLike[1]) : 0;
+    const mins = minLike ? parseInt(minLike[1]) : 0;
+    if (hours || mins) return hours * 60 + mins;
+    const numeric = parseInt(timeString);
+    return isNaN(numeric) ? 0 : numeric;
+  };
 
   const filteredRecipes = useMemo(() => {
     if (!recipes) return [];
@@ -63,13 +94,31 @@ export const Recipes = () => {
       });
     }
 
-    return filtered.sort((a, b) =>
+    const byAlpha = (a: RecipeListItem, b: RecipeListItem) =>
       (a.title || "").localeCompare(b.title || "", undefined, {
         numeric: true,
         sensitivity: "base",
-      })
-    );
-  }, [recipes, query]);
+      });
+    const byDate = (a: RecipeListItem, b: RecipeListItem) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    const byIngredients = (a: RecipeListItem, b: RecipeListItem) =>
+      (a.ingredients?.length || 0) - (b.ingredients?.length || 0);
+    const byTotalTime = (a: RecipeListItem, b: RecipeListItem) =>
+      durationToMinutes(a.total_time) - durationToMinutes(b.total_time);
+
+    const comparators: Record<
+      string,
+      (a: RecipeListItem, b: RecipeListItem) => number
+    > = {
+      alpha: byAlpha,
+      date: byDate,
+      ingredients: byIngredients,
+      time: byTotalTime,
+    };
+
+    const comparator = comparators[sortKey] || byAlpha;
+    return [...filtered].sort(comparator);
+  }, [recipes, query, sortKey]);
 
   const handleSave = async (recipeData: CreateRecipeData) => {
     try {
@@ -123,13 +172,32 @@ export const Recipes = () => {
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            <div className="w-full">
+            <div className="w-full flex gap-2 items-center">
               <Input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Zoek recepten..."
               />
+              <div className="w-[260px]">
+                <Select
+                  value={sortKey}
+                  onChange={(e) =>
+                    setSortKey(
+                      e.target.value as
+                        | "alpha"
+                        | "date"
+                        | "ingredients"
+                        | "time"
+                    )
+                  }
+                >
+                  <option value="alpha">Naam</option>
+                  <option value="date">Datum toegevoegd</option>
+                  <option value="ingredients">Aantal ingrediënten</option>
+                  <option value="time">Totale kooktijd</option>
+                </Select>
+              </div>
             </div>
             {filteredRecipes.length === 0 ? (
               <div className="flex w-full justify-center items-center py-8">
