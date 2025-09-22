@@ -25,31 +25,26 @@ export const ExtensionAuth = () => {
           return;
         }
 
-        // If user is not logged in, redirect to login page
         if (!user || !session) {
           if (isMounted) {
             setStatus("redirecting");
             setMessage("Redirecting to login page...");
           }
 
-          // Store the redirect URI in localStorage so we can come back after login
           localStorage.setItem("extension_redirect_uri", redirectUri);
 
-          // Redirect to login page
           setTimeout(() => {
             if (isMounted) {
-              window.location.href = "/login";
+              window.location.href = "/login?from_extension=1";
             }
           }, 1000);
           return;
         }
 
-        // User is logged in, proceed with token exchange
         const accessToken = session.access_token;
         const refreshToken = session.refresh_token;
         const expiresAt = session.expires_at;
 
-        // Store the tokens in localStorage for extension compatibility
         localStorage.setItem("extension_token", accessToken);
         localStorage.setItem("extension_refresh_token", refreshToken);
         localStorage.setItem(
@@ -75,11 +70,6 @@ export const ExtensionAuth = () => {
             },
             "*"
           );
-
-          // Auto-close after a short delay (disabled for debugging)
-          // setTimeout(() => {
-          //   window.close();
-          // }, 2000);
         }
       } catch (error) {
         if (isMounted) {

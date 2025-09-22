@@ -139,7 +139,7 @@ export const Recipes = () => {
 
   return (
     <div className="flex w-full h-full justify-center">
-      <div className="flex w-full max-w-[1080px] m-[24px] flex-col">
+      <div className="flex w-full max-w-[1080px] m-[12px] sm:m-[24px] flex-col">
         <div className="flex justify-between items-center mb-6 w-full border-b-2 border-black pb-[12px]">
           <h1 className="text-3xl font-bold">
             {recipes ? recipes.length : ""} Recepten

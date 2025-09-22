@@ -115,9 +115,9 @@ export const Recipe = () => {
 
   return (
     <div className="flex w-full min-h-screen justify-center items-start">
-      <div className="flex w-full max-w-[1080px] mx-[24px] flex-col justify-center min-h-screen">
+      <div className="flex w-full max-w-[1080px] mx-[12px] sm:mx-[24px] flex-col justify-center min-h-screen">
         <div
-          className="flex flex-col border-b-[2px] border-black mb-[24px] mt-[36px]"
+          className="flex flex-col border-b-[2px] border-black mb-[24px] mt-[12px] sm:mt-[36px]"
           key={refreshTrigger}
         >
           <div className="flex justify-between items-center mb-[12px] gap-[12px]">
@@ -152,7 +152,7 @@ export const Recipe = () => {
             </div>
           </div>
         </div>
-        <div className=" mb-[36px] flex flex-col gap-[16px]">
+        <div className="mb-[12px] sm:mb-[36px] flex flex-col gap-[16px]">
           {recipe.description && (
             <div className="font-radley text-[18px]">{recipe.description}</div>
           )}

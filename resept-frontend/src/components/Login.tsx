@@ -28,22 +28,27 @@ export const Login = () => {
       } else {
         await signIn(email, password);
 
-        // Check if this is an extension login
-        const extensionRedirectUri = localStorage.getItem(
-          "extension_redirect_uri"
-        );
-        if (extensionRedirectUri) {
-          // Clear the stored redirect URI
-          localStorage.removeItem("extension_redirect_uri");
-          // Redirect back to extension auth page
-          navigate(
-            `/auth/extension?redirect_uri=${encodeURIComponent(
-              extensionRedirectUri
-            )}`
+        const params = new URLSearchParams(location.search);
+        const fromExtension = params.get("from_extension") === "1";
+
+        if (fromExtension) {
+          const extensionRedirectUri = localStorage.getItem(
+            "extension_redirect_uri"
           );
+          if (extensionRedirectUri) {
+            localStorage.removeItem("extension_redirect_uri");
+            navigate(
+              `/auth/extension?redirect_uri=${encodeURIComponent(
+                extensionRedirectUri
+              )}`
+            );
+            return;
+          }
         } else {
-          navigate("/");
+          localStorage.removeItem("extension_redirect_uri");
         }
+
+        navigate("/");
       }
     } catch (err) {
       setError(

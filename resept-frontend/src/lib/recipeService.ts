@@ -2,6 +2,7 @@ import { supabase } from "./supabase";
 import { type CreateRecipeData } from "../types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../contexts/AuthContext";
+import { requestWithAuthRetry } from "./requestWithAuthRetry";
 
 export const useRecipes = () => {
   const { user } = useAuth();
@@ -13,15 +14,13 @@ export const useRecipes = () => {
         throw new Error("User not authenticated");
       }
 
-      const { data, error } = await supabase
-        .from("recipes")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        throw new Error(`Failed to fetch recipes: ${error.message}`);
-      }
+      const data = await requestWithAuthRetry(async () =>
+        supabase
+          .from("recipes")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+      );
 
       return data || [];
     },
@@ -42,16 +41,14 @@ export const useRecipe = (recipeId: string) => {
         throw new Error("User not authenticated");
       }
 
-      const { data, error } = await supabase
-        .from("recipes")
-        .select("*")
-        .eq("id", recipeId)
-        .eq("user_id", user.id)
-        .single();
-
-      if (error) {
-        throw new Error(`Failed to fetch recipe: ${error.message}`);
-      }
+      const data = await requestWithAuthRetry(async () =>
+        supabase
+          .from("recipes")
+          .select("*")
+          .eq("id", recipeId)
+          .eq("user_id", user.id)
+          .single()
+      );
 
       return data;
     },
@@ -89,29 +86,27 @@ export const useCreateRecipe = () => {
         throw new Error("User not authenticated");
       }
 
-      const { data, error } = await supabase
-        .from("recipes")
-        .insert([
-          {
-            user_id: user.id,
-            title: recipeData.title,
-            recipe_yield: recipeData.recipe_yield,
-            recipe_category: recipeData.recipe_category,
-            description: recipeData.description,
-            prep_time: recipeData.prep_time,
-            cook_time: recipeData.cook_time,
-            total_time: recipeData.total_time,
-            ingredients: recipeData.ingredients,
-            instructions: recipeData.instructions,
-            source_url: recipeData.source_url,
-          },
-        ])
-        .select()
-        .single();
-
-      if (error) {
-        throw new Error(`Failed to create recipe: ${error.message}`);
-      }
+      const data = await requestWithAuthRetry(async () =>
+        supabase
+          .from("recipes")
+          .insert([
+            {
+              user_id: user.id,
+              title: recipeData.title,
+              recipe_yield: recipeData.recipe_yield,
+              recipe_category: recipeData.recipe_category,
+              description: recipeData.description,
+              prep_time: recipeData.prep_time,
+              cook_time: recipeData.cook_time,
+              total_time: recipeData.total_time,
+              ingredients: recipeData.ingredients,
+              instructions: recipeData.instructions,
+              source_url: recipeData.source_url,
+            },
+          ])
+          .select()
+          .single()
+      );
 
       return data;
     },
@@ -140,17 +135,15 @@ export const useUpdateRecipe = () => {
         throw new Error("User not authenticated");
       }
 
-      const { data, error } = await supabase
-        .from("recipes")
-        .update(updates)
-        .eq("id", recipeId)
-        .eq("user_id", user.id)
-        .select()
-        .single();
-
-      if (error) {
-        throw new Error(`Failed to update recipe: ${error.message}`);
-      }
+      const data = await requestWithAuthRetry(async () =>
+        supabase
+          .from("recipes")
+          .update(updates)
+          .eq("id", recipeId)
+          .eq("user_id", user.id)
+          .select()
+          .single()
+      );
 
       return data;
     },
@@ -174,15 +167,13 @@ export const useDeleteRecipe = () => {
         throw new Error("User not authenticated");
       }
 
-      const { error } = await supabase
-        .from("recipes")
-        .delete()
-        .eq("id", recipeId)
-        .eq("user_id", user.id);
-
-      if (error) {
-        throw new Error(`Failed to delete recipe: ${error.message}`);
-      }
+      await requestWithAuthRetry(async () =>
+        supabase
+          .from("recipes")
+          .delete()
+          .eq("id", recipeId)
+          .eq("user_id", user.id)
+      );
 
       return true;
     },
