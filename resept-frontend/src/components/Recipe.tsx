@@ -141,7 +141,7 @@ export const Recipe = () => {
                     setIsFullscreen(false);
                   }
                 }}
-                className="bg-white text-black p-[8px] rounded-lg hover:bg-gray-200 transition-colors"
+                className="hidden sm:flex bg-white text-black p-[8px] rounded-lg hover:bg-gray-200 transition-colors"
               >
                 {isFullscreen ? (
                   <ArrowsInSimple size={24} />

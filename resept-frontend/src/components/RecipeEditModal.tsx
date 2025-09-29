@@ -573,9 +573,6 @@ export const RecipeEditModal = ({
                 )}
               </div>
               <div className="flex gap-[12px]">
-                <Button type="button" onClick={onClose} variant="secondary">
-                  Annuleren
-                </Button>
                 <Button type="submit" loading={isSaving}>
                   Opslaan
                 </Button>
