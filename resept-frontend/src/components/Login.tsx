@@ -66,7 +66,7 @@ export const Login = () => {
           Resept
         </h2>
         <div className="flex justify-center w-full mb-[24px]">
-          <img src={garlicImage} className="w-[140px] " />
+          <img src={garlicImage} className="w-[100px] md:w-[140px]" />
         </div>
         {successMessage && (
           <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">

@@ -124,7 +124,7 @@ export const Recipe = () => {
           key={refreshTrigger}
         >
           <div className="flex justify-between items-center mb-[12px] gap-[12px]">
-            <h1 className="text-[48px] font-bold text-balance">
+            <h1 className="text-[36px] sm:text-[48px] font-bold text-balance">
               {recipe.title}
             </h1>
             <div className="flex gap-[8px]">
@@ -346,16 +346,16 @@ export const Recipe = () => {
         <div className="max-w-[1080px] mx-auto flex">
           <button
             onClick={() => setActiveTab("ingredients")}
-            className={`flex-1 py-[12px] border-r ${
-              activeTab === "ingredients" ? "font-bold" : ""
+            className={`flex-1 py-[8px] border-r ${
+              activeTab === "ingredients" ? "font-bold" : "bg-[#f9f9f9]"
             }`}
           >
             {t.ingredients}
           </button>
           <button
             onClick={() => setActiveTab("instructions")}
-            className={`flex-1 py-[12px] ${
-              activeTab === "instructions" ? "font-bold" : ""
+            className={`flex-1 py-[8px] ${
+              activeTab === "instructions" ? "font-bold" : "bg-[#f9f9f9]"
             }`}
           >
             {t.instructions}
