@@ -44,6 +44,40 @@ export const extractTextNodes = (html: string): TextNode[] => {
     const extractTextNodes = (element: cheerio.Element, depth: number = 0) => {
       const $el = $cleanWithBrDivs(element);
 
+      const tagName = $el.prop("tagName")?.toLowerCase() || "unknown";
+      if (tagName === "tr") {
+        const children = $el.children();
+        const childrenArr = children.toArray();
+        const allCells =
+          childrenArr.length > 0 &&
+          childrenArr.every((n) => {
+            const name = (n as any).name?.toLowerCase();
+            return name === "td" || name === "th";
+          });
+        const hasColspan = childrenArr.some((n) => {
+          const attribs = (n as any).attribs || {};
+          return (
+            attribs["colspan"] !== undefined && attribs["colspan"] !== null
+          );
+        });
+
+        if (allCells && !hasColspan) {
+          const cellTexts = childrenArr
+            .map((n) => $cleanWithBrDivs(n).text().trim())
+            .map((t) => stripHtmlTags(t))
+            .filter((t) => t.length > 0);
+          const joined = cellTexts.join(" ").trim();
+          if (joined.length > 0) {
+            textNodes.push({
+              depth,
+              text: normalizeListItemPrefix(joined),
+              elementType: "tr",
+            });
+          }
+          return;
+        }
+      }
+
       // Check if this element contains <br> tags
       const hasBrTags = $el.find("br").length > 0;
       const adjustedDepth = hasBrTags ? depth + 1 : depth;

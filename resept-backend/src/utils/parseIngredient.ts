@@ -36,13 +36,14 @@ export const parseIngredient = (text: string): ParsedIngredient => {
   // Decode HTML entities first to ensure proper parsing
   const decodedText = decodeHtmlEntities(text);
   const trimmedText = decodedText.trim();
+  const normalizedSlashText = trimmedText.replace(/\u2044/g, "/");
 
   // Default values
   let amount: number | undefined = undefined;
   let rawWithoutAmount = trimmedText;
 
   // Check for ranges first (including HTML entity decoded hyphens)
-  const rangeMatch = trimmedText.match(/^(\d+)\s*[-–—‐‑]\s*(\d+)/);
+  const rangeMatch = normalizedSlashText.match(/^(\d+)\s*[-–—‐‑]\s*(\d+)/);
   if (rangeMatch) {
     const min = parseInt(rangeMatch[1]);
     const max = parseInt(rangeMatch[2]);
@@ -50,7 +51,7 @@ export const parseIngredient = (text: string): ParsedIngredient => {
 
     return {
       amount: min,
-      rawWithoutAmount: trimmedText
+      rawWithoutAmount: normalizedSlashText
         .replace(new RegExp(`^${fullRange}\\s*`), "")
         .trim(),
       amountMax: max,
@@ -84,7 +85,7 @@ export const parseIngredient = (text: string): ParsedIngredient => {
 
   // Find amount
   for (const pattern of amountPatterns) {
-    const match = trimmedText.match(pattern);
+    const match = normalizedSlashText.match(pattern);
     if (match) {
       matchedAmount = match[1] || match[0];
       break;
@@ -171,7 +172,7 @@ export const parseIngredient = (text: string): ParsedIngredient => {
     }
 
     // Extract text without the amount
-    rawWithoutAmount = trimmedText
+    rawWithoutAmount = normalizedSlashText
       .replace(new RegExp(`^${matchedAmount}\\s*`), "")
       .trim();
   }
