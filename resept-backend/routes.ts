@@ -58,7 +58,6 @@ router.post("/auth/refresh", async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Missing refresh_token" });
     }
 
-    // Use Supabase to refresh the token
     const {
       data: { session },
       error,
@@ -67,10 +66,15 @@ router.post("/auth/refresh", async (req: Request, res: Response) => {
     });
 
     if (error || !session) {
-      console.error("❌ [REFRESH] Token refresh failed:", error);
-      return res
-        .status(403)
-        .json({ error: "Invalid or expired refresh token" });
+      const isTokenNotFound =
+        error?.code === "refresh_token_not_found" ||
+        error?.message?.includes("Refresh Token Not Found");
+
+      return res.status(403).json({
+        error: error?.message || "Invalid or expired refresh token",
+        code: error?.code || "refresh_token_invalid",
+        clearTokens: isTokenNotFound,
+      });
     }
 
     return res.status(200).json({
@@ -78,7 +82,7 @@ router.post("/auth/refresh", async (req: Request, res: Response) => {
       refresh_token: session.refresh_token,
       expires_at: session.expires_at,
     });
-  } catch (error) {
+  } catch (error: any) {
     return res.status(500).json({ error: "Token refresh failed" });
   }
 });
