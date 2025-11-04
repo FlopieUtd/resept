@@ -365,7 +365,14 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
     return undefined;
   };
 
-  const ingredientGroups: IngredientGroup[] = [];
+  interface GroupWithMetadata {
+    group: InternalIngredientGroup;
+    originalIndex: number;
+    title: string | undefined;
+    ingredientLines: IngredientLine[];
+  }
+
+  const candidateGroups: GroupWithMetadata[] = [];
   let currentTitle: string | undefined = undefined;
 
   const findOriginalIndex = (
@@ -415,14 +422,121 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
       });
 
       if (ingredientLines.length > 0) {
-        ingredientGroups.push({
+        candidateGroups.push({
+          group,
+          originalIndex,
           title: titleToUse,
-          ingredients: ingredientLines,
+          ingredientLines,
         });
         currentTitle = undefined;
       }
     }
   }
+
+  const calculatePairwiseDistance = (
+    a: GroupWithMetadata,
+    b: GroupWithMetadata
+  ): number => {
+    const sequenceDistance = Math.abs(a.originalIndex - b.originalIndex);
+
+    const avgDepthA =
+      a.group.nodes.reduce((sum, n) => sum + n.depth, 0) / a.group.nodes.length;
+    const avgDepthB =
+      b.group.nodes.reduce((sum, n) => sum + n.depth, 0) / b.group.nodes.length;
+    const depthDistance = Math.abs(avgDepthA - avgDepthB);
+
+    const sizeDistance = Math.abs(a.group.nodes.length - b.group.nodes.length);
+
+    const titlePatternA = a.title
+      ?.toLowerCase()
+      .match(/^voor\s+(de|het|een)?\s*\w+$/i)
+      ? 1
+      : 0;
+    const titlePatternB = b.title
+      ?.toLowerCase()
+      .match(/^voor\s+(de|het|een)?\s*\w+$/i)
+      ? 1
+      : 0;
+    const patternDistance = titlePatternA !== titlePatternB ? 1 : 0;
+
+    const normalizedSequence =
+      sequenceDistance / Math.max(candidateGroups.length, 1);
+    const normalizedDepth = depthDistance / 10;
+    const normalizedSize =
+      sizeDistance / Math.max(a.group.nodes.length, b.group.nodes.length, 1);
+
+    return (
+      normalizedSequence * 0.3 +
+      normalizedDepth * 0.3 +
+      normalizedSize * 0.2 +
+      patternDistance * 0.2
+    );
+  };
+
+  const findMainCluster = (
+    groups: GroupWithMetadata[]
+  ): GroupWithMetadata[] => {
+    if (groups.length <= 1) {
+      return groups;
+    }
+
+    const distances: number[][] = [];
+    for (let i = 0; i < groups.length; i++) {
+      distances[i] = [];
+      for (let j = 0; j < groups.length; j++) {
+        if (i === j) {
+          distances[i][j] = 0;
+        } else {
+          distances[i][j] = calculatePairwiseDistance(groups[i], groups[j]);
+        }
+      }
+    }
+
+    const threshold = 0.5;
+    const clusters: number[][] = [];
+    const visited = new Set<number>();
+
+    for (let i = 0; i < groups.length; i++) {
+      if (visited.has(i)) continue;
+
+      const cluster: number[] = [i];
+      visited.add(i);
+
+      for (let j = i + 1; j < groups.length; j++) {
+        if (visited.has(j)) continue;
+
+        let minDistanceToCluster = Infinity;
+        for (const memberIdx of cluster) {
+          minDistanceToCluster = Math.min(
+            minDistanceToCluster,
+            distances[memberIdx][j]
+          );
+        }
+
+        if (minDistanceToCluster <= threshold) {
+          cluster.push(j);
+          visited.add(j);
+        }
+      }
+
+      clusters.push(cluster);
+    }
+
+    const mainCluster = clusters.reduce((max, cluster) =>
+      cluster.length > max.length ? cluster : max
+    );
+
+    return mainCluster.map((idx) => groups[idx]);
+  };
+
+  const clusteredGroups = findMainCluster(candidateGroups);
+
+  const ingredientGroups: IngredientGroup[] = clusteredGroups.map(
+    (candidate) => ({
+      title: candidate.title,
+      ingredients: candidate.ingredientLines,
+    })
+  );
 
   if (ingredientGroups.length === 0) {
     const maxIngredientGroup = filteredResult.reduce((max, group) =>
