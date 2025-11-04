@@ -12,6 +12,7 @@ import {
   type RecipeInstructionItem,
   type RecipeInstruction,
   type RecipeInstructionSection,
+  type IngredientGroup,
   type IngredientLine,
 } from "../types";
 
@@ -29,7 +30,7 @@ export const Recipes = () => {
     id: string;
     title?: string;
     created_at: string;
-    ingredients: any;
+    ingredients: IngredientGroup[];
     total_time?: string;
     instructions?: RecipeInstructionItem[];
   };
@@ -85,8 +86,8 @@ export const Recipes = () => {
       filtered = recipes.filter((recipe) => {
         const title = recipe.title || "";
         const ingredientsText = (recipe.ingredients || [])
-          .flatMap((g: any) =>
-            (g?.ingredients || []).map((i: any) => i.raw || "")
+          .flatMap((g: IngredientGroup) =>
+            (g?.ingredients || []).map((i: IngredientLine) => i.raw || "")
           )
           .join(" ");
         const instructionsText = instructionTexts(recipe.instructions || []);
@@ -105,11 +106,13 @@ export const Recipes = () => {
       new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     const byIngredients = (a: RecipeListItem, b: RecipeListItem) => {
       const countA = (a.ingredients || []).reduce(
-        (acc: number, g: any) => acc + ((g?.ingredients || []).length || 0),
+        (acc: number, g: IngredientGroup) =>
+          acc + ((g?.ingredients || []).length || 0),
         0
       );
       const countB = (b.ingredients || []).reduce(
-        (acc: number, g: any) => acc + ((g?.ingredients || []).length || 0),
+        (acc: number, g: IngredientGroup) =>
+          acc + ((g?.ingredients || []).length || 0),
         0
       );
       return countA - countB;
@@ -236,7 +239,7 @@ export const Recipes = () => {
                       {Array.isArray(recipe.ingredients) && (
                         <div className="">
                           {recipe.ingredients.reduce(
-                            (acc: number, g: any) =>
+                            (acc: number, g: IngredientGroup) =>
                               acc + ((g?.ingredients || []).length || 0),
                             0
                           )}{" "}

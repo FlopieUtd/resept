@@ -211,8 +211,8 @@ export const RecipeEditModal = ({
     const newGroups = [...formData.ingredients];
     const group = newGroups[groupIndex];
     const newLines = [...group.ingredients];
-    newLines[index] = { raw: value } as any;
-    newGroups[groupIndex] = { ...group, ingredients: newLines } as any;
+    newLines[index] = { raw: value };
+    newGroups[groupIndex] = { ...group, ingredients: newLines };
     setFormData((prev) => ({ ...prev, ingredients: newGroups }));
   };
 
@@ -245,8 +245,8 @@ export const RecipeEditModal = ({
     setFormData((prev) => {
       const newGroups = [...prev.ingredients];
       const group = newGroups[groupIndex];
-      const newLines = [...group.ingredients, { raw: "" } as any];
-      newGroups[groupIndex] = { ...group, ingredients: newLines } as any;
+      const newLines = [...group.ingredients, { raw: "" }];
+      newGroups[groupIndex] = { ...group, ingredients: newLines };
       return { ...prev, ingredients: newGroups };
     });
   };
@@ -256,7 +256,7 @@ export const RecipeEditModal = ({
       const newGroups = [...prev.ingredients];
       const group = newGroups[groupIndex];
       const newLines = group.ingredients.filter((_, i) => i !== index);
-      newGroups[groupIndex] = { ...group, ingredients: newLines } as any;
+      newGroups[groupIndex] = { ...group, ingredients: newLines };
       return { ...prev, ingredients: newGroups };
     });
   };
@@ -346,7 +346,7 @@ export const RecipeEditModal = ({
             ingredients:
               transformedData.ingredients.length > 0
                 ? transformedData.ingredients
-                : [{ raw: "" }],
+                : [{ ingredients: [{ raw: "" }] }],
             instructions:
               transformedData.instructions.length > 0
                 ? transformedData.instructions
