@@ -1,15 +1,17 @@
 import { TextNode } from "./extractTextNodes.js";
 import { COOKING_IMPERATIVES, UNIT_KEYWORDS } from "./constants.js";
 import { parseIngredient, type ParsedIngredient } from "./parseIngredient.js";
+import type { IngredientGroup, IngredientLine } from "../../types.js";
 
-interface IngredientGroup {
+interface InternalIngredientGroup {
   ingredientProbability: number;
   instructionsProbability: number;
   nodes: TextNode[];
+  originalIndex: number;
 }
 
 interface ParsedResult {
-  ingredients: { raw: string; parsed: ParsedIngredient }[];
+  ingredients: IngredientGroup[];
   instructions: { text: string }[];
   maxIngredientProbability: number;
   maxInstructionsProbability: number;
@@ -43,6 +45,25 @@ const containsUnitKeyword = (text: string): boolean => {
   });
 };
 
+const isTitleGroup = (group: InternalIngredientGroup): boolean => {
+  if (group.nodes.length === 0) return false;
+
+  const allText = group.nodes.map((n) => n.text.trim()).join(" ");
+  const wordCount = allText.split(/\s+/).length;
+
+  if (wordCount > 8) return false;
+
+  const hasNumbers = /\d/.test(allText);
+  const hasUnits = containsUnitKeyword(allText);
+
+  if (hasNumbers || hasUnits) return false;
+
+  const endsWithColon = /[:：]$/.test(allText.trim());
+  const isShortPhrase = wordCount <= 6;
+
+  return endsWithColon || (isShortPhrase && !hasNumbers && !hasUnits);
+};
+
 export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
   if (textNodes.length === 0) {
     return {
@@ -53,7 +74,7 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
     };
   }
 
-  const result: IngredientGroup[] = [];
+  const result: InternalIngredientGroup[] = [];
   let currentGroup: TextNode[] = [];
   let currentDepth = textNodes[0].depth;
   let currentElementType = textNodes[0].elementType;
@@ -98,6 +119,7 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
         ingredientProbability: probability,
         instructionsProbability: 0,
         nodes: [...subGroup],
+        originalIndex: result.length,
       });
       startIndex = endIndex;
     }
@@ -221,43 +243,211 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
     }
   }
 
-  console.log("Filtered result: ", JSON.stringify(filteredResult, null, 2));
+  const maxInstructionsGroup =
+    filteredResult.length > 0
+      ? filteredResult.reduce((max, group) =>
+          group.instructionsProbability > max.instructionsProbability
+            ? group
+            : max
+        )
+      : null;
 
-  const ingredients: { raw: string; parsed: ParsedIngredient }[] = [];
-  const instructions: { text: string }[] = [];
+  const instructions = maxInstructionsGroup
+    ? maxInstructionsGroup.nodes.map((node) => ({ text: node.text }))
+    : [];
 
-  if (filteredResult.length > 0) {
-    const maxIngredientGroup = filteredResult.reduce((max, group) =>
-      group.ingredientProbability > max.ingredientProbability ? group : max
+  const maxIngredientProbability =
+    filteredResult.length > 0
+      ? Math.max(...filteredResult.map((g) => g.ingredientProbability))
+      : 0;
+  const maxInstructionsProbability = maxInstructionsGroup
+    ? maxInstructionsGroup.instructionsProbability
+    : 0;
+
+  if (filteredResult.length === 0) {
+    return {
+      ingredients: [],
+      instructions,
+      maxIngredientProbability: 0,
+      maxInstructionsProbability: 0,
+    };
+  }
+
+  const INGREDIENT_THRESHOLD = 0.3;
+  const RELATIVE_THRESHOLD = 0.5;
+
+  const isHighProbabilityIngredient = (
+    group: InternalIngredientGroup
+  ): boolean => {
+    const absoluteThreshold =
+      group.ingredientProbability >= INGREDIENT_THRESHOLD;
+    const relativeThreshold =
+      maxIngredientProbability > 0
+        ? group.ingredientProbability >=
+          maxIngredientProbability * RELATIVE_THRESHOLD
+        : false;
+    return absoluteThreshold || relativeThreshold;
+  };
+
+  const isTitleElementType = (elementType: string): boolean => {
+    const titleTypes = ["h1", "h2", "h3", "h4", "h5", "h6", "b", "strong"];
+    return titleTypes.includes(elementType.toLowerCase());
+  };
+
+  const isTitleNode = (node: TextNode): boolean => {
+    return isTitleElementType(node.elementType);
+  };
+
+  const extractTitleFromGroup = (
+    group: InternalIngredientGroup
+  ): { title: string | undefined; remainingNodes: TextNode[] } => {
+    if (group.nodes.length < 2) {
+      return { title: undefined, remainingNodes: group.nodes };
+    }
+
+    const firstNode = group.nodes[0];
+    if (isTitleNode(firstNode)) {
+      const titleText = firstNode.text
+        .trim()
+        .replace(/[:：]$/, "")
+        .trim();
+      if (titleText) {
+        return {
+          title: titleText,
+          remainingNodes: group.nodes.slice(1),
+        };
+      }
+    }
+
+    return { title: undefined, remainingNodes: group.nodes };
+  };
+
+  const findPrecedingTitleGroup = (
+    currentGroup: InternalIngredientGroup,
+    allGroups: InternalIngredientGroup[],
+    currentIndex: number
+  ): string | undefined => {
+    const currentGroupDepth = currentGroup.nodes[0]?.depth ?? 0;
+
+    for (let i = currentIndex - 1; i >= Math.max(0, currentIndex - 3); i--) {
+      const candidateGroup = allGroups[i];
+
+      if (!candidateGroup || candidateGroup.nodes.length === 0) {
+        continue;
+      }
+
+      const hasTitleElementType = candidateGroup.nodes.some((node) =>
+        isTitleElementType(node.elementType)
+      );
+
+      if (!hasTitleElementType) {
+        continue;
+      }
+
+      const candidateDepth = candidateGroup.nodes[0]?.depth ?? 0;
+      const depthDiff = Math.abs(currentGroupDepth - candidateDepth);
+
+      if (depthDiff > 2) {
+        continue;
+      }
+
+      const titleText = candidateGroup.nodes
+        .map((n) => n.text.trim())
+        .join(" ")
+        .replace(/[:：]$/, "")
+        .trim();
+
+      if (titleText) {
+        return titleText;
+      }
+    }
+
+    return undefined;
+  };
+
+  const ingredientGroups: IngredientGroup[] = [];
+  let currentTitle: string | undefined = undefined;
+
+  const findOriginalIndex = (
+    filteredGroup: InternalIngredientGroup
+  ): number => {
+    return result.findIndex(
+      (g) =>
+        g.nodes.length === filteredGroup.nodes.length &&
+        g.nodes.every(
+          (node, idx) =>
+            node.text === filteredGroup.nodes[idx].text &&
+            node.depth === filteredGroup.nodes[idx].depth
+        )
     );
+  };
 
-    const maxInstructionsGroup = filteredResult.reduce((max, group) =>
-      group.instructionsProbability > max.instructionsProbability ? group : max
-    );
+  for (let i = 0; i < filteredResult.length; i++) {
+    const group = filteredResult[i];
+    const originalIndex = findOriginalIndex(group);
 
-    ingredients.push(
-      ...maxIngredientGroup.nodes.map((node) => {
+    if (isTitleGroup(group)) {
+      const titleText = group.nodes
+        .map((n) => n.text.trim())
+        .join(" ")
+        .replace(/[:：]$/, "")
+        .trim();
+      if (titleText) {
+        currentTitle = titleText;
+      }
+    } else if (isHighProbabilityIngredient(group)) {
+      const { title: withinGroupTitle, remainingNodes } =
+        extractTitleFromGroup(group);
+
+      const precedingGroupTitle = findPrecedingTitleGroup(
+        group,
+        result,
+        originalIndex
+      );
+
+      const titleToUse =
+        withinGroupTitle || precedingGroupTitle || currentTitle;
+
+      const ingredientLines: IngredientLine[] = remainingNodes.map((node) => {
         const raw = node.text;
         const parsed = parseIngredient(raw);
         return { raw, parsed };
-      })
+      });
+
+      if (ingredientLines.length > 0) {
+        ingredientGroups.push({
+          title: titleToUse,
+          ingredients: ingredientLines,
+        });
+        currentTitle = undefined;
+      }
+    }
+  }
+
+  if (ingredientGroups.length === 0) {
+    const maxIngredientGroup = filteredResult.reduce((max, group) =>
+      group.ingredientProbability > max.ingredientProbability ? group : max
     );
-    instructions.push(
-      ...maxInstructionsGroup.nodes.map((node) => ({ text: node.text }))
+    const flatIngredients: IngredientLine[] = maxIngredientGroup.nodes.map(
+      (node) => {
+        const raw = node.text;
+        const parsed = parseIngredient(raw);
+        return { raw, parsed };
+      }
     );
 
     return {
-      ingredients,
+      ingredients: [{ ingredients: flatIngredients }],
       instructions,
-      maxIngredientProbability: maxIngredientGroup.ingredientProbability,
-      maxInstructionsProbability: maxInstructionsGroup.instructionsProbability,
+      maxIngredientProbability,
+      maxInstructionsProbability,
     };
   }
 
   return {
-    ingredients,
+    ingredients: ingredientGroups,
     instructions,
-    maxIngredientProbability: 0,
-    maxInstructionsProbability: 0,
+    maxIngredientProbability,
+    maxInstructionsProbability,
   };
 };

@@ -35,6 +35,8 @@ export const processAndSaveRecipe = async (
 
     const extractedRecipe = extractionResult.data;
 
+    console.log("RESULT", JSON.stringify(extractedRecipe, null, 2));
+
     // Step 2: Transform to CreateRecipeData format
     const recipeData: CreateRecipeData = {
       title: extractedRecipe.title || "Untitled Recipe",

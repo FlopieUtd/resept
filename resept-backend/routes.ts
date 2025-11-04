@@ -137,7 +137,6 @@ router.post(
       if (!html) return res.status(400).json({ error: "Missing HTML content" });
 
       console.log("Incoming HTML length:", html.length, "characters");
-      console.log("Incoming HTML (first 500 chars):", html.substring(0, 500));
 
       // Process and save the recipe directly
       const result = await processAndSaveRecipe({

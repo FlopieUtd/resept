@@ -142,7 +142,5 @@ export const extractYield = (textNodes: TextNode[]): number => {
     return { text: node.text, score };
   });
 
-  console.log("Candidates", JSON.stringify(candidates, null, 2));
-
   return selectBestYield(candidates);
 };
