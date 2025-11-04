@@ -182,7 +182,7 @@ export const COOKING_IMPERATIVES: Record<
     english: "grease",
   },
   put: {
-    dutch: "zet",
+    dutch: ["zet", "leg", "doe"],
     english: "put",
   },
   turn: {

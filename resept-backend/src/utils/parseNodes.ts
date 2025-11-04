@@ -175,10 +175,62 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
     finalizeGroupHomogeneous();
   }
 
+  const calculateInstructionProbability = (
+    group: InternalIngredientGroup,
+    allGroups: InternalIngredientGroup[],
+    maxIngredientIndex: number,
+    groupIndex: number
+  ): number => {
+    let baseScore = 0;
+
+    if (groupIndex > maxIngredientIndex) {
+      baseScore = 0.2;
+    }
+
+    const nodesWithMoreThan10Words = group.nodes.filter(
+      (node) => node.text.trim().split(/\s+/).length > 10
+    ).length;
+
+    const wordBonus = (nodesWithMoreThan10Words / group.nodes.length) * 0.2;
+
+    const nodesStartingWithVerb = group.nodes.filter((node) => {
+      const text = node.text.trim();
+      if (!text) return false;
+
+      const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0);
+      const firstWords = sentences
+        .map((sentence) => sentence.trim().split(/\s+/)[0]?.toLowerCase())
+        .filter((word) => word && word.length > 0);
+
+      const allVerbs = Object.values(COOKING_IMPERATIVES).flatMap(
+        (verbGroup) => {
+          const dutchVerbs = Array.isArray(verbGroup.dutch)
+            ? verbGroup.dutch
+            : [verbGroup.dutch];
+          const englishVerbs = Array.isArray(verbGroup.english)
+            ? verbGroup.english
+            : [verbGroup.english];
+          return [...dutchVerbs, ...englishVerbs];
+        }
+      );
+
+      const hasVerb = firstWords.some((firstWord) =>
+        allVerbs.includes(firstWord)
+      );
+
+      return hasVerb;
+    }).length;
+
+    const verbBonus = (nodesStartingWithVerb / group.nodes.length) * 0.6;
+
+    return Math.min(baseScore + wordBonus + verbBonus, 1.0);
+  };
+
   const filteredResult = result.filter((group) => group.nodes.length >= 2);
 
+  let maxIngredientIndex = -1;
   if (filteredResult.length > 0) {
-    const maxIngredientIndex = filteredResult.reduce(
+    maxIngredientIndex = filteredResult.reduce(
       (maxIndex, group, index) =>
         group.ingredientProbability >
         filteredResult[maxIndex].ingredientProbability
@@ -188,88 +240,322 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
     );
 
     for (let i = 0; i < filteredResult.length; i++) {
-      let baseScore = 0;
-
-      if (i > maxIngredientIndex) {
-        baseScore = 0.2;
-      }
-
-      const nodesWithMoreThan10Words = filteredResult[i].nodes.filter(
-        (node) => node.text.trim().split(/\s+/).length > 10
-      ).length;
-
-      const wordBonus =
-        (nodesWithMoreThan10Words / filteredResult[i].nodes.length) * 0.2;
-
-      const nodesStartingWithVerb = filteredResult[i].nodes.filter((node) => {
-        const text = node.text.trim();
-        if (!text) return false;
-
-        // Split into sentences and check first word of each
-        const sentences = text
-          .split(/[.!?]+/)
-          .filter((s) => s.trim().length > 0);
-        const firstWords = sentences
-          .map((sentence) => sentence.trim().split(/\s+/)[0]?.toLowerCase())
-          .filter((word) => word && word.length > 0);
-
-        // Check if any of the first words are verbs
-        const allVerbs = Object.values(COOKING_IMPERATIVES).flatMap(
-          (verbGroup) => {
-            const dutchVerbs = Array.isArray(verbGroup.dutch)
-              ? verbGroup.dutch
-              : [verbGroup.dutch];
-            const englishVerbs = Array.isArray(verbGroup.english)
-              ? verbGroup.english
-              : [verbGroup.english];
-            return [...dutchVerbs, ...englishVerbs];
-          }
+      filteredResult[i].instructionsProbability =
+        calculateInstructionProbability(
+          filteredResult[i],
+          filteredResult,
+          maxIngredientIndex,
+          i
         );
+    }
+  }
 
-        const hasVerb = firstWords.some((firstWord) =>
-          allVerbs.includes(firstWord)
-        );
+  const maxIngredientIndexAll =
+    result.length > 0
+      ? result.reduce(
+          (maxIndex, group, index) =>
+            group.ingredientProbability > result[maxIndex].ingredientProbability
+              ? index
+              : maxIndex,
+          0
+        )
+      : -1;
 
-        return hasVerb;
-      }).length;
-
-      const verbBonus =
-        (nodesStartingWithVerb / filteredResult[i].nodes.length) * 0.6;
-
-      filteredResult[i].instructionsProbability = Math.min(
-        baseScore + wordBonus + verbBonus,
-        1.0
+  for (let i = 0; i < result.length; i++) {
+    if (!result[i].instructionsProbability) {
+      result[i].instructionsProbability = calculateInstructionProbability(
+        result[i],
+        result,
+        maxIngredientIndexAll,
+        i
       );
     }
   }
 
-  const maxInstructionsGroup =
-    filteredResult.length > 0
-      ? filteredResult.reduce((max, group) =>
-          group.instructionsProbability > max.instructionsProbability
-            ? group
-            : max
-        )
-      : null;
+  const INSTRUCTIONS_THRESHOLD = 0.3;
+  const maxInstructionsProbability =
+    result.length > 0
+      ? Math.max(...result.map((g) => g.instructionsProbability || 0))
+      : 0;
+  const RELATIVE_INSTRUCTIONS_THRESHOLD = 0.5;
 
-  const instructions = maxInstructionsGroup
-    ? maxInstructionsGroup.nodes.map((node) => ({ text: node.text }))
-    : [];
+  interface InstructionNode {
+    node: TextNode;
+    depth: number;
+    originalIndex: number;
+    probability: number;
+  }
+
+  const hasCookingImperatives = (group: InternalIngredientGroup): boolean => {
+    const nodesStartingWithVerb = group.nodes.filter((node) => {
+      const text = node.text.trim();
+      if (!text) return false;
+
+      const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0);
+      const firstWords = sentences
+        .map((sentence) => sentence.trim().split(/\s+/)[0]?.toLowerCase())
+        .filter((word) => word && word.length > 0);
+
+      const allVerbs = Object.values(COOKING_IMPERATIVES).flatMap(
+        (verbGroup) => {
+          const dutchVerbs = Array.isArray(verbGroup.dutch)
+            ? verbGroup.dutch
+            : [verbGroup.dutch];
+          const englishVerbs = Array.isArray(verbGroup.english)
+            ? verbGroup.english
+            : [verbGroup.english];
+          return [...dutchVerbs, ...englishVerbs];
+        }
+      );
+
+      return firstWords.some((firstWord) => allVerbs.includes(firstWord));
+    });
+
+    return nodesStartingWithVerb.length > 0;
+  };
+
+  const singleNodeInstructionCandidates: InstructionNode[] = [];
+  for (let i = 0; i < result.length; i++) {
+    const group = result[i];
+    if (group.nodes.length === 1) {
+      if (!hasCookingImperatives(group)) continue;
+
+      const prob = group.instructionsProbability || 0;
+      const absoluteThreshold = prob >= INSTRUCTIONS_THRESHOLD;
+      const relativeThreshold =
+        maxInstructionsProbability > 0
+          ? prob >= maxInstructionsProbability * RELATIVE_INSTRUCTIONS_THRESHOLD
+          : false;
+
+      if (absoluteThreshold || relativeThreshold) {
+        singleNodeInstructionCandidates.push({
+          node: group.nodes[0],
+          depth: group.nodes[0].depth,
+          originalIndex: i,
+          probability: prob,
+        });
+      }
+    }
+  }
+
+  const multiNodeInstructionGroups = filteredResult.filter((group) => {
+    if (!hasCookingImperatives(group)) return false;
+
+    const prob = group.instructionsProbability || 0;
+    const absoluteThreshold = prob >= INSTRUCTIONS_THRESHOLD;
+    const relativeThreshold =
+      maxInstructionsProbability > 0
+        ? prob >= maxInstructionsProbability * RELATIVE_INSTRUCTIONS_THRESHOLD
+        : false;
+    return absoluteThreshold || relativeThreshold;
+  });
+
+  const findGroupOriginalIndex = (
+    targetGroup: InternalIngredientGroup
+  ): number => {
+    return result.findIndex(
+      (g) =>
+        g.nodes.length === targetGroup.nodes.length &&
+        g.nodes.every(
+          (node, idx) =>
+            node.text === targetGroup.nodes[idx].text &&
+            node.depth === targetGroup.nodes[idx].depth
+        )
+    );
+  };
+
+  const allInstructionNodes: InstructionNode[] = [
+    ...singleNodeInstructionCandidates,
+    ...multiNodeInstructionGroups.flatMap((group) => {
+      const originalIndex = findGroupOriginalIndex(group);
+      return group.nodes.map((node) => ({
+        node,
+        depth: node.depth,
+        originalIndex,
+        probability: group.instructionsProbability || 0,
+      }));
+    }),
+  ];
+
+  const calculateCookingImperativeRatio = (
+    nodes: InstructionNode[]
+  ): number => {
+    if (nodes.length === 0) return 0;
+
+    let nodesWithVerbs = 0;
+    for (const instructionNode of nodes) {
+      const text = instructionNode.node.text.trim();
+      if (!text) continue;
+
+      const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0);
+      const firstWords = sentences
+        .map((sentence) => sentence.trim().split(/\s+/)[0]?.toLowerCase())
+        .filter((word) => word && word.length > 0);
+
+      const allVerbs = Object.values(COOKING_IMPERATIVES).flatMap(
+        (verbGroup) => {
+          const dutchVerbs = Array.isArray(verbGroup.dutch)
+            ? verbGroup.dutch
+            : [verbGroup.dutch];
+          const englishVerbs = Array.isArray(verbGroup.english)
+            ? verbGroup.english
+            : [verbGroup.english];
+          return [...dutchVerbs, ...englishVerbs];
+        }
+      );
+
+      const hasVerb = firstWords.some((firstWord) =>
+        allVerbs.includes(firstWord)
+      );
+
+      if (hasVerb) {
+        nodesWithVerbs++;
+      }
+    }
+
+    return nodesWithVerbs / nodes.length;
+  };
+
+  const calculateNodeComplexity = (nodes: InstructionNode[]): number => {
+    if (nodes.length === 0) return 0;
+
+    let totalWords = 0;
+    let totalSentences = 0;
+    let nodesWithMultipleSentences = 0;
+
+    for (const instructionNode of nodes) {
+      const text = instructionNode.node.text.trim();
+      if (!text) continue;
+
+      const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0);
+      const wordCount = text.split(/\s+/).filter((w) => w.length > 0).length;
+
+      totalWords += wordCount;
+      totalSentences += sentences.length;
+
+      if (sentences.length > 1) {
+        nodesWithMultipleSentences++;
+      }
+    }
+
+    const avgWordsPerNode = totalWords / nodes.length;
+    const avgSentencesPerNode = totalSentences / nodes.length;
+    const multipleSentencesRatio = nodesWithMultipleSentences / nodes.length;
+
+    const normalizedWords = Math.min(avgWordsPerNode / 50, 1.0);
+    const normalizedSentences = Math.min(avgSentencesPerNode / 3, 1.0);
+
+    return (
+      normalizedWords * 0.5 +
+      normalizedSentences * 0.3 +
+      multipleSentencesRatio * 0.2
+    );
+  };
+
+  const calculateClusterScore = (nodes: InstructionNode[]): number => {
+    if (nodes.length === 0) return 0;
+
+    const imperativeRatio = calculateCookingImperativeRatio(nodes);
+    const complexity = calculateNodeComplexity(nodes);
+
+    const HIGH_IMPERATIVE_THRESHOLD = 0.5;
+    const isHighImperative = imperativeRatio >= HIGH_IMPERATIVE_THRESHOLD;
+
+    if (isHighImperative) {
+      return imperativeRatio * 0.4 + complexity * 0.6;
+    }
+
+    return imperativeRatio * 0.7 + complexity * 0.3;
+  };
+
+  const clusterInstructionsByDepthAndProximity = (
+    nodes: InstructionNode[]
+  ): InstructionNode[] => {
+    if (nodes.length === 0) return [];
+
+    const depthElementGroups = new Map<string, InstructionNode[]>();
+    for (const instructionNode of nodes) {
+      const depth = instructionNode.depth;
+      const elementType = instructionNode.node.elementType;
+      const key = `${depth}:${elementType}`;
+      if (!depthElementGroups.has(key)) {
+        depthElementGroups.set(key, []);
+      }
+      depthElementGroups.get(key)!.push(instructionNode);
+    }
+
+    const allClusters: InstructionNode[][] = [];
+
+    for (const depthElementGroup of depthElementGroups.values()) {
+      const sorted = [...depthElementGroup].sort(
+        (a, b) => a.originalIndex - b.originalIndex
+      );
+
+      let currentCluster: InstructionNode[] = [sorted[0]];
+
+      for (let i = 1; i < sorted.length; i++) {
+        const distance = sorted[i].originalIndex - sorted[i - 1].originalIndex;
+        if (distance <= 5) {
+          currentCluster.push(sorted[i]);
+        } else {
+          allClusters.push(currentCluster);
+          currentCluster = [sorted[i]];
+        }
+      }
+
+      if (currentCluster.length > 0) {
+        allClusters.push(currentCluster);
+      }
+    }
+
+    if (allClusters.length === 0) return [];
+
+    const clusterWithHighestScore = allClusters.reduce((max, cluster) => {
+      const maxScore = calculateClusterScore(max);
+      const clusterScore = calculateClusterScore(cluster);
+      return clusterScore > maxScore ? cluster : max;
+    });
+
+    return clusterWithHighestScore;
+  };
+
+  const clusteredInstructions =
+    clusterInstructionsByDepthAndProximity(allInstructionNodes);
+
+  const instructions: { text: string }[] = clusteredInstructions.map(
+    ({ node }) => ({ text: node.text })
+  );
+
+  console.log(
+    "Instruction groups with probabilities:",
+    JSON.stringify(
+      result
+        .filter((g) => (g.instructionsProbability || 0) > 0)
+        .map((group) => ({
+          nodes: group.nodes.map((n) => ({
+            text: n.text.substring(0, 50),
+            depth: n.depth,
+            elementType: n.elementType,
+          })),
+          instructionsProbability: group.instructionsProbability,
+          ingredientProbability: group.ingredientProbability,
+        })),
+      null,
+      2
+    )
+  );
 
   const maxIngredientProbability =
     filteredResult.length > 0
       ? Math.max(...filteredResult.map((g) => g.ingredientProbability))
       : 0;
-  const maxInstructionsProbability = maxInstructionsGroup
-    ? maxInstructionsGroup.instructionsProbability
-    : 0;
 
   if (filteredResult.length === 0) {
     return {
       ingredients: [],
       instructions,
       maxIngredientProbability: 0,
-      maxInstructionsProbability: 0,
+      maxInstructionsProbability,
     };
   }
 
@@ -562,6 +848,6 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
     ingredients: ingredientGroups,
     instructions,
     maxIngredientProbability,
-    maxInstructionsProbability,
+    maxInstructionsProbability: maxInstructionsProbability,
   };
 };
