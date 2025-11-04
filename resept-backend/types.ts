@@ -9,6 +9,11 @@ export interface IngredientLine {
   parsed?: ParsedIngredient;
 }
 
+export interface IngredientGroup {
+  title?: string;
+  ingredients: IngredientLine[];
+}
+
 export interface RecipeInstruction {
   text: string;
 }
@@ -31,7 +36,7 @@ export interface CreateRecipeData {
   prep_time: string;
   cook_time: string;
   total_time: string;
-  ingredients: IngredientLine[];
+  ingredients: IngredientGroup[];
   instructions: RecipeInstructionItem[];
   source_url: string;
 }

@@ -1,14 +1,19 @@
 import { useState, useEffect } from "react";
-import { type IngredientLine } from "../types";
+import { type IngredientLine, type IngredientGroup } from "../types";
 
 interface UseRecipeYieldProps {
   originalYield?: number;
-  ingredients: IngredientLine[];
+  ingredients: IngredientGroup[];
 }
 
 interface ScaledIngredient extends IngredientLine {
   scaledAmount?: number;
   scaledAmountMax?: number;
+}
+
+interface ScaledIngredientGroup {
+  title?: string;
+  ingredients: ScaledIngredient[];
 }
 
 export const useRecipeYield = ({
@@ -35,34 +40,37 @@ export const useRecipeYield = ({
     }
   };
 
-  const scaledIngredients: ScaledIngredient[] = ingredients.map(
-    (ingredient) => {
-      if (
-        !recipeYield ||
-        !originalYield ||
-        ingredient.parsed?.amount === undefined
-      ) {
-        return ingredient;
+  const scaledGroups: ScaledIngredientGroup[] = ingredients.map((group) => {
+    const scaledLines: ScaledIngredient[] = group.ingredients.map(
+      (ingredient) => {
+        if (
+          !recipeYield ||
+          !originalYield ||
+          ingredient.parsed?.amount === undefined
+        ) {
+          return ingredient as ScaledIngredient;
+        }
+
+        const scaleFactor = recipeYield / originalYield;
+        const scaledAmount = ingredient.parsed.amount * scaleFactor;
+        const scaledAmountMax = ingredient.parsed.amountMax
+          ? ingredient.parsed.amountMax * scaleFactor
+          : undefined;
+
+        return {
+          ...ingredient,
+          scaledAmount,
+          scaledAmountMax,
+        } as ScaledIngredient;
       }
-
-      const scaleFactor = recipeYield / originalYield;
-      const scaledAmount = ingredient.parsed.amount * scaleFactor;
-      const scaledAmountMax = ingredient.parsed.amountMax
-        ? ingredient.parsed.amountMax * scaleFactor
-        : undefined;
-
-      return {
-        ...ingredient,
-        scaledAmount,
-        scaledAmountMax,
-      };
-    }
-  );
+    );
+    return { title: group.title, ingredients: scaledLines };
+  });
 
   return {
     recipeYield,
     incrementRecipeYield,
     decrementRecipeYield,
-    scaledIngredients,
+    scaledGroups,
   };
 };

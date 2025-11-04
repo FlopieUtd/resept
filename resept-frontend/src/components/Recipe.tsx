@@ -8,6 +8,7 @@ import {
 import {
   type RecipeInstructionItem,
   type CreateRecipeData,
+  type IngredientGroup,
   Language,
 } from "../types";
 import { Loading } from "./Loading";
@@ -53,10 +54,10 @@ export const Recipe = () => {
     recipeYield,
     incrementRecipeYield,
     decrementRecipeYield,
-    scaledIngredients,
+    scaledGroups,
   } = useRecipeYield({
     originalYield: recipe?.recipe_yield,
-    ingredients: recipe?.ingredients || [],
+    ingredients: (recipe?.ingredients as IngredientGroup[]) || [],
   });
 
   const formatNumber = (num: number) => {
@@ -219,32 +220,43 @@ export const Recipe = () => {
             {activeTab === "ingredients" ? t.ingredients : t.instructions}
           </div>
           {activeTab === "ingredients" ? (
-            <ul>
-              {scaledIngredients.map((ingredient, index: number) => (
-                <li key={index} className="pb-[16px] flex">
-                  <span className="min-w-[65px]">
-                    {ingredient.scaledAmountMax !== undefined
-                      ? `${formatNumber(
-                          ingredient.scaledAmount!
-                        )}-${formatNumber(ingredient.scaledAmountMax)}`
-                      : ingredient.scaledAmount !== undefined
-                      ? formatNumber(ingredient.scaledAmount)
-                      : ingredient.parsed?.amountMax !== undefined
-                      ? `${formatNumber(
-                          ingredient.parsed.amount!
-                        )}-${formatNumber(ingredient.parsed.amountMax)}`
-                      : ingredient.parsed?.amount !== undefined
-                      ? formatNumber(ingredient.parsed.amount)
-                      : ""}
-                  </span>
-                  <span>
-                    {decodeHtmlEntities(
-                      ingredient.parsed?.rawWithoutAmount || ""
-                    )}
-                  </span>
-                </li>
+            <div className="flex flex-col gap-[16px]">
+              {scaledGroups.map((group, gIndex) => (
+                <div key={gIndex}>
+                  {group.title && (
+                    <div className="font-bold text-[18px] mb-[8px] text-[#333]">
+                      {group.title}
+                    </div>
+                  )}
+                  <ul>
+                    {group.ingredients.map((ingredient, index: number) => (
+                      <li key={index} className="pb-[16px] flex">
+                        <span className="min-w-[65px]">
+                          {ingredient.scaledAmountMax !== undefined
+                            ? `${formatNumber(
+                                ingredient.scaledAmount!
+                              )}-${formatNumber(ingredient.scaledAmountMax)}`
+                            : ingredient.scaledAmount !== undefined
+                            ? formatNumber(ingredient.scaledAmount)
+                            : ingredient.parsed?.amountMax !== undefined
+                            ? `${formatNumber(
+                                ingredient.parsed.amount!
+                              )}-${formatNumber(ingredient.parsed.amountMax)}`
+                            : ingredient.parsed?.amount !== undefined
+                            ? formatNumber(ingredient.parsed.amount)
+                            : ""}
+                        </span>
+                        <span>
+                          {decodeHtmlEntities(
+                            ingredient.parsed?.rawWithoutAmount || ""
+                          )}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
-            </ul>
+            </div>
           ) : (
             <div className="font-radley text-[18px]">
               {recipe.instructions.map(
@@ -281,32 +293,43 @@ export const Recipe = () => {
             <div className="text-[24px] pb-[12px] font-bold border-b-[2px] border-black tracking-[1px]">
               {t.ingredients}
             </div>
-            <ul>
-              {scaledIngredients.map((ingredient, index: number) => (
-                <li key={index} className="pb-[16px] flex">
-                  <span className="min-w-[65px]">
-                    {ingredient.scaledAmountMax !== undefined
-                      ? `${formatNumber(
-                          ingredient.scaledAmount!
-                        )}-${formatNumber(ingredient.scaledAmountMax)}`
-                      : ingredient.scaledAmount !== undefined
-                      ? formatNumber(ingredient.scaledAmount)
-                      : ingredient.parsed?.amountMax !== undefined
-                      ? `${formatNumber(
-                          ingredient.parsed.amount!
-                        )}-${formatNumber(ingredient.parsed.amountMax)}`
-                      : ingredient.parsed?.amount !== undefined
-                      ? formatNumber(ingredient.parsed.amount)
-                      : ""}
-                  </span>
-                  <span>
-                    {decodeHtmlEntities(
-                      ingredient.parsed?.rawWithoutAmount || ""
-                    )}
-                  </span>
-                </li>
+            <div className="flex flex-col gap-[16px]">
+              {scaledGroups.map((group, gIndex) => (
+                <div key={gIndex}>
+                  {group.title && (
+                    <div className="font-bold text-[18px] mb-[8px] text-[#333]">
+                      {group.title}
+                    </div>
+                  )}
+                  <ul>
+                    {group.ingredients.map((ingredient, index: number) => (
+                      <li key={index} className="pb-[16px] flex">
+                        <span className="min-w-[65px]">
+                          {ingredient.scaledAmountMax !== undefined
+                            ? `${formatNumber(
+                                ingredient.scaledAmount!
+                              )}-${formatNumber(ingredient.scaledAmountMax)}`
+                            : ingredient.scaledAmount !== undefined
+                            ? formatNumber(ingredient.scaledAmount)
+                            : ingredient.parsed?.amountMax !== undefined
+                            ? `${formatNumber(
+                                ingredient.parsed.amount!
+                              )}-${formatNumber(ingredient.parsed.amountMax)}`
+                            : ingredient.parsed?.amount !== undefined
+                            ? formatNumber(ingredient.parsed.amount)
+                            : ""}
+                        </span>
+                        <span>
+                          {decodeHtmlEntities(
+                            ingredient.parsed?.rawWithoutAmount || ""
+                          )}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
           <div className="w-2/3 flex flex-col gap-[24px]">
             <div className="text-[24px] pb-[12px] font-bold border-b-[2px] border-black tracking-[1px]">

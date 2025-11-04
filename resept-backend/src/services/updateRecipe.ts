@@ -20,30 +20,46 @@ export const updateRecipe = async (
 
     // If ingredients are being updated, re-parse them
     if (updates.ingredients && Array.isArray(updates.ingredients)) {
-      const reparsedIngredients: IngredientLine[] = updates.ingredients.map(
-        (ingredient) => {
-          if (typeof ingredient === "string") {
-            // If ingredient is a raw string, parse it
-            const parsed = parseIngredient(ingredient);
-            return {
-              raw: ingredient,
-              parsed,
-            };
-          } else if (ingredient.raw) {
-            // If ingredient has a raw property, parse that
-            const parsed = parseIngredient(ingredient.raw);
-            return {
-              raw: ingredient.raw,
-              parsed,
-            };
-          } else {
-            // If ingredient is already parsed, keep it as is
-            return ingredient;
-          }
-        }
-      );
+      // Support both grouped and legacy flat arrays
+      const isGrouped =
+        updates.ingredients.length > 0 &&
+        (updates.ingredients as any)[0]?.ingredients;
 
-      updates.ingredients = reparsedIngredients;
+      if (isGrouped) {
+        const reparsedGroups = (updates.ingredients as any).map(
+          (group: any) => {
+            const lines = Array.isArray(group.ingredients)
+              ? group.ingredients
+              : [];
+            const reparsedLines = lines.map((ingredient: any) => {
+              if (typeof ingredient === "string") {
+                const parsed = parseIngredient(ingredient);
+                return { raw: ingredient, parsed } as IngredientLine;
+              } else if (ingredient?.raw) {
+                const parsed = parseIngredient(ingredient.raw);
+                return { raw: ingredient.raw, parsed } as IngredientLine;
+              }
+              return ingredient as IngredientLine;
+            });
+            return { title: group.title, ingredients: reparsedLines };
+          }
+        );
+        (updates as any).ingredients = reparsedGroups;
+      } else {
+        const reparsedFlat: IngredientLine[] = (updates.ingredients as any).map(
+          (ingredient: any) => {
+            if (typeof ingredient === "string") {
+              const parsed = parseIngredient(ingredient);
+              return { raw: ingredient, parsed } as IngredientLine;
+            } else if (ingredient?.raw) {
+              const parsed = parseIngredient(ingredient.raw);
+              return { raw: ingredient.raw, parsed } as IngredientLine;
+            }
+            return ingredient as IngredientLine;
+          }
+        );
+        (updates as any).ingredients = [{ ingredients: reparsedFlat }];
+      }
     }
 
     // Return the updated data with reparsed ingredients

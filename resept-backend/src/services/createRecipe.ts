@@ -30,7 +30,11 @@ export const createRecipe = async (
           prep_time: recipeData.prep_time,
           cook_time: recipeData.cook_time,
           total_time: recipeData.total_time,
-          ingredients: recipeData.ingredients,
+          ingredients:
+            Array.isArray(recipeData.ingredients) &&
+            (recipeData as any).ingredients[0]?.raw
+              ? [{ ingredients: (recipeData as any).ingredients }]
+              : recipeData.ingredients,
           instructions: recipeData.instructions,
           source_url: recipeData.source_url,
         },

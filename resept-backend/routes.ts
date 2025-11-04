@@ -95,6 +95,16 @@ router.post("/extract-from-url", async (req: any, res: Response) => {
       return res.status(404).json({ error: htmlResult.error });
     }
 
+    console.log(
+      "Fetched HTML length:",
+      htmlResult.data!.html.length,
+      "characters"
+    );
+    console.log(
+      "Fetched HTML (first 500 chars):",
+      htmlResult.data!.html.substring(0, 500)
+    );
+
     // Extract recipe data from HTML (no persistence)
     const extractionResult = await extractRecipeFromHtml(
       htmlResult.data!.html,
@@ -121,6 +131,9 @@ router.post(
     try {
       const { html, url, metadata } = req.body || {};
       if (!html) return res.status(400).json({ error: "Missing HTML content" });
+
+      console.log("Incoming HTML length:", html.length, "characters");
+      console.log("Incoming HTML (first 500 chars):", html.substring(0, 500));
 
       // Process and save the recipe directly
       const result = await processAndSaveRecipe({

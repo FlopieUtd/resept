@@ -146,7 +146,7 @@ export const RecipeEditModal = ({
     ingredients:
       initialData.ingredients.length > 0
         ? initialData.ingredients
-        : [{ raw: "" }],
+        : [{ ingredients: [{ raw: "" }] }],
     instructions:
       initialData.instructions.length > 0
         ? initialData.instructions
@@ -165,7 +165,7 @@ export const RecipeEditModal = ({
         ingredients:
           initialData.ingredients.length > 0
             ? initialData.ingredients
-            : [{ raw: "" }],
+            : [{ ingredients: [{ raw: "" }] }],
         instructions:
           initialData.instructions.length > 0
             ? initialData.instructions
@@ -197,13 +197,23 @@ export const RecipeEditModal = ({
     }));
   };
 
-  const handleIngredientChange = (index: number, value: string) => {
-    const newIngredients = [...formData.ingredients];
-    newIngredients[index] = { raw: value };
-    setFormData((prev) => ({
-      ...prev,
-      ingredients: newIngredients,
-    }));
+  const handleGroupTitleChange = (groupIndex: number, value: string) => {
+    const newGroups = [...formData.ingredients];
+    newGroups[groupIndex] = { ...newGroups[groupIndex], title: value };
+    setFormData((prev) => ({ ...prev, ingredients: newGroups }));
+  };
+
+  const handleIngredientChange = (
+    groupIndex: number,
+    index: number,
+    value: string
+  ) => {
+    const newGroups = [...formData.ingredients];
+    const group = newGroups[groupIndex];
+    const newLines = [...group.ingredients];
+    newLines[index] = { raw: value } as any;
+    newGroups[groupIndex] = { ...group, ingredients: newLines } as any;
+    setFormData((prev) => ({ ...prev, ingredients: newGroups }));
   };
 
   const handleInstructionChange = (index: number, value: string) => {
@@ -217,18 +227,38 @@ export const RecipeEditModal = ({
     }));
   };
 
-  const addIngredient = () => {
+  const addGroup = () => {
     setFormData((prev) => ({
       ...prev,
-      ingredients: [...prev.ingredients, { raw: "" }],
+      ingredients: [...prev.ingredients, { ingredients: [{ raw: "" }] }],
     }));
   };
 
-  const removeIngredient = (index: number) => {
+  const removeGroup = (groupIndex: number) => {
     setFormData((prev) => ({
       ...prev,
-      ingredients: prev.ingredients.filter((_, i) => i !== index),
+      ingredients: prev.ingredients.filter((_, i) => i !== groupIndex),
     }));
+  };
+
+  const addIngredient = (groupIndex: number) => {
+    setFormData((prev) => {
+      const newGroups = [...prev.ingredients];
+      const group = newGroups[groupIndex];
+      const newLines = [...group.ingredients, { raw: "" } as any];
+      newGroups[groupIndex] = { ...group, ingredients: newLines } as any;
+      return { ...prev, ingredients: newGroups };
+    });
+  };
+
+  const removeIngredient = (groupIndex: number, index: number) => {
+    setFormData((prev) => {
+      const newGroups = [...prev.ingredients];
+      const group = newGroups[groupIndex];
+      const newLines = group.ingredients.filter((_, i) => i !== index);
+      newGroups[groupIndex] = { ...group, ingredients: newLines } as any;
+      return { ...prev, ingredients: newGroups };
+    });
   };
 
   const addInstruction = () => {
@@ -257,11 +287,16 @@ export const RecipeEditModal = ({
     const cleanedData = {
       ...formData,
       ingredients: formData.ingredients
-        .filter((ing) => ing.raw.trim() !== "")
-        .map((ing) => ({
-          raw: ing.raw,
-          parsed: parseIngredientFrontend(ing.raw),
-        })),
+        .map((group) => ({
+          title: group.title,
+          ingredients: group.ingredients
+            .filter((ing) => (ing.raw || "").trim() !== "")
+            .map((ing) => ({
+              raw: ing.raw,
+              parsed: parseIngredientFrontend(ing.raw),
+            })),
+        }))
+        .filter((g) => g.ingredients.length > 0),
       instructions: formData.instructions.filter(
         (inst) => "text" in inst && inst.text.trim() !== ""
       ),
@@ -485,33 +520,71 @@ export const RecipeEditModal = ({
                 </label>
                 <button
                   type="button"
-                  onClick={addIngredient}
+                  onClick={addGroup}
                   className="text-sm text-red-600 hover:text-red-800"
                 >
-                  + Toevoegen
+                  + Groep toevoegen
                 </button>
               </div>
-              <div className="space-y-2">
-                {formData.ingredients.map((ingredient, index) => (
-                  <div key={index} className="flex gap-2">
-                    <div className="flex-1">
-                      <Input
-                        type="text"
-                        value={ingredient.raw}
-                        onChange={(e) =>
-                          handleIngredientChange(index, e.target.value)
-                        }
-                        placeholder="Ingrediënt..."
-                        required
-                      />
+              <div className="space-y-4">
+                {formData.ingredients.map((group, gIndex) => (
+                  <div key={gIndex} className="border p-3 rounded">
+                    <div className="flex justify-between items-center mb-2">
+                      <div className="flex-1 mr-2">
+                        <Input
+                          type="text"
+                          value={group.title || ""}
+                          onChange={(e) =>
+                            handleGroupTitleChange(gIndex, e.target.value)
+                          }
+                          placeholder="Groep titel (optioneel)"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeGroup(gIndex)}
+                        className="px-3 py-2 text-red-600 hover:text-red-800"
+                      >
+                        ×
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => removeIngredient(index)}
-                      className="px-3 py-2 text-red-600 hover:text-red-800"
-                    >
-                      ×
-                    </button>
+                    <div className="space-y-2">
+                      {group.ingredients.map((ingredient, index) => (
+                        <div key={index} className="flex gap-2">
+                          <div className="flex-1">
+                            <Input
+                              type="text"
+                              value={ingredient.raw}
+                              onChange={(e) =>
+                                handleIngredientChange(
+                                  gIndex,
+                                  index,
+                                  e.target.value
+                                )
+                              }
+                              placeholder="Ingrediënt..."
+                              required
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeIngredient(gIndex, index)}
+                            className="px-3 py-2 text-red-600 hover:text-red-800"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-2">
+                      <button
+                        type="button"
+                        onClick={() => addIngredient(gIndex)}
+                        className="text-sm text-red-600 hover:text-red-800"
+                      >
+                        + Ingrediënt toevoegen
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>

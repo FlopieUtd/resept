@@ -30,7 +30,10 @@ interface TransformedRecipe {
   prep_time: string;
   cook_time: string;
   total_time: string;
-  ingredients: Array<{ raw: string; parsed: ParsedIngredient }>;
+  ingredients: Array<{
+    title?: string;
+    ingredients: Array<{ raw: string; parsed: ParsedIngredient }>;
+  }>;
   instructions: Array<{ text: string }>;
   source: string;
 }
@@ -167,17 +170,19 @@ export const transformJsonLdToRecipe = (
   const cook_time = parseDuration(recipe.cookTime);
   const total_time = parseDuration(recipe.totalTime);
 
-  // Handle ingredients
-  const ingredients: Array<{ raw: string; parsed: ParsedIngredient }> = [];
+  // Handle ingredients (wrap into a single group by default)
+  const flatIngredients: Array<{ raw: string; parsed: ParsedIngredient }> = [];
   if (recipe.recipeIngredient && Array.isArray(recipe.recipeIngredient)) {
     recipe.recipeIngredient.forEach((ingredient: any) => {
       if (ingredient && typeof ingredient === "string") {
         const rawIngredient = cleanText(ingredient);
         const parsed = parseIngredient(rawIngredient);
-        ingredients.push({ raw: rawIngredient, parsed });
+        flatIngredients.push({ raw: rawIngredient, parsed });
       }
     });
   }
+  const ingredients =
+    flatIngredients.length > 0 ? [{ ingredients: flatIngredients }] : [];
 
   // Handle instructions
   const instructions: Array<{ text: string }> = [];

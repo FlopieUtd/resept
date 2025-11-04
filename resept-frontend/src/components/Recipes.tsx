@@ -29,7 +29,7 @@ export const Recipes = () => {
     id: string;
     title?: string;
     created_at: string;
-    ingredients: IngredientLine[];
+    ingredients: any;
     total_time?: string;
     instructions?: RecipeInstructionItem[];
   };
@@ -85,7 +85,9 @@ export const Recipes = () => {
       filtered = recipes.filter((recipe) => {
         const title = recipe.title || "";
         const ingredientsText = (recipe.ingredients || [])
-          .map((i: IngredientLine) => i.raw || "")
+          .flatMap((g: any) =>
+            (g?.ingredients || []).map((i: any) => i.raw || "")
+          )
           .join(" ");
         const instructionsText = instructionTexts(recipe.instructions || []);
         const haystack =
@@ -101,8 +103,17 @@ export const Recipes = () => {
       });
     const byDate = (a: RecipeListItem, b: RecipeListItem) =>
       new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-    const byIngredients = (a: RecipeListItem, b: RecipeListItem) =>
-      (a.ingredients?.length || 0) - (b.ingredients?.length || 0);
+    const byIngredients = (a: RecipeListItem, b: RecipeListItem) => {
+      const countA = (a.ingredients || []).reduce(
+        (acc: number, g: any) => acc + ((g?.ingredients || []).length || 0),
+        0
+      );
+      const countB = (b.ingredients || []).reduce(
+        (acc: number, g: any) => acc + ((g?.ingredients || []).length || 0),
+        0
+      );
+      return countA - countB;
+    };
     const byTotalTime = (a: RecipeListItem, b: RecipeListItem) =>
       durationToMinutes(a.total_time) - durationToMinutes(b.total_time);
 
@@ -222,9 +233,14 @@ export const Recipes = () => {
                       {recipe.title}
                     </h2>
                     <div className="flex gap-[6px] items-center text-[14px]">
-                      {recipe.ingredients.length > 0 && (
+                      {Array.isArray(recipe.ingredients) && (
                         <div className="">
-                          {recipe.ingredients.length} ingrediënten
+                          {recipe.ingredients.reduce(
+                            (acc: number, g: any) =>
+                              acc + ((g?.ingredients || []).length || 0),
+                            0
+                          )}{" "}
+                          ingrediënten
                         </div>
                       )}
                       {recipe.total_time && <div>●</div>}
@@ -252,7 +268,7 @@ export const Recipes = () => {
           prep_time: "",
           cook_time: "",
           total_time: "",
-          ingredients: [{ raw: "" }],
+          ingredients: [{ ingredients: [{ raw: "" }] }],
           instructions: [{ text: "" }],
           source_url: "",
         }}

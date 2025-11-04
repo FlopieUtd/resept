@@ -9,6 +9,7 @@
     "start": "node dist/index.js",
     "dev": "nodemon --exec \"tsx index.ts\" --watch src --ext ts,js",
     "dev:clean": "./scripts/dev-clean.sh",
+    "migrate:ingredients": "tsx scripts/migrate-ingredients-to-groups.ts",
     "test": "jest",
     "test:watch": "jest --watch"
   },
