@@ -272,26 +272,6 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
     }
   }
 
-  console.log(
-    "All text node groups with probabilities:",
-    result.map((group) =>
-      JSON.stringify(
-        {
-          ingredientProbability: group.ingredientProbability,
-          instructionsProbability: group.instructionsProbability,
-          nodeCount: group.nodes.length,
-          nodes: group.nodes.map((n) => ({
-            text: n.text,
-            elementType: n.elementType,
-            depth: n.depth,
-          })),
-        },
-        null,
-        2
-      )
-    )
-  );
-
   const INSTRUCTIONS_THRESHOLD = 0.3;
   const maxInstructionsProbability =
     result.length > 0
@@ -835,11 +815,6 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
       title: clusteredGroups.length === 1 ? undefined : candidate.title,
       ingredients: candidate.ingredientLines,
     })
-  );
-
-  console.log(
-    "candidateGroups groups:",
-    JSON.stringify(candidateGroups, null, 2)
   );
 
   if (ingredientGroups.length === 0) {

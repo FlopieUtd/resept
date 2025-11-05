@@ -1,0 +1,197 @@
+{
+  "title": "Roti met aardappel, tempé, kousenband en ei",
+  "ingredients": [
+    {
+      "title": "Voor de roti",
+      "ingredients": [
+        {
+          "raw": "250 g tempeh (gehalveerd en in lange plakken gesneden)",
+          "parsed": {
+            "amount": 250,
+            "rawWithoutAmount": "g tempeh (gehalveerd en in lange plakken gesneden)"
+          }
+        },
+        {
+          "raw": "3 el zonnebloemolie",
+          "parsed": {
+            "amount": 3,
+            "rawWithoutAmount": "el zonnebloemolie"
+          }
+        },
+        {
+          "raw": "1/2 maggi bouillonblokje (verkruimeld)",
+          "parsed": {
+            "amount": 0.5,
+            "rawWithoutAmount": "maggi bouillonblokje (verkruimeld)"
+          }
+        },
+        {
+          "raw": "2 tl sambal (*)",
+          "parsed": {
+            "amount": 2,
+            "rawWithoutAmount": "tl sambal (*)"
+          }
+        },
+        {
+          "raw": "2 gele uien (gesnipperd)",
+          "parsed": {
+            "amount": 2,
+            "rawWithoutAmount": "gele uien (gesnipperd)"
+          }
+        },
+        {
+          "raw": "3 teentjes knoflook (geperst)",
+          "parsed": {
+            "amount": 3,
+            "rawWithoutAmount": "teentjes knoflook (geperst)"
+          }
+        },
+        {
+          "raw": "500 g aardappels (geschild en in blokjes gesneden)",
+          "parsed": {
+            "amount": 500,
+            "rawWithoutAmount": "g aardappels (geschild en in blokjes gesneden)"
+          }
+        },
+        {
+          "raw": "500 g kousenband (in grove stukken)",
+          "parsed": {
+            "amount": 500,
+            "rawWithoutAmount": "g kousenband (in grove stukken)"
+          }
+        },
+        {
+          "raw": "250 ml water",
+          "parsed": {
+            "amount": 250,
+            "rawWithoutAmount": "ml water"
+          }
+        },
+        {
+          "raw": "4 eieren (**)",
+          "parsed": {
+            "amount": 4,
+            "rawWithoutAmount": "eieren (**)"
+          }
+        },
+        {
+          "raw": "2 el ketjap manis",
+          "parsed": {
+            "amount": 2,
+            "rawWithoutAmount": "el ketjap manis"
+          }
+        },
+        {
+          "raw": "15 g selderij (fijngesneden)",
+          "parsed": {
+            "amount": 15,
+            "rawWithoutAmount": "g selderij (fijngesneden)"
+          }
+        },
+        {
+          "raw": "4 rotiplaten",
+          "parsed": {
+            "amount": 4,
+            "rawWithoutAmount": "rotiplaten"
+          }
+        },
+        {
+          "raw": "zonnebloemolie",
+          "parsed": {
+            "rawWithoutAmount": "zonnebloemolie"
+          }
+        },
+        {
+          "raw": "zout en peper",
+          "parsed": {
+            "rawWithoutAmount": "zout en peper"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Voor de specerijenmix",
+      "ingredients": [
+        {
+          "raw": "2 el kerriepoeder (Surinaams)",
+          "parsed": {
+            "amount": 2,
+            "rawWithoutAmount": "el kerriepoeder (Surinaams)"
+          }
+        },
+        {
+          "raw": "3 tl knoflookpoeder",
+          "parsed": {
+            "amount": 3,
+            "rawWithoutAmount": "tl knoflookpoeder"
+          }
+        },
+        {
+          "raw": "3 tl uienpoeder",
+          "parsed": {
+            "amount": 3,
+            "rawWithoutAmount": "tl uienpoeder"
+          }
+        },
+        {
+          "raw": "2 tl komijnpoeder",
+          "parsed": {
+            "amount": 2,
+            "rawWithoutAmount": "tl komijnpoeder"
+          }
+        },
+        {
+          "raw": "1 tl gemberpoeder",
+          "parsed": {
+            "amount": 1,
+            "rawWithoutAmount": "tl gemberpoeder"
+          }
+        },
+        {
+          "raw": "1 tl paprikapoeder",
+          "parsed": {
+            "amount": 1,
+            "rawWithoutAmount": "tl paprikapoeder"
+          }
+        },
+        {
+          "raw": "1 tl gemalen zwarte peper",
+          "parsed": {
+            "amount": 1,
+            "rawWithoutAmount": "tl gemalen zwarte peper"
+          }
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    {
+      "text": "Meng de specerijen voor de specerijenmix."
+    },
+    {
+      "text": "Meng 1⁄3 van de specerijenmix met de tempé en een scheutje zonnebloemolie in een kom. Laat het geheel 30 minuten afgedekt in de koelkast marineren."
+    },
+    {
+      "text": "Verhit een flinke scheut zonnebloemolie in een braadpan op middelhoge temperatuur en voeg de rest van de specerijenmix en het bouillonblokje toe. Roer alles goed door elkaar en voeg, wanneer het een geheel is geworden, de sambal toe. Voeg de uien toe en fruit deze 5-6 minuten totdat deze glazig beginnen te worden. Voeg ook de knoflook toe en bak dit 1-2 minuten totdat die begint te geuren."
+    },
+    {
+      "text": "Voeg de aardappels en de kousenband toe en bak het geheel 10 minuten. Voeg het water toe, roer alles goed door elkaar en breng aan de kook. Verlaag de temperatuur en laat nog 20 minuten sudderen met de deksel op de pan terwijl je af en toe roert."
+    },
+    {
+      "text": "Kook de eieren 7-8 minuten in ruim kokend water, giet af en laat schrikken. Pel de eieren en zet opzij."
+    },
+    {
+      "text": "Verhit een flinke scheut zonnebloemolie in een koekenpan op middelhoge temperatuur. Bak de tempé 4-5 minuten per kant totdat deze goudbruin kleurt en knapperig is geworden. Blus af met ketjap en haal na 1 minuut van de warmtebron. Zet opzij."
+    },
+    {
+      "text": "Voeg de selderij en de gekookte eieren toe aan de braadpan en roer alles goed door elkaar. Laat het geheel 1-2 minuten opwarmen en haal van de warmtebron."
+    },
+    {
+      "text": "Verwarm de rotiplaten volgens de instructies op de verpakking."
+    },
+    {
+      "text": "Verdeel de stoof en de tempé over de borden en serveer met de rotiplaat."
+    }
+  ],
+  "recipe_yield": 1
+}

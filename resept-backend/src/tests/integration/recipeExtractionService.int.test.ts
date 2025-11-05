@@ -12,16 +12,14 @@ const readFixture = (name: string) => {
 };
 
 describe("recipeExtractionService integration", () => {
-  it("groupIngredients", async () => {
-    const { html, expected } = readFixture("groupIngredients");
+  it("cinnamonRolls", async () => {
+    const { html, expected } = readFixture("cinnamonRolls");
     const result = await extractRecipeFromHtml(
       html,
       "https://example.com/case"
     );
 
     expect(result.success).toBe(true);
-    expect(result.data).toBeTruthy();
-
     expect(result.data).toEqual(expected);
   });
 
@@ -33,10 +31,17 @@ describe("recipeExtractionService integration", () => {
     );
 
     expect(result.success).toBe(true);
-    expect(result.data).toBeTruthy();
+    expect(result.data).toEqual(expected);
+  });
 
-    console.log(JSON.stringify(result.data, null, 2));
+  it("roti", async () => {
+    const { html, expected } = readFixture("roti");
+    const result = await extractRecipeFromHtml(
+      html,
+      "https://example.com/case"
+    );
 
+    expect(result.success).toBe(true);
     expect(result.data).toEqual(expected);
   });
 });

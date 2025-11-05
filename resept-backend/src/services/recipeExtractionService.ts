@@ -25,8 +25,6 @@ export const processRecipeExtraction = async (
   url?: string
 ): Promise<RecipeResult> => {
   try {
-    console.log("Processing recipe extraction from HTML");
-
     // Step 1: Detect recipe JSON-LD
     const jsonLdRecipes = detectRecipeJsonLd(html);
 
