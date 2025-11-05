@@ -1,5 +1,5 @@
-import { parseIngredient } from "../utils/parseIngredient.js";
-import { type CreateRecipeData, type IngredientLine } from "../../types.js";
+import { parseIngredient } from "../utils/parseIngredient";
+import { type CreateRecipeData, type IngredientLine } from "../../types";
 
 interface UpdateRecipeRequest {
   recipeId: string;

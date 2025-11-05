@@ -1,4 +1,4 @@
-import { parseIngredient } from "./parseIngredient.js";
+import { parseIngredient } from "./parseIngredient";
 
 describe("parseIngredient", () => {
   describe("amount parsing", () => {

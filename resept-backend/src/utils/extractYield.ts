@@ -1,5 +1,5 @@
-import { YIELD_KEYWORDS } from "./constants.js";
-import { TextNode } from "./extractTextNodes.js";
+import { YIELD_KEYWORDS } from "./constants";
+import { TextNode } from "./extractTextNodes";
 
 const NUMBER_WORDS: Record<string, number> = {
   one: 1,

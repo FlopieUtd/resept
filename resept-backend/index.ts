@@ -2,12 +2,12 @@ import "dotenv/config";
 import express, { Application } from "express";
 import { Server } from "http";
 import cors from "cors";
-import routes from "./routes.js";
-import { closeBrowser } from "./src/utils/fetchHtmlWithBrowser.js";
+import routes from "./routes";
+import { closeBrowser } from "./src/utils/fetchHtmlWithBrowser";
 import {
   createServerWithPortLock,
   setupGracefulShutdown,
-} from "./src/utils/portLock.js";
+} from "./src/utils/portLock";
 
 const app: Application = express();
 

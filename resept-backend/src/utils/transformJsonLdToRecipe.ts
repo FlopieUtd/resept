@@ -1,4 +1,4 @@
-import { parseIngredient, type ParsedIngredient } from "./parseIngredient.js";
+import { parseIngredient, type ParsedIngredient } from "./parseIngredient";
 
 interface JsonLdRecipe {
   "@type"?: string | string[];

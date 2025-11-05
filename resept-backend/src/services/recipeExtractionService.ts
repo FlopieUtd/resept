@@ -1,12 +1,12 @@
-import { fetchHtmlFromUrl as fetchHtmlFromUrlUtil } from "../utils/fetchHtmlFromUrl.js";
-import { fetchHtmlWithBrowser } from "../utils/fetchHtmlWithBrowser.js";
-import { detectSiteType } from "../utils/detectSiteType.js";
-import { detectRecipeJsonLd } from "../utils/detectRecipeJsonLd.js";
-import { transformJsonLdToRecipe } from "../utils/transformJsonLdToRecipe.js";
-import { extractTextNodes } from "../utils/extractTextNodes.js";
-import { parseNodes } from "../utils/parseNodes.js";
-import { extractTitle } from "../utils/extractTitle.js";
-import { extractYield } from "../utils/extractYield.js";
+import { fetchHtmlFromUrl as fetchHtmlFromUrlUtil } from "../utils/fetchHtmlFromUrl";
+import { fetchHtmlWithBrowser } from "../utils/fetchHtmlWithBrowser";
+import { detectSiteType } from "../utils/detectSiteType";
+import { detectRecipeJsonLd } from "../utils/detectRecipeJsonLd";
+import { transformJsonLdToRecipe } from "../utils/transformJsonLdToRecipe";
+import { extractTextNodes } from "../utils/extractTextNodes";
+import { parseNodes } from "../utils/parseNodes";
+import { extractTitle } from "../utils/extractTitle";
+import { extractYield } from "../utils/extractYield";
 
 export interface RecipeResult {
   success: boolean;
@@ -67,7 +67,6 @@ export const processRecipeExtraction = async (
     }
 
     // Step 3: No JSON-LD found, extract recipe components from HTML
-    console.log("No JSON-LD found, extracting recipe components from HTML...");
     const textNodes = extractTextNodes(html);
 
     const parsedNodes = parseNodes(textNodes);
@@ -121,15 +120,12 @@ export const fetchHtmlFromUrl = async (
   data: { html: string } | null;
 }> => {
   try {
-    console.log("Ready to fetch HTML from URL");
-
     // Step 1: Try fast HTML fetch first
     let html: string = await fetchHtmlFromUrlUtil(url);
 
     // Step 1.5: If site needs browser rendering, use headless browser
     const siteAnalysis = detectSiteType(html);
     if (siteAnalysis.needsBrowser) {
-      console.log(`Site detected as SPA, using headless browser...`);
       try {
         const browserOptions: BrowserOptions = {
           waitForTimeout: 5000,
@@ -137,7 +133,6 @@ export const fetchHtmlFromUrl = async (
           maxWaitTime: 15000,
         };
         html = await fetchHtmlWithBrowser(url, browserOptions);
-        console.log("Headless browser fetch completed successfully");
       } catch (browserError: any) {
         console.log(
           "Headless browser failed, continuing with original HTML:",
@@ -152,7 +147,6 @@ export const fetchHtmlFromUrl = async (
       data: { html },
     };
   } catch (error: any) {
-    console.error("Error fetching HTML from URL:", error);
     return {
       success: false,
       error: error.message || "Failed to fetch HTML from URL",

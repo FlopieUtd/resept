@@ -1,4 +1,4 @@
-import { transformJsonLdToRecipe } from "./transformJsonLdToRecipe.js";
+import { transformJsonLdToRecipe } from "./transformJsonLdToRecipe";
 
 describe("transformJsonLdToRecipe", () => {
   describe("basic functionality", () => {
@@ -47,18 +47,22 @@ describe("transformJsonLdToRecipe", () => {
         total_time: "PT27M",
         ingredients: [
           {
-            raw: "2 cups flour",
-            parsed: {
-              amount: 2,
-              rawWithoutAmount: "cups flour",
-            },
-          },
-          {
-            raw: "1 cup sugar",
-            parsed: {
-              amount: 1,
-              rawWithoutAmount: "cup sugar",
-            },
+            ingredients: [
+              {
+                raw: "2 cups flour",
+                parsed: {
+                  amount: 2,
+                  rawWithoutAmount: "cups flour",
+                },
+              },
+              {
+                raw: "1 cup sugar",
+                parsed: {
+                  amount: 1,
+                  rawWithoutAmount: "cup sugar",
+                },
+              },
+            ],
           },
         ],
         instructions: [{ text: "Mix ingredients" }, { text: "Bake at 350F" }],
@@ -269,11 +273,15 @@ describe("transformJsonLdToRecipe", () => {
 
       expect(result!.ingredients).toEqual([
         {
-          raw: "2 cups flour",
-          parsed: {
-            amount: 2,
-            rawWithoutAmount: "cups flour",
-          },
+          ingredients: [
+            {
+              raw: "2 cups flour",
+              parsed: {
+                amount: 2,
+                rawWithoutAmount: "cups flour",
+              },
+            },
+          ],
         },
       ]);
       expect(result!.instructions).toEqual([{ text: "Mix ingredients" }]);
@@ -294,18 +302,22 @@ describe("transformJsonLdToRecipe", () => {
 
       expect(result!.ingredients).toEqual([
         {
-          raw: "2 cups flour",
-          parsed: {
-            amount: 2,
-            rawWithoutAmount: "cups flour",
-          },
-        },
-        {
-          raw: "1 cup sugar",
-          parsed: {
-            amount: 1,
-            rawWithoutAmount: "cup sugar",
-          },
+          ingredients: [
+            {
+              raw: "2 cups flour",
+              parsed: {
+                amount: 2,
+                rawWithoutAmount: "cups flour",
+              },
+            },
+            {
+              raw: "1 cup sugar",
+              parsed: {
+                amount: 1,
+                rawWithoutAmount: "cup sugar",
+              },
+            },
+          ],
         },
       ]);
       expect(result!.instructions).toEqual([
@@ -360,25 +372,29 @@ describe("transformJsonLdToRecipe", () => {
       );
       expect(result!.ingredients).toEqual([
         {
-          raw: "2 cups flour",
-          parsed: {
-            amount: 2,
-            rawWithoutAmount: "cups flour",
-          },
-        },
-        {
-          raw: "1 cup sugar",
-          parsed: {
-            amount: 1,
-            rawWithoutAmount: "cup sugar",
-          },
-        },
-        {
-          raw: "3 eggs",
-          parsed: {
-            amount: 3,
-            rawWithoutAmount: "eggs",
-          },
+          ingredients: [
+            {
+              raw: "2 cups flour",
+              parsed: {
+                amount: 2,
+                rawWithoutAmount: "cups flour",
+              },
+            },
+            {
+              raw: "1 cup sugar",
+              parsed: {
+                amount: 1,
+                rawWithoutAmount: "cup sugar",
+              },
+            },
+            {
+              raw: "3 eggs",
+              parsed: {
+                amount: 3,
+                rawWithoutAmount: "eggs",
+              },
+            },
+          ],
         },
       ]);
       expect(result!.instructions).toEqual([

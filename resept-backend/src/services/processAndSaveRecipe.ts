@@ -1,6 +1,6 @@
-import { extractRecipeFromHtml } from "./recipeExtractionService.js";
-import { createRecipe } from "./createRecipe.js";
-import { type CreateRecipeData } from "../../types.js";
+import { extractRecipeFromHtml } from "./recipeExtractionService";
+import { createRecipe } from "./createRecipe";
+import { type CreateRecipeData } from "../../types";
 
 interface ProcessAndSaveRecipeRequest {
   html: string;
@@ -17,7 +17,6 @@ interface ProcessAndSaveRecipeResult {
 export const processAndSaveRecipe = async (
   request: ProcessAndSaveRecipeRequest
 ): Promise<ProcessAndSaveRecipeResult> => {
-  console.log("Processing and saving recipe");
   try {
     const { html, url, userId } = request;
 
@@ -34,8 +33,6 @@ export const processAndSaveRecipe = async (
     }
 
     const extractedRecipe = extractionResult.data;
-
-    console.log("RESULT", JSON.stringify(extractedRecipe, null, 2));
 
     // Step 2: Transform to CreateRecipeData format
     const recipeData: CreateRecipeData = {

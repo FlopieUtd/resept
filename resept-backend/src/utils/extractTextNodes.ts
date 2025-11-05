@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import { normalizeListItemPrefix } from "./normalizeText.js";
+import { normalizeListItemPrefix } from "./normalizeText";
 
 export interface TextNode {
   depth: number;
@@ -154,9 +154,7 @@ export const extractTextNodes = (html: string): TextNode[] => {
       ((originalLength - finalLength) / originalLength) *
       100
     ).toFixed(1);
-    console.log(
-      `HTML stripped: ${strippedPercent}% (${originalLength} -> ${finalLength} chars)`
-    );
+
     return textNodes;
   } catch (error) {
     console.error("Error cleaning HTML:", error);

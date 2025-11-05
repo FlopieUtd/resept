@@ -157,6 +157,15 @@ export const RecipeEditModal = ({
   const [importError, setImportError] = useState("");
   const [isImporting, setIsImporting] = useState(false);
   const prevIsOpen = useRef(isOpen);
+  const ingredientInputRefs = useRef<Record<string, HTMLInputElement | null>>(
+    {}
+  );
+  const [pendingFocusKey, setPendingFocusKey] = useState<string | null>(null);
+  const groupTitleInputRefs = useRef<Record<number, HTMLInputElement | null>>(
+    {}
+  );
+  const [pendingGroupTitleFocusIndex, setPendingGroupTitleFocusIndex] =
+    useState<number | null>(null);
 
   useEffect(() => {
     if (isOpen && !prevIsOpen.current) {
@@ -186,6 +195,24 @@ export const RecipeEditModal = ({
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!pendingFocusKey) return;
+    const el = ingredientInputRefs.current[pendingFocusKey] || null;
+    if (el) {
+      el.focus();
+      setPendingFocusKey(null);
+    }
+  }, [formData, pendingFocusKey]);
+
+  useEffect(() => {
+    if (pendingGroupTitleFocusIndex === null) return;
+    const el = groupTitleInputRefs.current[pendingGroupTitleFocusIndex] || null;
+    if (el) {
+      el.focus();
+      setPendingGroupTitleFocusIndex(null);
+    }
+  }, [formData, pendingGroupTitleFocusIndex]);
 
   const handleInputChange = (
     field: keyof CreateRecipeData,
@@ -228,17 +255,16 @@ export const RecipeEditModal = ({
   };
 
   const addGroup = () => {
-    setFormData((prev) => ({
-      ...prev,
-      ingredients: [...prev.ingredients, { ingredients: [{ raw: "" }] }],
-    }));
-  };
-
-  const removeGroup = (groupIndex: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      ingredients: prev.ingredients.filter((_, i) => i !== groupIndex),
-    }));
+    setFormData((prev) => {
+      const next = {
+        ...prev,
+        ingredients: [...prev.ingredients, { ingredients: [{ raw: "" }] }],
+      };
+      if (prev.ingredients.length === 1) {
+        setPendingGroupTitleFocusIndex(0);
+      }
+      return next;
+    });
   };
 
   const addIngredient = (groupIndex: number) => {
@@ -247,6 +273,8 @@ export const RecipeEditModal = ({
       const group = newGroups[groupIndex];
       const newLines = [...group.ingredients, { raw: "" }];
       newGroups[groupIndex] = { ...group, ingredients: newLines };
+      const newIndex = newLines.length - 1;
+      setPendingFocusKey(`${groupIndex}-${newIndex}`);
       return { ...prev, ingredients: newGroups };
     });
   };
@@ -376,7 +404,7 @@ export const RecipeEditModal = ({
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-[2px] flex items-center justify-center p-4 z-50"
+      className="fixed inset-0 bg-black bg-opacity-25  flex items-center justify-center p-4 z-50"
       onClick={handleBackdropClick}
     >
       <div className="bg-white max-w-[1080px] w-full max-h-[95vh] overflow-y-auto rounded-[8px] shadow-xl">
@@ -530,23 +558,27 @@ export const RecipeEditModal = ({
                 {formData.ingredients.map((group, gIndex) => (
                   <div key={gIndex} className="border p-3 rounded">
                     <div className="flex justify-between items-center mb-2">
-                      <div className="flex-1 mr-2">
-                        <Input
-                          type="text"
-                          value={group.title || ""}
-                          onChange={(e) =>
-                            handleGroupTitleChange(gIndex, e.target.value)
-                          }
-                          placeholder="Groep titel (optioneel)"
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => removeGroup(gIndex)}
-                        className="px-3 py-2 text-red-600 hover:text-red-800"
-                      >
-                        ×
-                      </button>
+                      {(formData.ingredients.length >= 2 ||
+                        (group.title || "").trim()) && (
+                        <div className="flex-1 mr-2">
+                          <Input
+                            type="text"
+                            value={group.title || ""}
+                            onChange={(e) =>
+                              handleGroupTitleChange(gIndex, e.target.value)
+                            }
+                            placeholder="Groep titel (optioneel)"
+                            className={`${
+                              (group.title || "").trim()
+                                ? "font-semibold placeholder:font-normal"
+                                : ""
+                            }`}
+                            ref={(el) => {
+                              groupTitleInputRefs.current[gIndex] = el;
+                            }}
+                          />
+                        </div>
+                      )}
                     </div>
                     <div className="space-y-2">
                       {group.ingredients.map((ingredient, index) => (
@@ -564,6 +596,11 @@ export const RecipeEditModal = ({
                               }
                               placeholder="Ingrediënt..."
                               required
+                              ref={(el) => {
+                                ingredientInputRefs.current[
+                                  `${gIndex}-${index}`
+                                ] = el;
+                              }}
                             />
                           </div>
                           <button

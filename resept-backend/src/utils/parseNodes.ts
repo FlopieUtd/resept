@@ -1,7 +1,7 @@
-import { TextNode } from "./extractTextNodes.js";
-import { COOKING_IMPERATIVES, UNIT_KEYWORDS } from "./constants.js";
-import { parseIngredient, type ParsedIngredient } from "./parseIngredient.js";
-import type { IngredientGroup, IngredientLine } from "../../types.js";
+import { TextNode } from "./extractTextNodes";
+import { COOKING_IMPERATIVES, UNIT_KEYWORDS } from "./constants";
+import { parseIngredient, type ParsedIngredient } from "./parseIngredient";
+import type { IngredientGroup, IngredientLine } from "../../types";
 
 interface InternalIngredientGroup {
   ingredientProbability: number;
@@ -524,25 +524,6 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
 
   const instructions: { text: string }[] = clusteredInstructions.map(
     ({ node }) => ({ text: node.text })
-  );
-
-  console.log(
-    "Instruction groups with probabilities:",
-    JSON.stringify(
-      result
-        .filter((g) => (g.instructionsProbability || 0) > 0)
-        .map((group) => ({
-          nodes: group.nodes.map((n) => ({
-            text: n.text.substring(0, 50),
-            depth: n.depth,
-            elementType: n.elementType,
-          })),
-          instructionsProbability: group.instructionsProbability,
-          ingredientProbability: group.ingredientProbability,
-        })),
-      null,
-      2
-    )
   );
 
   const maxIngredientProbability =

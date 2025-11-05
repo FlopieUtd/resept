@@ -1,5 +1,5 @@
-import { supabaseAdmin } from "../lib/supabase.js";
-import { type CreateRecipeData } from "../../types.js";
+import { supabaseAdmin } from "../lib/supabase";
+import { type CreateRecipeData } from "../../types";
 
 interface CreateRecipeRequest {
   recipeData: CreateRecipeData;

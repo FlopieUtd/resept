@@ -28,7 +28,9 @@ describe("parseNodes", () => {
     expect(result.ingredients.length).toBeGreaterThan(0);
     expect(result.instructions.length).toBeGreaterThan(0);
 
-    const ingredientRaws = result.ingredients.map((i) => i.raw);
+    const ingredientRaws = result.ingredients.flatMap((g) =>
+      g.ingredients.map((i) => i.raw)
+    );
     const instructionTexts = result.instructions.map((i) => i.text);
 
     expect(ingredientRaws).toEqual(["2 cups flour", "1 tsp salt"]);

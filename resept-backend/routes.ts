@@ -2,11 +2,11 @@ import express, { Request, Response, Router } from "express";
 import {
   fetchHtmlFromUrl,
   extractRecipeFromHtml,
-} from "./src/services/recipeExtractionService.js";
-import { updateRecipe } from "./src/services/updateRecipe.js";
-import { processAndSaveRecipe } from "./src/services/processAndSaveRecipe.js";
-import { authenticateToken } from "./src/middleware/auth.js";
-import { supabase } from "./src/lib/supabase.js";
+} from "./src/services/recipeExtractionService";
+import { updateRecipe } from "./src/services/updateRecipe";
+import { processAndSaveRecipe } from "./src/services/processAndSaveRecipe";
+import { authenticateToken } from "./src/middleware/auth";
+import { supabase } from "./src/lib/supabase";
 
 const router: Router = express.Router();
 
@@ -103,10 +103,6 @@ router.post("/extract-from-url", async (req: any, res: Response) => {
       "Fetched HTML length:",
       htmlResult.data!.html.length,
       "characters"
-    );
-    console.log(
-      "Fetched HTML (first 500 chars):",
-      htmlResult.data!.html.substring(0, 500)
     );
 
     // Extract recipe data from HTML (no persistence)
