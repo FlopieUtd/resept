@@ -1,0 +1,102 @@
+{
+  "title": "Boeuf Stroganoff",
+  "ingredients": [
+    {
+      "title": "Ingrediënten voor vier personen",
+      "ingredients": [
+        {
+          "raw": "2 st zoete witte ui, gesnipperd",
+          "parsed": {
+            "amount": 2,
+            "rawWithoutAmount": "st zoete witte ui, gesnipperd"
+          }
+        },
+        {
+          "raw": "1 teen knoflook",
+          "parsed": {
+            "amount": 1,
+            "rawWithoutAmount": "teen knoflook"
+          }
+        },
+        {
+          "raw": "50 gr roomboter",
+          "parsed": {
+            "amount": 50,
+            "rawWithoutAmount": "gr roomboter"
+          }
+        },
+        {
+          "raw": "250 gr champignons in kwarten",
+          "parsed": {
+            "amount": 250,
+            "rawWithoutAmount": "gr champignons in kwarten"
+          }
+        },
+        {
+          "raw": "600 gr rumpsteakin dikke repen",
+          "parsed": {
+            "amount": 600,
+            "rawWithoutAmount": "gr rumpsteakin dikke repen"
+          }
+        },
+        {
+          "raw": "2 tl paprikapoeder gerookt",
+          "parsed": {
+            "amount": 2,
+            "rawWithoutAmount": "tl paprikapoeder gerookt"
+          }
+        },
+        {
+          "raw": "1 tl paprikapoeder dulce",
+          "parsed": {
+            "amount": 1,
+            "rawWithoutAmount": "tl paprikapoeder dulce"
+          }
+        },
+        {
+          "raw": "50 gr tomatenpuree",
+          "parsed": {
+            "amount": 50,
+            "rawWithoutAmount": "gr tomatenpuree"
+          }
+        },
+        {
+          "raw": "150 ml witte wijn",
+          "parsed": {
+            "amount": 150,
+            "rawWithoutAmount": "ml witte wijn"
+          }
+        },
+        {
+          "raw": "200 gr crème fraîche",
+          "parsed": {
+            "amount": 200,
+            "rawWithoutAmount": "gr crème fraîche"
+          }
+        },
+        {
+          "raw": "1 el dijonmosterd",
+          "parsed": {
+            "amount": 1,
+            "rawWithoutAmount": "el dijonmosterd"
+          }
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    {
+      "text": "Aan de slag!"
+    },
+    {
+      "text": "Bereid je voor en snijd de ingrediënten zoals aangegeven. Zet een koekenpan op hoog vuur, verhit hier een beetje olie in bak de biefstukrepen goed rondom aan en zet ze apart. Zet nu een hapjespan op het vuur met de roomboter en fruit hierin de ui glazig. Zet het vuur hoger, voeg de champignons toe en bak deze rondom aan. Voeg het paprikapoeder en de tomatenpuree toe en bak dit al roerend even mee. Blus het geheel af met de witte wijn, laat het tien minuten stoven en voeg dan de crème fraîche toe. Breng het gerecht op smaak met mosterd, citroensap, zout en peper. Roer als laatste de biefstuk erdoor en maak het af met de gehakte peterselie."
+    },
+    {
+      "text": "Serveer je boeuf stroganoff met rijst."
+    },
+    {
+      "text": "Eet smakelijk!"
+    }
+  ],
+  "recipe_yield": 4
+}

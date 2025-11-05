@@ -272,6 +272,26 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
     }
   }
 
+  console.log(
+    "All text node groups with probabilities:",
+    result.map((group) =>
+      JSON.stringify(
+        {
+          ingredientProbability: group.ingredientProbability,
+          instructionsProbability: group.instructionsProbability,
+          nodeCount: group.nodes.length,
+          nodes: group.nodes.map((n) => ({
+            text: n.text,
+            elementType: n.elementType,
+            depth: n.depth,
+          })),
+        },
+        null,
+        2
+      )
+    )
+  );
+
   const INSTRUCTIONS_THRESHOLD = 0.3;
   const maxInstructionsProbability =
     result.length > 0
@@ -789,9 +809,21 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
       clusters.push(cluster);
     }
 
-    const mainCluster = clusters.reduce((max, cluster) =>
-      cluster.length > max.length ? cluster : max
-    );
+    const scoreCluster = (cluster: number[]): number =>
+      cluster.reduce(
+        (sum, idx) =>
+          sum + (candidateGroups[idx].group.ingredientProbability || 0),
+        0
+      );
+
+    const mainCluster = clusters.reduce((best, cluster) => {
+      const bestScore = scoreCluster(best);
+      const currScore = scoreCluster(cluster);
+      if (currScore !== bestScore) {
+        return currScore > bestScore ? cluster : best;
+      }
+      return cluster.length > best.length ? cluster : best;
+    });
 
     return mainCluster.map((idx) => groups[idx]);
   };
@@ -800,9 +832,14 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
 
   const ingredientGroups: IngredientGroup[] = clusteredGroups.map(
     (candidate) => ({
-      title: candidate.title,
+      title: clusteredGroups.length === 1 ? undefined : candidate.title,
       ingredients: candidate.ingredientLines,
     })
+  );
+
+  console.log(
+    "candidateGroups groups:",
+    JSON.stringify(candidateGroups, null, 2)
   );
 
   if (ingredientGroups.length === 0) {

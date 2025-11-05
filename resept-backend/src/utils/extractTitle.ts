@@ -1,6 +1,46 @@
+import { RECIPE_KEYWORDS } from "./constants";
+
+const normalizeForCompare = (s: string): string =>
+  s
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+
+const removeRecipeKeywords = (title: string): string => {
+  const allRecipeKeywords = Object.values(RECIPE_KEYWORDS).flatMap(
+    (keywordGroup) => {
+      const dutchKeywords = Array.isArray(keywordGroup.dutch)
+        ? keywordGroup.dutch
+        : [keywordGroup.dutch];
+      const englishKeywords = Array.isArray(keywordGroup.english)
+        ? keywordGroup.english
+        : [keywordGroup.english];
+      return [...dutchKeywords, ...englishKeywords];
+    }
+  );
+
+  let result = title;
+  for (const keyword of allRecipeKeywords) {
+    const regex = new RegExp(
+      `\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
+      "gi"
+    );
+    result = result.replace(regex, "").replace(/\s+/g, " ").trim();
+  }
+
+  result = result.replace(/^[\s\-–—|:]+/, "");
+  result = result.replace(/[\s\-–—|:]+$/, "");
+  result = result.replace(/\s{2,}/g, " ").trim();
+
+  return result;
+};
+
 export const extractTitle = (html: string, url: string): string => {
   // Strip all non-alphabetical chars from URL and render in human readable format
   const urlTitle = extractTitleFromUrl(url);
+  const normalizedUrlTitle = urlTitle ? normalizeForCompare(urlTitle) : "";
 
   // First, try to find heading elements (h1, h2, h3, h4, h5, h6) - prioritize by hierarchy
   const headingTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
@@ -23,10 +63,10 @@ export const extractTitle = (html: string, url: string): string => {
 
         // If URL title exists and matches this heading, prefer it
         if (
-          urlTitle &&
-          headingText.toLowerCase().includes(urlTitle.toLowerCase())
+          normalizedUrlTitle &&
+          normalizeForCompare(headingText).includes(normalizedUrlTitle)
         ) {
-          return headingText;
+          return removeRecipeKeywords(headingText);
         }
       }
     }
@@ -34,7 +74,7 @@ export const extractTitle = (html: string, url: string): string => {
 
   // If we found a heading but no URL match, return the first heading
   if (firstHeading) {
-    return firstHeading;
+    return removeRecipeKeywords(firstHeading);
   }
 
   // If no headings found, try to match URL title with other elements
@@ -55,14 +95,17 @@ export const extractTitle = (html: string, url: string): string => {
         }
 
         // Check if URL title appears in this text node (case insensitive)
-        if (textContent.toLowerCase().includes(urlTitle.toLowerCase())) {
-          return textContent; // Return the content of the text node
+        if (
+          normalizedUrlTitle &&
+          normalizeForCompare(textContent).includes(normalizedUrlTitle)
+        ) {
+          return removeRecipeKeywords(textContent);
         }
       }
     }
 
     // Fallback: return the URL title
-    return urlTitle;
+    return removeRecipeKeywords(urlTitle);
   }
 
   return "";
@@ -83,12 +126,9 @@ const extractTitleFromUrl = (url: string): string => {
       return "";
     }
 
-    // Strip all non-alphabetical characters and render in human readable format
-    let title = lastSegment
-      .replace(/[^a-zA-Z]/g, " ") // Replace all non-alphabetical chars with spaces
-      .replace(/\s+/g, " ") // Replace multiple spaces with single space
-      .trim()
-      .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize first letter of each word
+    // Normalize then render in human readable format
+    const normalized = normalizeForCompare(lastSegment);
+    const title = normalized.replace(/\b\w/g, (char) => char.toUpperCase());
 
     return title;
   } catch (error) {

@@ -12,8 +12,21 @@ const readFixture = (name: string) => {
 };
 
 describe("recipeExtractionService integration", () => {
-  it("groupIngredients → extracts expected title and key content", async () => {
+  it("groupIngredients", async () => {
     const { html, expected } = readFixture("groupIngredients");
+    const result = await extractRecipeFromHtml(
+      html,
+      "https://example.com/case"
+    );
+
+    expect(result.success).toBe(true);
+    expect(result.data).toBeTruthy();
+
+    expect(result.data).toEqual(expected);
+  });
+
+  it("boeufStroganoff", async () => {
+    const { html, expected } = readFixture("boeufStroganoff");
     const result = await extractRecipeFromHtml(
       html,
       "https://example.com/case"

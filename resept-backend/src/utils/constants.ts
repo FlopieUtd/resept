@@ -252,6 +252,19 @@ export const YIELD_KEYWORDS: Record<
   },
 };
 
+export const RECIPE_KEYWORDS: Record<
+  string,
+  {
+    dutch: string | string[];
+    english: string | string[];
+  }
+> = {
+  recipe: {
+    dutch: ["recept"],
+    english: ["recipe"],
+  },
+};
+
 export const UNIT_KEYWORDS: Record<
   string,
   {
