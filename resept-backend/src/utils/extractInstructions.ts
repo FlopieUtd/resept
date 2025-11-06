@@ -96,7 +96,8 @@ const calculateClusterScore = (nodes: InstructionNode[]): number => {
 };
 
 const clusterInstructionsByDepthAndProximity = (
-  nodes: InstructionNode[]
+  nodes: InstructionNode[],
+  allGroups: InternalIngredientGroup[]
 ): InstructionNode[] => {
   if (nodes.length === 0) return [];
   const depthElementGroups = new Map<string, InstructionNode[]>();
@@ -116,7 +117,31 @@ const clusterInstructionsByDepthAndProximity = (
     );
     let currentCluster: InstructionNode[] = [sorted[0]];
     for (let i = 1; i < sorted.length; i++) {
-      const distance = sorted[i].originalIndex - sorted[i - 1].originalIndex;
+      const lastIndex = currentCluster[currentCluster.length - 1].originalIndex;
+      const nextIndex = sorted[i].originalIndex;
+      const distance = nextIndex - lastIndex;
+      const missingNodes: InstructionNode[] = [];
+      for (let j = lastIndex + 1; j < nextIndex; j++) {
+        if (j >= 0 && j < allGroups.length) {
+          const missingGroup = allGroups[j];
+          if (
+            missingGroup.nodes.length === 1 &&
+            missingGroup.nodes[0].depth === sorted[0].depth &&
+            missingGroup.nodes[0].elementType === sorted[0].node.elementType &&
+            !startsWithCookingVerb(missingGroup.nodes[0].text)
+          ) {
+            missingNodes.push({
+              node: missingGroup.nodes[0],
+              depth: missingGroup.nodes[0].depth,
+              originalIndex: j,
+              probability: missingGroup.instructionsProbability || 0,
+            });
+          }
+        }
+      }
+      if (missingNodes.length > 0) {
+        currentCluster.push(...missingNodes);
+      }
       if (distance <= THRESHOLDS.CLUSTER_DISTANCE) {
         currentCluster.push(sorted[i]);
       } else {
@@ -178,7 +203,9 @@ export const extractInstructions = (
     }),
   ];
 
-  const clusteredInstructions =
-    clusterInstructionsByDepthAndProximity(allInstructionNodes);
+  const clusteredInstructions = clusterInstructionsByDepthAndProximity(
+    allInstructionNodes,
+    allGroups
+  );
   return clusteredInstructions.map(({ node }) => ({ text: node.text }));
 };

@@ -52,15 +52,7 @@ export const processRecipeExtraction = async (
             error: null,
             data: recipe,
           };
-        } else {
-          console.log(
-            "JSON-LD recipe has empty ingredients or instructions, falling back to HTML extraction"
-          );
         }
-      } else {
-        console.log(
-          "Failed to transform JSON-LD recipe, falling back to HTML extraction"
-        );
       }
     }
 
@@ -78,11 +70,6 @@ export const processRecipeExtraction = async (
       parsedNodes.maxInstructionsProbability >= RECIPE_VALIDATION_THRESHOLD;
 
     if (!isRecipeValid) {
-      console.log("Recipe validation failed - low probability scores:", {
-        ingredientProbability: parsedNodes.maxIngredientProbability,
-        instructionsProbability: parsedNodes.maxInstructionsProbability,
-        threshold: RECIPE_VALIDATION_THRESHOLD,
-      });
       return {
         success: false,
         error: "No recipe detected",
