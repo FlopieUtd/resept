@@ -44,4 +44,15 @@ describe("recipeExtractionService integration", () => {
     expect(result.success).toBe(true);
     expect(result.data).toEqual(expected);
   });
+
+  it("aubergineParmigiana", async () => {
+    const { html, expected } = readFixture("aubergineParmigiana");
+    const result = await extractRecipeFromHtml(
+      html,
+      "https://example.com/case"
+    );
+
+    expect(result.success).toBe(true);
+    expect(result.data).toEqual(expected);
+  });
 });

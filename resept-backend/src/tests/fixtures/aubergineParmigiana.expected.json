@@ -1,0 +1,105 @@
+{
+  "title": "Aubergine Parmigiana",
+  "ingredients": [
+    {
+      "ingredients": [
+        {
+          "raw": "Serving Size 1 slice",
+          "parsed": {
+            "rawWithoutAmount": "Serving Size 1 slice"
+          }
+        },
+        {
+          "raw": "Calories 350 kcal",
+          "parsed": {
+            "rawWithoutAmount": "Calories 350 kcal"
+          }
+        },
+        {
+          "raw": "Carbohydrate Content 20 g",
+          "parsed": {
+            "rawWithoutAmount": "Carbohydrate Content 20 g"
+          }
+        },
+        {
+          "raw": "Cholesterol Content 50 mg",
+          "parsed": {
+            "rawWithoutAmount": "Cholesterol Content 50 mg"
+          }
+        },
+        {
+          "raw": "Fat Content 25 g",
+          "parsed": {
+            "rawWithoutAmount": "Fat Content 25 g"
+          }
+        },
+        {
+          "raw": "Fiber Content 5 g",
+          "parsed": {
+            "rawWithoutAmount": "Fiber Content 5 g"
+          }
+        },
+        {
+          "raw": "Protein Content 15 g",
+          "parsed": {
+            "rawWithoutAmount": "Protein Content 15 g"
+          }
+        },
+        {
+          "raw": "Saturated Fat Content 10 g",
+          "parsed": {
+            "rawWithoutAmount": "Saturated Fat Content 10 g"
+          }
+        },
+        {
+          "raw": "Sodium Content 600 mg",
+          "parsed": {
+            "rawWithoutAmount": "Sodium Content 600 mg"
+          }
+        },
+        {
+          "raw": "Sugar Content 8 g",
+          "parsed": {
+            "rawWithoutAmount": "Sugar Content 8 g"
+          }
+        },
+        {
+          "raw": "Trans Fat Content 0 g",
+          "parsed": {
+            "rawWithoutAmount": "Trans Fat Content 0 g"
+          }
+        },
+        {
+          "raw": "Unsaturated Fat Content 15 g",
+          "parsed": {
+            "rawWithoutAmount": "Unsaturated Fat Content 15 g"
+          }
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    {
+      "text": "Season generously with salt."
+    },
+    {
+      "text": "Roast in the oven until caramelised."
+    },
+    {
+      "text": "Add a tablespoon of tomato puree and cook for a few minutes."
+    },
+    {
+      "text": "Pour in two tins of tomatoes, rinse the tins with a bit of water and add to the sauce."
+    },
+    {
+      "text": "Cook the sauce until thickened and finish with a little pinch of sugar to reduce acidity."
+    },
+    {
+      "text": "To assemble, start with a layer of tomato sauce, then layer with aubergine slices, mozzarella, tomato sauce, and basil."
+    },
+    {
+      "text": "Bake in the oven until golden and crisp."
+    }
+  ],
+  "recipe_yield": 6
+}
