@@ -225,6 +225,10 @@ export const COOKING_IMPERATIVES: Record<
     english: ["to"],
     dutch: ["om"],
   },
+  start: {
+    english: ["start", "begin"],
+    dutch: ["begin"],
+  },
 };
 
 export const YIELD_KEYWORDS: Record<
