@@ -4,75 +4,72 @@
     {
       "ingredients": [
         {
-          "raw": "Serving Size 1 slice",
+          "raw": "Aubergines, thinly sliced",
           "parsed": {
-            "rawWithoutAmount": "Serving Size 1 slice"
+            "rawWithoutAmount": "Aubergines, thinly sliced"
           }
         },
         {
-          "raw": "Calories 350 kcal",
+          "raw": "Olive oil, for dunking and roasting",
           "parsed": {
-            "rawWithoutAmount": "Calories 350 kcal"
+            "rawWithoutAmount": "Olive oil, for dunking and roasting"
           }
         },
         {
-          "raw": "Carbohydrate Content 20 g",
+          "raw": "Salt, generously for seasoning",
           "parsed": {
-            "rawWithoutAmount": "Carbohydrate Content 20 g"
+            "rawWithoutAmount": "Salt, generously for seasoning"
           }
         },
         {
-          "raw": "Cholesterol Content 50 mg",
+          "raw": "Two cloves of garlic",
           "parsed": {
-            "rawWithoutAmount": "Cholesterol Content 50 mg"
+            "amount": 2,
+            "rawWithoutAmount": "cloves of garlic"
           }
         },
         {
-          "raw": "Fat Content 25 g",
+          "raw": "One tablespoon of tomato puree",
           "parsed": {
-            "rawWithoutAmount": "Fat Content 25 g"
+            "amount": 1,
+            "rawWithoutAmount": "tablespoon of tomato puree"
           }
         },
         {
-          "raw": "Fiber Content 5 g",
+          "raw": "Two tins of tomatoes",
           "parsed": {
-            "rawWithoutAmount": "Fiber Content 5 g"
+            "amount": 2,
+            "rawWithoutAmount": "tins of tomatoes"
           }
         },
         {
-          "raw": "Protein Content 15 g",
+          "raw": "Water, for rinsing the tins",
           "parsed": {
-            "rawWithoutAmount": "Protein Content 15 g"
+            "rawWithoutAmount": "Water, for rinsing the tins"
           }
         },
         {
-          "raw": "Saturated Fat Content 10 g",
+          "raw": "A pinch of sugar",
           "parsed": {
-            "rawWithoutAmount": "Saturated Fat Content 10 g"
+            "rawWithoutAmount": "A pinch of sugar"
           }
         },
         {
-          "raw": "Sodium Content 600 mg",
+          "raw": "Mozzarella cheese",
           "parsed": {
-            "rawWithoutAmount": "Sodium Content 600 mg"
+            "rawWithoutAmount": "Mozzarella cheese"
           }
         },
         {
-          "raw": "Sugar Content 8 g",
+          "raw": "Parmesan cheese",
           "parsed": {
-            "rawWithoutAmount": "Sugar Content 8 g"
+            "rawWithoutAmount": "Parmesan cheese"
           }
         },
         {
-          "raw": "Trans Fat Content 0 g",
+          "raw": "Fresh basil leaves",
           "parsed": {
-            "rawWithoutAmount": "Trans Fat Content 0 g"
-          }
-        },
-        {
-          "raw": "Unsaturated Fat Content 15 g",
-          "parsed": {
-            "rawWithoutAmount": "Unsaturated Fat Content 15 g"
+            "rawWithoutAmount": "Fresh basil leaves"
           }
         }
       ]

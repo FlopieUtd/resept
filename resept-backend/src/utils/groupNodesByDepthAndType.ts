@@ -1,5 +1,6 @@
 import type { TextNode } from "./extractTextNodes";
 import { THRESHOLDS } from "./parseNodes.thresholds";
+import { containsNutritionKeyword } from "./parseNodes.lexicon";
 import { containsUnitKeyword } from "./parseNodes.lexicon";
 import type { InternalIngredientGroup } from "./parseNodes.types";
 
@@ -26,7 +27,19 @@ const computeIngredientProbability = (nodes: TextNode[]): number => {
   const probability =
     baseProbability * THRESHOLDS.INGREDIENT_NUMERIC_LENGTH_WEIGHT +
     unitFactor * THRESHOLDS.INGREDIENT_UNIT_WEIGHT;
-  return probability;
+
+  const nutritionHits = nodes.filter((node) =>
+    containsNutritionKeyword(node.text)
+  ).length;
+  const nutritionFactor = nutritionHits / nodes.length;
+  const penalized = Math.max(
+    0,
+    Math.min(
+      1,
+      probability - nutritionFactor * THRESHOLDS.NUTRITION_PENALTY_WEIGHT
+    )
+  );
+  return penalized;
 };
 
 export const groupNodesByDepthAndType = (

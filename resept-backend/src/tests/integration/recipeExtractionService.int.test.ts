@@ -52,6 +52,8 @@ describe("recipeExtractionService integration", () => {
       "https://example.com/case"
     );
 
+    console.log(JSON.stringify(result.data, null, 2));
+
     expect(result.success).toBe(true);
     expect(result.data).toEqual(expected);
   });

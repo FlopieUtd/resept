@@ -153,5 +153,15 @@ export const extractIngredientCandidates = (
     }
   }
 
+  if (ingredientCandidateGroups.length > 0) {
+    const toLog = ingredientCandidateGroups.map((g) => ({
+      title: g.title,
+      lines: g.ingredientLines.map((l) => l.raw),
+    }));
+    console.log("Ingredient candidates:", toLog);
+  } else {
+    console.log("Ingredient candidates: []");
+  }
+
   return ingredientCandidateGroups;
 };

@@ -321,3 +321,36 @@ export const UNIT_KEYWORDS: Record<
     english: ["cup", "cups"],
   },
 };
+
+export const NUTRITION_KEYWORDS: Record<
+  string,
+  {
+    dutch: string | string[];
+    english: string | string[];
+  }
+> = {
+  cholesterol: {
+    dutch: ["cholesterol"],
+    english: ["cholesterol"],
+  },
+  carbohydrate: {
+    dutch: ["koolhydraat", "koolhydraten"],
+    english: ["carbohydrate", "carbohydrates"],
+  },
+  saturated: {
+    dutch: ["verzadigd", "verzadigde"],
+    english: ["saturated"],
+  },
+  unsaturated: {
+    dutch: ["onverzadigd", "onverzadigde"],
+    english: ["unsaturated"],
+  },
+  sodium: {
+    dutch: ["natrium", "zout"],
+    english: ["sodium", "salt"],
+  },
+  fiber: {
+    dutch: ["vezel", "vezels"],
+    english: ["fiber", "fibre", "fibers", "fibres"],
+  },
+};
