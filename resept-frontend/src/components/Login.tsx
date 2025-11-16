@@ -35,17 +35,31 @@ export const Login = () => {
           const extensionRedirectUri = localStorage.getItem(
             "extension_redirect_uri"
           );
+          const originalUrl = localStorage.getItem("extension_original_url");
+          const originalTabId = localStorage.getItem(
+            "extension_original_tab_id"
+          );
+
           if (extensionRedirectUri) {
             localStorage.removeItem("extension_redirect_uri");
-            navigate(
-              `/auth/extension?redirect_uri=${encodeURIComponent(
-                extensionRedirectUri
-              )}`
-            );
+            let redirectUrl = `/auth/extension?redirect_uri=${encodeURIComponent(
+              extensionRedirectUri
+            )}`;
+            if (originalUrl) {
+              redirectUrl += `&original_url=${encodeURIComponent(originalUrl)}`;
+            }
+            if (originalTabId) {
+              redirectUrl += `&original_tab_id=${encodeURIComponent(
+                originalTabId
+              )}`;
+            }
+            navigate(redirectUrl);
             return;
           }
         } else {
           localStorage.removeItem("extension_redirect_uri");
+          localStorage.removeItem("extension_original_url");
+          localStorage.removeItem("extension_original_tab_id");
         }
 
         navigate("/");

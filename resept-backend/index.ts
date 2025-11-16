@@ -26,6 +26,7 @@ app.use(
 );
 
 app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true, limit: "1mb" }));
 
 // Add request logging middleware
 app.use((req, res, next) => {

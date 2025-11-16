@@ -66,4 +66,17 @@ describe("recipeExtractionService integration", () => {
     expect(result.success).toBe(false);
     expect(result.data).toEqual(null);
   });
+
+  it("turkishPide", async () => {
+    const { html, expected } = readFixture("turkishPide");
+    const result = await extractRecipeFromHtml(
+      html,
+      "https://example.com/case"
+    );
+
+    console.log(JSON.stringify(result, null, 2));
+
+    expect(result.success).toBe(true);
+    expect(result.data).toEqual(expected);
+  });
 });

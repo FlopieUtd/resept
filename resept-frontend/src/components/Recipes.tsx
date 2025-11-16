@@ -7,13 +7,12 @@ import { Input } from "./Input";
 import { PlusIcon } from "@phosphor-icons/react";
 import { useMemo, useState } from "react";
 import { Select } from "./Select";
+import { useRecipeSort } from "../hooks/useRecipeSort";
+import { filterRecipes, getMatchPriority } from "../utils/filterRecipes";
 import {
   type CreateRecipeData,
-  type RecipeInstructionItem,
-  type RecipeInstruction,
-  type RecipeInstructionSection,
   type IngredientGroup,
-  type IngredientLine,
+  type RecipeInstructionItem,
 } from "../types";
 
 export const Recipes = () => {
@@ -22,9 +21,7 @@ export const Recipes = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const createRecipe = useCreateRecipe();
   const [query, setQuery] = useState("");
-  const [sortKey, setSortKey] = useState<
-    "alpha" | "date" | "ingredients" | "time"
-  >("alpha");
+  const [sortKey, setSortKey] = useRecipeSort();
 
   type RecipeListItem = {
     id: string;
@@ -55,47 +52,7 @@ export const Recipes = () => {
 
   const filteredRecipes = useMemo(() => {
     if (!recipes) return [];
-    const q = query.trim().toLowerCase();
-
-    let filtered = recipes;
-
-    if (q !== "") {
-      const words = q.split(/\s+/).filter(Boolean);
-
-      const isSection = (
-        item: RecipeInstructionItem
-      ): item is RecipeInstructionSection => {
-        return (item as RecipeInstructionSection).type === "section";
-      };
-
-      const instructionTexts = (items: RecipeInstructionItem[]): string => {
-        return items
-          .map((item) => {
-            if (!item) return "";
-            if (isSection(item)) {
-              return [
-                item.name || "",
-                ...item.steps.map((s: RecipeInstruction) => s?.text || ""),
-              ].join(" ");
-            }
-            return (item as RecipeInstruction).text || "";
-          })
-          .join(" ");
-      };
-
-      filtered = recipes.filter((recipe) => {
-        const title = recipe.title || "";
-        const ingredientsText = (recipe.ingredients || [])
-          .flatMap((g: IngredientGroup) =>
-            (g?.ingredients || []).map((i: IngredientLine) => i.raw || "")
-          )
-          .join(" ");
-        const instructionsText = instructionTexts(recipe.instructions || []);
-        const haystack =
-          `${title} ${ingredientsText} ${instructionsText}`.toLowerCase();
-        return words.every((w) => haystack.includes(w));
-      });
-    }
+    const filtered = filterRecipes(recipes, query);
 
     const byAlpha = (a: RecipeListItem, b: RecipeListItem) =>
       (a.title || "").localeCompare(b.title || "", undefined, {
@@ -131,7 +88,17 @@ export const Recipes = () => {
     };
 
     const comparator = comparators[sortKey] || byAlpha;
-    return [...filtered].sort(comparator);
+
+    return [...filtered].sort((a, b) => {
+      const priorityA = getMatchPriority(a, query);
+      const priorityB = getMatchPriority(b, query);
+
+      if (priorityA !== priorityB) {
+        return priorityB - priorityA;
+      }
+
+      return comparator(a, b);
+    });
   }, [recipes, query, sortKey]);
 
   const handleSave = async (recipeData: CreateRecipeData) => {

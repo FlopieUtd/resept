@@ -37,16 +37,60 @@ router.get("/test", (req: Request, res: Response) => {
 // OAuth endpoint for extension authentication
 router.get("/auth/extension", (req: Request, res: Response) => {
   const redirectUri = req.query.redirect_uri as string;
+  const originalUrl = req.query.original_url as string;
+  const originalTabId = req.query.original_tab_id as string;
 
   if (!redirectUri) {
     return res.status(400).json({ error: "Missing redirect_uri parameter" });
   }
 
-  // Redirect to the frontend for login, but the frontend will handle the token passing
-  const frontendUrl = `${
+  // Always redirect to frontend - frontend will check if user is logged in
+  // and either get tokens directly or redirect to login
+  let frontendUrl = `${
     process.env.FRONTEND_URL || "http://localhost:5173"
   }/auth/extension?redirect_uri=${encodeURIComponent(redirectUri)}`;
+
+  if (originalUrl) {
+    frontendUrl += `&original_url=${encodeURIComponent(originalUrl)}`;
+  }
+
+  if (originalTabId) {
+    frontendUrl += `&original_tab_id=${encodeURIComponent(originalTabId)}`;
+  }
+
   res.redirect(frontendUrl);
+});
+
+// Endpoint to generate tokens for extension from a valid session
+// Frontend sends the access_token and refresh_token from its Supabase session
+// Returns tokens as JSON (frontend handles opening extension URL)
+router.post("/auth/extension/tokens", async (req: Request, res: Response) => {
+  try {
+    const { access_token, refresh_token, expires_at } = req.body;
+
+    if (!access_token) {
+      return res.status(400).json({ error: "Access token required" });
+    }
+
+    // Verify the token with Supabase
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(access_token);
+
+    if (error || !user) {
+      return res.status(403).json({ error: "Invalid or expired token" });
+    }
+
+    // Return tokens as JSON - frontend will handle opening extension URL
+    return res.status(200).json({
+      access_token: access_token,
+      refresh_token: refresh_token || null,
+      expires_at: expires_at || null,
+    });
+  } catch (error: any) {
+    return res.status(500).json({ error: "Token generation failed" });
+  }
 });
 
 // Token refresh endpoint for extension
