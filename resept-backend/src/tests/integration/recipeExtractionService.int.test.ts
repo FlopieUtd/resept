@@ -74,6 +74,17 @@ describe("recipeExtractionService integration", () => {
       "https://example.com/case"
     );
 
+    expect(result.success).toBe(true);
+    expect(result.data).toEqual(expected);
+  });
+
+  it("samosas", async () => {
+    const { html, expected } = readFixture("samosas");
+    const result = await extractRecipeFromHtml(
+      html,
+      "https://example.com/case"
+    );
+
     console.log(JSON.stringify(result, null, 2));
 
     expect(result.success).toBe(true);

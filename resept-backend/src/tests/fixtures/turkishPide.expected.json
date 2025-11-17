@@ -1,157 +1,153 @@
 {
-  "success": true,
-  "error": null,
-  "data": {
-    "title": "Turkish Pide – Flat Bread Filled with Cheese, Spinach and Herbs",
-    "ingredients": [
-      {
-        "title": "Pide dough",
-        "ingredients": [
-          {
-            "raw": "3 cups all purpose flour",
-            "parsed": {
-              "amount": 3,
-              "rawWithoutAmount": "cups all purpose flour"
-            }
-          },
-          {
-            "raw": "1 scant tablespoon active dry yeast",
-            "parsed": {
-              "amount": 1,
-              "rawWithoutAmount": "scant tablespoon active dry yeast"
-            }
-          },
-          {
-            "raw": "1 teaspoon sugar",
-            "parsed": {
-              "amount": 1,
-              "rawWithoutAmount": "teaspoon sugar"
-            }
-          },
-          {
-            "raw": "2 teaspoons salt",
-            "parsed": {
-              "amount": 2,
-              "rawWithoutAmount": "teaspoons salt"
-            }
-          },
-          {
-            "raw": "1 cup lukewarm water",
-            "parsed": {
-              "amount": 1,
-              "rawWithoutAmount": "cup lukewarm water"
-            }
-          },
-          {
-            "raw": "2 tablespoons olive oil",
-            "parsed": {
-              "amount": 2,
-              "rawWithoutAmount": "tablespoons olive oil"
-            }
-          },
-          {
-            "raw": "Extra olive oil to brush the pide edges or 1 beaten egg for an egg wash",
-            "parsed": {
-              "rawWithoutAmount": "Extra olive oil to brush the pide edges or 1 beaten egg for an egg wash"
-            }
+  "title": "Turkish Pide – Flat Bread Filled with Cheese, Spinach and Herbs",
+  "ingredients": [
+    {
+      "title": "Pide dough",
+      "ingredients": [
+        {
+          "raw": "3 cups all purpose flour",
+          "parsed": {
+            "amount": 3,
+            "rawWithoutAmount": "cups all purpose flour"
           }
-        ]
-      },
-      {
-        "title": "Spinach Filling",
-        "ingredients": [
-          {
-            "raw": "1 cup of shredded mozzarella or mild cheddar",
-            "parsed": {
-              "amount": 1,
-              "rawWithoutAmount": "cup of shredded mozzarella or mild cheddar"
-            }
-          },
-          {
-            "raw": "1 cup feta",
-            "parsed": {
-              "amount": 1,
-              "rawWithoutAmount": "cup feta"
-            }
-          },
-          {
-            "raw": "1 1⁄2 bags of baby spinach ~500 grams",
-            "parsed": {
-              "amount": 1.5,
-              "rawWithoutAmount": "bags of baby spinach ~500 grams"
-            }
-          },
-          {
-            "raw": "1 small onion (finely diced)",
-            "parsed": {
-              "amount": 1,
-              "rawWithoutAmount": "small onion (finely diced)"
-            }
-          },
-          {
-            "raw": "Small bunch parsley (finely chopped)",
-            "parsed": {
-              "rawWithoutAmount": "Small bunch parsley (finely chopped)"
-            }
-          },
-          {
-            "raw": "1 tablespoon olive oil",
-            "parsed": {
-              "amount": 1,
-              "rawWithoutAmount": "tablespoon olive oil"
-            }
-          },
-          {
-            "raw": "Salt and pepper to taste",
-            "parsed": {
-              "rawWithoutAmount": "Salt and pepper to taste"
-            }
-          },
-          {
-            "raw": "1⁄4 teaspoon cumin seeds (optional)",
-            "parsed": {
-              "amount": 0.25,
-              "rawWithoutAmount": "teaspoon cumin seeds (optional)"
-            }
+        },
+        {
+          "raw": "1 scant tablespoon active dry yeast",
+          "parsed": {
+            "amount": 1,
+            "rawWithoutAmount": "scant tablespoon active dry yeast"
           }
-        ]
-      }
-    ],
-    "instructions": [
-      {
-        "text": "Sautee your onion in a pan with olive oil until translucent."
-      },
-      {
-        "text": "Add spinach and stir until wilted."
-      },
-      {
-        "text": "Add a really small pinch of salt and season with pepper and set aside to cool."
-      },
-      {
-        "text": "Mix spinach and onion with grated mozzarella, crumbled feta and parsley."
-      },
-      {
-        "text": "Dough and Form Pide"
-      },
-      {
-        "text": "Bloom your yeast by adding it to your warm water and sugar and letting it sit for 10 minutes"
-      },
-      {
-        "text": "Mix together your flour, walt , bloomed yeast and olive oil."
-      },
-      {
-        "text": "Knead for at least 6 minutes until dough comes together and place in an oiled bowl, cover with kitchen towel and let rise for 1 hour until doubled in size."
-      },
-      {
-        "text": "Punch dough down, and divide into 5, form into balls and cover with kitchen towel to let rise for 30 minutes."
-      },
-      {
-        "text": "Preheat the oven to 485 degrees."
-      },
-      {
-        "text": "Roll out each dough ball on a lightly floured surface nice and thin, you can make it thicker if you like. Fill, fold, brush edges with egg wash or olive oil and bake on a baking sheet for 12-13 minutes. If adding egg, add half way through bake time."
-      }
-    ],
-    "recipe_yield": 5
-  }
+        },
+        {
+          "raw": "1 teaspoon sugar",
+          "parsed": {
+            "amount": 1,
+            "rawWithoutAmount": "teaspoon sugar"
+          }
+        },
+        {
+          "raw": "2 teaspoons salt",
+          "parsed": {
+            "amount": 2,
+            "rawWithoutAmount": "teaspoons salt"
+          }
+        },
+        {
+          "raw": "1 cup lukewarm water",
+          "parsed": {
+            "amount": 1,
+            "rawWithoutAmount": "cup lukewarm water"
+          }
+        },
+        {
+          "raw": "2 tablespoons olive oil",
+          "parsed": {
+            "amount": 2,
+            "rawWithoutAmount": "tablespoons olive oil"
+          }
+        },
+        {
+          "raw": "Extra olive oil to brush the pide edges or 1 beaten egg for an egg wash",
+          "parsed": {
+            "rawWithoutAmount": "Extra olive oil to brush the pide edges or 1 beaten egg for an egg wash"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Spinach Filling",
+      "ingredients": [
+        {
+          "raw": "1 cup of shredded mozzarella or mild cheddar",
+          "parsed": {
+            "amount": 1,
+            "rawWithoutAmount": "cup of shredded mozzarella or mild cheddar"
+          }
+        },
+        {
+          "raw": "1 cup feta",
+          "parsed": {
+            "amount": 1,
+            "rawWithoutAmount": "cup feta"
+          }
+        },
+        {
+          "raw": "1 1⁄2 bags of baby spinach ~500 grams",
+          "parsed": {
+            "amount": 1.5,
+            "rawWithoutAmount": "bags of baby spinach ~500 grams"
+          }
+        },
+        {
+          "raw": "1 small onion (finely diced)",
+          "parsed": {
+            "amount": 1,
+            "rawWithoutAmount": "small onion (finely diced)"
+          }
+        },
+        {
+          "raw": "Small bunch parsley (finely chopped)",
+          "parsed": {
+            "rawWithoutAmount": "Small bunch parsley (finely chopped)"
+          }
+        },
+        {
+          "raw": "1 tablespoon olive oil",
+          "parsed": {
+            "amount": 1,
+            "rawWithoutAmount": "tablespoon olive oil"
+          }
+        },
+        {
+          "raw": "Salt and pepper to taste",
+          "parsed": {
+            "rawWithoutAmount": "Salt and pepper to taste"
+          }
+        },
+        {
+          "raw": "1⁄4 teaspoon cumin seeds (optional)",
+          "parsed": {
+            "amount": 0.25,
+            "rawWithoutAmount": "teaspoon cumin seeds (optional)"
+          }
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    {
+      "text": "Sautee your onion in a pan with olive oil until translucent."
+    },
+    {
+      "text": "Add spinach and stir until wilted."
+    },
+    {
+      "text": "Add a really small pinch of salt and season with pepper and set aside to cool."
+    },
+    {
+      "text": "Mix spinach and onion with grated mozzarella, crumbled feta and parsley."
+    },
+    {
+      "text": "Dough and Form Pide"
+    },
+    {
+      "text": "Bloom your yeast by adding it to your warm water and sugar and letting it sit for 10 minutes"
+    },
+    {
+      "text": "Mix together your flour, walt , bloomed yeast and olive oil."
+    },
+    {
+      "text": "Knead for at least 6 minutes until dough comes together and place in an oiled bowl, cover with kitchen towel and let rise for 1 hour until doubled in size."
+    },
+    {
+      "text": "Punch dough down, and divide into 5, form into balls and cover with kitchen towel to let rise for 30 minutes."
+    },
+    {
+      "text": "Preheat the oven to 485 degrees."
+    },
+    {
+      "text": "Roll out each dough ball on a lightly floured surface nice and thin, you can make it thicker if you like. Fill, fold, brush edges with egg wash or olive oil and bake on a baking sheet for 12-13 minutes. If adding egg, add half way through bake time."
+    }
+  ],
+  "recipe_yield": 5
 }

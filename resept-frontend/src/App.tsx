@@ -7,6 +7,7 @@ import { Login } from "./components/Login";
 import { PasswordRecovery } from "./components/PasswordRecovery";
 import { ResetPassword } from "./components/ResetPassword";
 import { ExtensionAuth } from "./components/ExtensionAuth";
+import ExtensionError from "./components/ExtensionError";
 import NoRecipe from "./components/NoRecipe";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -39,6 +40,7 @@ const App = () => {
           <Route path="/password-recovery" element={<PasswordRecovery />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/auth/extension" element={<ExtensionAuth />} />
+          <Route path="/extension-error" element={<ExtensionError />} />
           <Route path="/no-recipe" element={<NoRecipe />} />
 
           <Route
