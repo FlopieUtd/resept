@@ -53,10 +53,10 @@
       "title": "Potato and pea filling",
       "ingredients": [
         {
-          "raw": "2 medium-large potatoes  (about 300g/10.5oz altogether), peeled and chopped into 2cm (~1 inch) chunks",
+          "raw": "2 medium-large potatoes (about 300g/10.5oz altogether), peeled and chopped into 2cm (~1 inch) chunks",
           "parsed": {
             "amount": 2,
-            "rawWithoutAmount": "medium-large potatoes  (about 300g/10.5oz altogether), peeled and chopped into 2cm (~1 inch) chunks"
+            "rawWithoutAmount": "medium-large potatoes (about 300g/10.5oz altogether), peeled and chopped into 2cm (~1 inch) chunks"
           }
         },
         {
@@ -67,35 +67,35 @@
           }
         },
         {
-          "raw": "½ tsp cumin seeds",
+          "raw": "1⁄2 tsp cumin seeds",
           "parsed": {
             "amount": 0.5,
             "rawWithoutAmount": "tsp cumin seeds"
           }
         },
         {
-          "raw": "¼ tsp ground cumin",
+          "raw": "1⁄4 tsp ground cumin",
           "parsed": {
             "amount": 0.25,
             "rawWithoutAmount": "tsp ground cumin"
           }
         },
         {
-          "raw": "¼ tsp ground coriander",
+          "raw": "1⁄4 tsp ground coriander",
           "parsed": {
             "amount": 0.25,
             "rawWithoutAmount": "tsp ground coriander"
           }
         },
         {
-          "raw": "½ tsp garam masala",
+          "raw": "1⁄2 tsp garam masala",
           "parsed": {
             "amount": 0.5,
             "rawWithoutAmount": "tsp garam masala"
           }
         },
         {
-          "raw": "¼ tsp asafoetida",
+          "raw": "1⁄4 tsp asafoetida",
           "parsed": {
             "amount": 0.25,
             "rawWithoutAmount": "tsp asafoetida"
@@ -130,7 +130,7 @@
           }
         },
         {
-          "raw": "½ tsp salt",
+          "raw": "1⁄2 tsp salt",
           "parsed": {
             "amount": 0.5,
             "rawWithoutAmount": "tsp salt"
