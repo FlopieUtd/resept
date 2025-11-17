@@ -53,9 +53,16 @@ export const getMatchPriority = (
   const instructionsText = instructionTexts(
     recipe.instructions || []
   ).toLowerCase();
-  const fullText = `${title} ${ingredientsText} ${instructionsText}`;
 
-  if (fullText.includes(q)) {
+  const hasCompleteMatchInTitle = title.includes(q);
+  const hasCompleteMatchElsewhere =
+    ingredientsText.includes(q) || instructionsText.includes(q);
+
+  if (hasCompleteMatchInTitle) {
+    return 3;
+  }
+
+  if (hasCompleteMatchElsewhere) {
     return 2;
   }
 

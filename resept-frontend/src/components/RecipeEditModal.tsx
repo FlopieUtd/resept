@@ -6,13 +6,49 @@ import { Textarea } from "./Textarea";
 import { Button } from "./Button";
 import { X } from "@phosphor-icons/react";
 
-// Simple ingredient parsing function for the frontend
+const unicodeFractionMap: Record<string, number> = {
+  "½": 0.5,
+  "⅓": 1 / 3,
+  "⅔": 2 / 3,
+  "¼": 0.25,
+  "¾": 0.75,
+  "⅕": 0.2,
+  "⅖": 0.4,
+  "⅗": 0.6,
+  "⅘": 0.8,
+  "⅙": 1 / 6,
+  "⅚": 5 / 6,
+  "⅛": 0.125,
+  "⅜": 0.375,
+  "⅝": 0.625,
+  "⅞": 0.875,
+};
+
 const parseIngredientFrontend = (text: string): ParsedIngredient => {
   const trimmedText = text.trim();
 
   // Default values
   let amount: number | undefined = undefined;
   let rawWithoutAmount = trimmedText;
+
+  const unicodeFractionRegex = new RegExp(
+    `^(\\d+)?\\s*([${Object.keys(unicodeFractionMap).join("")}])`
+  );
+  const unicodeFractionMatch = trimmedText.match(unicodeFractionRegex);
+  if (unicodeFractionMatch) {
+    const whole = unicodeFractionMatch[1]
+      ? parseInt(unicodeFractionMatch[1])
+      : 0;
+    const fractionChar = unicodeFractionMatch[2];
+    amount = whole + unicodeFractionMap[fractionChar];
+    rawWithoutAmount = trimmedText
+      .replace(new RegExp(`^${unicodeFractionMatch[0]}\\s*`, "g"), "")
+      .trim();
+    return {
+      amount,
+      rawWithoutAmount,
+    };
+  }
 
   // Check for ranges first
   const rangeMatch = trimmedText.match(/^(\d+)\s*[-–—‐‑]\s*(\d+)/);
