@@ -158,7 +158,9 @@ export const Recipe = () => {
         </div>
         <div className="mb-[36px] flex flex-col gap-[16px]">
           {recipe.description && (
-            <div className="font-radley text-[18px]">{recipe.description}</div>
+            <div className="font-radley text-[18px] whitespace-pre-line">
+              {recipe.description}
+            </div>
           )}
 
           <div className="flex gap-[12px] flex-wrap">
