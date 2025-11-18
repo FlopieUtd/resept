@@ -11,85 +11,64 @@ const readFixture = (name: string) => {
   return { html, expected } as const;
 };
 
+const testCases = [
+  {
+    name: "cinnamonRolls",
+    expectedSuccess: true,
+    compareFull: true,
+  },
+  {
+    name: "boeufStroganoff",
+    expectedSuccess: true,
+    compareFull: true,
+  },
+  {
+    name: "roti",
+    expectedSuccess: true,
+    compareFull: true,
+  },
+  {
+    name: "aubergineParmigiana",
+    expectedSuccess: true,
+    compareFull: true,
+  },
+  {
+    name: "notARecipe",
+    expectedSuccess: false,
+    compareFull: false,
+  },
+  {
+    name: "turkishPide",
+    expectedSuccess: true,
+    compareFull: true,
+  },
+  {
+    name: "samosas",
+    expectedSuccess: true,
+    compareFull: false,
+    compareIngredients: true,
+  },
+];
+
 describe("recipeExtractionService integration", () => {
-  it("cinnamonRolls", async () => {
-    const { html, expected } = readFixture("cinnamonRolls");
-    const result = await extractRecipeFromHtml(
-      html,
-      "https://example.com/case"
-    );
+  it.each(testCases)(
+    "$name",
+    async ({ name, expectedSuccess, compareFull, compareIngredients }) => {
+      const { html, expected } = readFixture(name);
+      const result = await extractRecipeFromHtml(
+        html,
+        "https://example.com/case"
+      );
 
-    expect(result.success).toBe(true);
-    expect(result.data).toEqual(expected);
-  });
+      expect(result.success).toBe(expectedSuccess);
 
-  it("boeufStroganoff", async () => {
-    const { html, expected } = readFixture("boeufStroganoff");
-    const result = await extractRecipeFromHtml(
-      html,
-      "https://example.com/case"
-    );
-
-    expect(result.success).toBe(true);
-    expect(result.data).toEqual(expected);
-  });
-
-  it("roti", async () => {
-    const { html, expected } = readFixture("roti");
-    const result = await extractRecipeFromHtml(
-      html,
-      "https://example.com/case"
-    );
-
-    console.log("roti", JSON.stringify(result.data, null, 2));
-
-    expect(result.success).toBe(true);
-    expect(result.data).toEqual(expected);
-  });
-
-  it("aubergineParmigiana", async () => {
-    const { html, expected } = readFixture("aubergineParmigiana");
-    const result = await extractRecipeFromHtml(
-      html,
-      "https://example.com/case"
-    );
-
-    expect(result.success).toBe(true);
-    expect(result.data).toEqual(expected);
-  });
-
-  it("notARecipe", async () => {
-    const { html, expected } = readFixture("notARecipe");
-    const result = await extractRecipeFromHtml(
-      html,
-      "https://example.com/case"
-    );
-
-    expect(result.success).toBe(false);
-    expect(result.data).toEqual(null);
-  });
-
-  it("turkishPide", async () => {
-    const { html, expected } = readFixture("turkishPide");
-    const result = await extractRecipeFromHtml(
-      html,
-      "https://example.com/case"
-    );
-
-    expect(result.success).toBe(true);
-    expect(result.data).toEqual(expected);
-  });
-
-  it("samosas", async () => {
-    const { html, expected } = readFixture("samosas");
-    const result = await extractRecipeFromHtml(
-      html,
-      "https://example.com/case"
-    );
-
-    console.log(JSON.stringify(result, null, 2));
-
-    expect(result.success).toBe(true);
-    expect(result.data.ingredients).toEqual(expected.ingredients);
-  });
+      if (!expectedSuccess) {
+        expect(result.data).toEqual(null);
+      } else if (compareIngredients) {
+        expect(result.data?.ingredients).toEqual(expected.ingredients);
+      } else if (compareFull) {
+        expect(result.data).toEqual(expected);
+      }
+    }
+  );
 });
