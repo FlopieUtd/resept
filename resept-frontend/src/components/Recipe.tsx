@@ -6,7 +6,7 @@ import {
   useRecipes,
 } from "../lib/recipeService";
 import {
-  type RecipeInstructionItem,
+  type InstructionGroup,
   type CreateRecipeData,
   type IngredientGroup,
   Language,
@@ -233,7 +233,7 @@ export const Recipe = () => {
                   <ul>
                     {group.ingredients.map((ingredient, index: number) => (
                       <li key={index} className="pb-[16px] flex">
-                        <span className="min-w-[65px]">
+                        <span className="min-w-[60px]">
                           {ingredient.scaledAmountMax !== undefined
                             ? `${formatNumber(
                                 ingredient.scaledAmount!
@@ -261,31 +261,57 @@ export const Recipe = () => {
             </div>
           ) : (
             <div className="font-radley text-[18px]">
-              {recipe.instructions.map(
-                (instruction: RecipeInstructionItem, index: number) => {
-                  if ("type" in instruction && instruction.type === "section") {
+              {(() => {
+                console.log("[Recipe] instructions data:", recipe.instructions);
+                console.log(
+                  "[Recipe] instructions type:",
+                  typeof recipe.instructions
+                );
+                console.log(
+                  "[Recipe] instructions isArray:",
+                  Array.isArray(recipe.instructions)
+                );
+                if (
+                  !recipe.instructions ||
+                  !Array.isArray(recipe.instructions)
+                ) {
+                  console.warn(
+                    "[Recipe] instructions is not an array:",
+                    recipe.instructions
+                  );
+                  return <div>No instructions available</div>;
+                }
+                if (recipe.instructions.length === 0) {
+                  console.warn("[Recipe] instructions array is empty");
+                  return <div>No instructions found</div>;
+                }
+                return recipe.instructions.map(
+                  (group: InstructionGroup, groupIndex: number) => {
+                    console.log(`[Recipe] group ${groupIndex}:`, group);
+                    if (!group || !group.instructions) {
+                      console.warn(
+                        `[Recipe] group ${groupIndex} is invalid:`,
+                        group
+                      );
+                      return null;
+                    }
                     return (
-                      <div key={index} className="pb-[16px]">
-                        <div className="font-bold text-[20px] mb-[12px] text-[#333]">
-                          {instruction.name}
-                        </div>
-                        {instruction.steps.map((step, stepIndex) => (
-                          <div key={stepIndex} className="pb-[12px] ml-[16px]">
-                            {step.text}
+                      <div key={groupIndex} className="pb-[16px]">
+                        {group.title && (
+                          <div className="font-bold text-[20px] mb-[12px] text-[#333]">
+                            {group.title}
+                          </div>
+                        )}
+                        {group.instructions.map((instruction, index) => (
+                          <div key={index} className="pb-[12px]">
+                            {instruction.text}
                           </div>
                         ))}
                       </div>
                     );
-                  } else if ("text" in instruction) {
-                    return (
-                      <div key={index} className="pb-[16px]">
-                        {instruction.text}
-                      </div>
-                    );
                   }
-                  return null;
-                }
-              )}
+                );
+              })()}
             </div>
           )}
         </div>
@@ -306,7 +332,7 @@ export const Recipe = () => {
                   <ul>
                     {group.ingredients.map((ingredient, index: number) => (
                       <li key={index} className="pb-[16px] flex">
-                        <span className="min-w-[65px]">
+                        <span className="min-w-[60px]">
                           {ingredient.scaledAmountMax !== undefined
                             ? `${formatNumber(
                                 ingredient.scaledAmount!
@@ -338,31 +364,42 @@ export const Recipe = () => {
               {t.instructions}
             </div>
             <div className="font-radley text-[18px]">
-              {recipe.instructions.map(
-                (instruction: RecipeInstructionItem, index: number) => {
-                  if ("type" in instruction && instruction.type === "section") {
+              {(() => {
+                console.log(
+                  "[Recipe] desktop instructions data:",
+                  recipe.instructions
+                );
+                if (
+                  !recipe.instructions ||
+                  !Array.isArray(recipe.instructions)
+                ) {
+                  return <div>No instructions available</div>;
+                }
+                if (recipe.instructions.length === 0) {
+                  return <div>No instructions found</div>;
+                }
+                return recipe.instructions.map(
+                  (group: InstructionGroup, groupIndex: number) => {
+                    if (!group || !group.instructions) {
+                      return null;
+                    }
                     return (
-                      <div key={index} className="pb-[16px]">
-                        <div className="font-bold text-[20px] mb-[12px] text-[#333]">
-                          {instruction.name}
-                        </div>
-                        {instruction.steps.map((step, stepIndex) => (
-                          <div key={stepIndex} className="pb-[12px] ml-[16px]">
-                            {step.text}
+                      <div key={groupIndex} className="pb-[16px]">
+                        {group.title && (
+                          <div className="font-bold text-[20px] mb-[12px] text-[#333]">
+                            {group.title}
+                          </div>
+                        )}
+                        {group.instructions.map((instruction, index) => (
+                          <div key={index} className="pb-[12px]">
+                            {instruction.text}
                           </div>
                         ))}
                       </div>
                     );
-                  } else if ("text" in instruction) {
-                    return (
-                      <div key={index} className="pb-[16px]">
-                        {instruction.text}
-                      </div>
-                    );
                   }
-                  return null;
-                }
-              )}
+                );
+              })()}
             </div>
           </div>
         </div>

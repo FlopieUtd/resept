@@ -177,10 +177,13 @@ export const parseIngredient = (text: string): ParsedIngredient => {
       .trim();
   }
 
-  return {
-    amount,
+  const result: ParsedIngredient = {
     rawWithoutAmount,
   };
+  if (amount !== undefined) {
+    result.amount = amount;
+  }
+  return result;
 };
 
 const isUnicodeFraction = (text: string): boolean => {

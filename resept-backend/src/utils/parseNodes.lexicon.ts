@@ -81,3 +81,14 @@ export const startsWithCookingVerb = (text: string): boolean => {
   const allVerbs = getAllCookingVerbs();
   return firstWords.some((firstWord) => allVerbs.includes(firstWord));
 };
+
+export const countSentencesStartingWithCookingVerb = (text: string): number => {
+  if (!text.trim()) return 0;
+  const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0);
+  const firstWords = sentences
+    .map((sentence) => sentence.trim().split(/\s+/)[0]?.toLowerCase())
+    .filter((word) => word && word.length > 0);
+
+  const allVerbs = getAllCookingVerbs();
+  return firstWords.filter((firstWord) => allVerbs.includes(firstWord)).length;
+};

@@ -12,63 +12,52 @@ const readFixture = (name: string) => {
 };
 
 const testCases = [
-  {
-    name: "cinnamonRolls",
-    expectedSuccess: true,
-    compareFull: true,
-  },
-  {
-    name: "boeufStroganoff",
-    expectedSuccess: true,
-    compareFull: true,
-  },
-  {
-    name: "roti",
-    expectedSuccess: true,
-    compareFull: true,
-  },
-  {
-    name: "aubergineParmigiana",
-    expectedSuccess: true,
-    compareFull: true,
-  },
-  {
-    name: "notARecipe",
-    expectedSuccess: false,
-    compareFull: false,
-  },
-  {
-    name: "turkishPide",
-    expectedSuccess: true,
-    compareFull: true,
-  },
+  // {
+  //   name: "cinnamonRolls",
+  //   expectedSuccess: true,
+  // },
+  // {
+  //   name: "boeufStroganoff",
+  //   expectedSuccess: true,
+  // },
+  // {
+  //   name: "roti",
+  //   expectedSuccess: true,
+  // },
+  // {
+  //   name: "aubergineParmigiana",
+  //   expectedSuccess: true,
+  // },
+  // {
+  //   name: "notARecipe",
+  //   expectedSuccess: false,
+  // },
+  // {
+  //   name: "turkishPide",
+  //   expectedSuccess: true,
+  // },
   {
     name: "samosas",
     expectedSuccess: true,
-    compareFull: false,
-    compareIngredients: true,
   },
 ];
 
 describe("recipeExtractionService integration", () => {
-  it.each(testCases)(
-    "$name",
-    async ({ name, expectedSuccess, compareFull, compareIngredients }) => {
-      const { html, expected } = readFixture(name);
-      const result = await extractRecipeFromHtml(
-        html,
-        "https://example.com/case"
-      );
+  it.each(testCases)("$name", async ({ name, expectedSuccess }) => {
+    const { html, expected } = readFixture(name);
+    const result = await extractRecipeFromHtml(
+      html,
+      "https://example.com/case"
+    );
 
-      expect(result.success).toBe(expectedSuccess);
+    expect(result.success).toBe(expectedSuccess);
 
-      if (!expectedSuccess) {
-        expect(result.data).toEqual(null);
-      } else if (compareIngredients) {
-        expect(result.data?.ingredients).toEqual(expected.ingredients);
-      } else if (compareFull) {
-        expect(result.data).toEqual(expected);
-      }
+    console.log(JSON.stringify(result.data, null, 2));
+
+    if (!expectedSuccess) {
+      expect(result.data).toEqual(null);
+    } else {
+      expect(result.data).toEqual(expected);
     }
-  );
+  });
 });

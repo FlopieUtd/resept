@@ -46,7 +46,7 @@ export const COOKING_IMPERATIVES: Record<
     english: "add",
   },
   cut: {
-    dutch: "snijd",
+    dutch: ["snijd", "snij"],
     english: "cut",
   },
   peel: {

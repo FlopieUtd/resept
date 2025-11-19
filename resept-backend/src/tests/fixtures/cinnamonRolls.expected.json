@@ -7,50 +7,50 @@
         {
           "raw": "500 gr patentbloem",
           "parsed": {
-            "amount": 500,
-            "rawWithoutAmount": "gr patentbloem"
+            "rawWithoutAmount": "gr patentbloem",
+            "amount": 500
           }
         },
         {
           "raw": "10 gr gedroogde gist",
           "parsed": {
-            "amount": 10,
-            "rawWithoutAmount": "gr gedroogde gist"
+            "rawWithoutAmount": "gr gedroogde gist",
+            "amount": 10
           }
         },
         {
           "raw": "10 gr zout",
           "parsed": {
-            "amount": 10,
-            "rawWithoutAmount": "gr zout"
+            "rawWithoutAmount": "gr zout",
+            "amount": 10
           }
         },
         {
           "raw": "40 gr suiker",
           "parsed": {
-            "amount": 40,
-            "rawWithoutAmount": "gr suiker"
+            "rawWithoutAmount": "gr suiker",
+            "amount": 40
           }
         },
         {
           "raw": "270 ml melk, lauwwarm",
           "parsed": {
-            "amount": 270,
-            "rawWithoutAmount": "ml melk, lauwwarm"
+            "rawWithoutAmount": "ml melk, lauwwarm",
+            "amount": 270
           }
         },
         {
           "raw": "1 ei, op kamertemperatuur",
           "parsed": {
-            "amount": 1,
-            "rawWithoutAmount": "ei, op kamertemperatuur"
+            "rawWithoutAmount": "ei, op kamertemperatuur",
+            "amount": 1
           }
         },
         {
           "raw": "60 gr boter, op kamertemperatuur",
           "parsed": {
-            "amount": 60,
-            "rawWithoutAmount": "gr boter, op kamertemperatuur"
+            "rawWithoutAmount": "gr boter, op kamertemperatuur",
+            "amount": 60
           }
         }
       ]
@@ -61,22 +61,22 @@
         {
           "raw": "90 gr boter, op kamertemperatuur",
           "parsed": {
-            "amount": 90,
-            "rawWithoutAmount": "gr boter, op kamertemperatuur"
+            "rawWithoutAmount": "gr boter, op kamertemperatuur",
+            "amount": 90
           }
         },
         {
           "raw": "150 gr lichtbruine basterdsuiker",
           "parsed": {
-            "amount": 150,
-            "rawWithoutAmount": "gr lichtbruine basterdsuiker"
+            "rawWithoutAmount": "gr lichtbruine basterdsuiker",
+            "amount": 150
           }
         },
         {
           "raw": "11⁄2 el kaneelpoeder",
           "parsed": {
-            "amount": 5.5,
-            "rawWithoutAmount": "el kaneelpoeder"
+            "rawWithoutAmount": "el kaneelpoeder",
+            "amount": 5.5
           }
         }
       ]
@@ -87,29 +87,65 @@
         {
           "raw": "100 gr roomkaas, op kamertemperatuur",
           "parsed": {
-            "amount": 100,
-            "rawWithoutAmount": "gr roomkaas, op kamertemperatuur"
+            "rawWithoutAmount": "gr roomkaas, op kamertemperatuur",
+            "amount": 100
           }
         },
         {
           "raw": "50 gr boter, op kamertemperatuur",
           "parsed": {
-            "amount": 50,
-            "rawWithoutAmount": "gr boter, op kamertemperatuur"
+            "rawWithoutAmount": "gr boter, op kamertemperatuur",
+            "amount": 50
           }
         },
         {
           "raw": "75 gr poedersuiker",
           "parsed": {
-            "amount": 75,
-            "rawWithoutAmount": "gr poedersuiker"
+            "rawWithoutAmount": "gr poedersuiker",
+            "amount": 75
           }
         },
         {
           "raw": "1 tl",
           "parsed": {
-            "amount": 1,
-            "rawWithoutAmount": "tl"
+            "rawWithoutAmount": "tl",
+            "amount": 1
+          }
+        }
+      ]
+    },
+    {
+      "title": "vanille-extract",
+      "ingredients": [
+        {
+          "raw": "2-3 el melk",
+          "parsed": {
+            "amount": 2,
+            "rawWithoutAmount": "el melk",
+            "amountMax": 3
+          }
+        }
+      ]
+    },
+    {
+      "title": "Verder nodig",
+      "ingredients": [
+        {
+          "raw": "boter, om in te vetten",
+          "parsed": {
+            "rawWithoutAmount": "boter, om in te vetten"
+          }
+        },
+        {
+          "raw": "bloem, voor het werkblad",
+          "parsed": {
+            "rawWithoutAmount": "bloem, voor het werkblad"
+          }
+        },
+        {
+          "raw": "gesmolten boter, om te bestrijken",
+          "parsed": {
+            "rawWithoutAmount": "gesmolten boter, om te bestrijken"
           }
         }
       ]

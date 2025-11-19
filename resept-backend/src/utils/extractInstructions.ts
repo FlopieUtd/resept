@@ -1,211 +1,136 @@
-import { THRESHOLDS } from "./parseNodes.thresholds";
-import { startsWithCookingVerb } from "./parseNodes.lexicon";
-import type {
-  InternalIngredientGroup,
-  InstructionNode,
-} from "./parseNodes.types";
+import type { InternalIngredientGroup } from "./parseNodes.types";
 
-const hasCookingImperatives = (group: InternalIngredientGroup): boolean => {
-  return group.nodes.some((node) => startsWithCookingVerb(node.text));
-};
-
-const meetsInstructionThreshold = (
-  probability: number,
-  maxProbability: number
-): boolean => {
-  const absolute = probability >= THRESHOLDS.INSTRUCTIONS_ABSOLUTE;
-  const relative =
-    maxProbability > 0
-      ? probability >= maxProbability * THRESHOLDS.INSTRUCTIONS_RELATIVE
-      : false;
-  return absolute || relative;
-};
-
-const findGroupIndexInResult = (
-  targetGroup: InternalIngredientGroup,
-  searchArray: InternalIngredientGroup[]
-): number => {
-  return searchArray.findIndex(
-    (g) =>
-      g.nodes.length === targetGroup.nodes.length &&
-      g.nodes.every(
-        (node, idx) =>
-          node.text === targetGroup.nodes[idx].text &&
-          node.depth === targetGroup.nodes[idx].depth
-      )
-  );
-};
-
-const calculateCookingImperativeRatio = (nodes: InstructionNode[]): number => {
-  if (nodes.length === 0) return 0;
-  const nodesWithVerbs = nodes.filter((instructionNode) =>
-    startsWithCookingVerb(instructionNode.node.text)
-  ).length;
-  return nodesWithVerbs / nodes.length;
-};
-
-const calculateNodeComplexity = (nodes: InstructionNode[]): number => {
-  if (nodes.length === 0) return 0;
-  let totalWords = 0;
-  let totalSentences = 0;
-  let nodesWithMultipleSentences = 0;
-  for (const instructionNode of nodes) {
-    const text = instructionNode.node.text.trim();
-    if (!text) continue;
-    const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0);
-    const wordCount = text.split(/\s+/).filter((w) => w.length > 0).length;
-    totalWords += wordCount;
-    totalSentences += sentences.length;
-    if (sentences.length > 1) {
-      nodesWithMultipleSentences++;
-    }
-  }
-  const avgWordsPerNode = totalWords / nodes.length;
-  const avgSentencesPerNode = totalSentences / nodes.length;
-  const multipleSentencesRatio = nodesWithMultipleSentences / nodes.length;
-  const normalizedWords = Math.min(
-    avgWordsPerNode / THRESHOLDS.COMPLEXITY_WORDS_NORMALIZER,
-    1.0
-  );
-  const normalizedSentences = Math.min(
-    avgSentencesPerNode / THRESHOLDS.COMPLEXITY_SENTENCES_NORMALIZER,
-    1.0
-  );
-  return (
-    normalizedWords * THRESHOLDS.COMPLEXITY_WORDS_WEIGHT +
-    normalizedSentences * THRESHOLDS.COMPLEXITY_SENTENCES_WEIGHT +
-    multipleSentencesRatio * THRESHOLDS.COMPLEXITY_MULTIPLE_SENTENCES_WEIGHT
-  );
-};
-
-const calculateClusterScore = (nodes: InstructionNode[]): number => {
-  if (nodes.length === 0) return 0;
-  const imperativeRatio = calculateCookingImperativeRatio(nodes);
-  const complexity = calculateNodeComplexity(nodes);
-  const isHighImperative = imperativeRatio >= THRESHOLDS.HIGH_IMPERATIVE;
-  if (isHighImperative) {
-    return (
-      imperativeRatio * THRESHOLDS.CLUSTER_IMPERATIVE_WEIGHT_HIGH +
-      complexity * THRESHOLDS.CLUSTER_COMPLEXITY_WEIGHT_HIGH
-    );
-  }
-  return (
-    imperativeRatio * THRESHOLDS.CLUSTER_IMPERATIVE_WEIGHT_LOW +
-    complexity * THRESHOLDS.CLUSTER_COMPLEXITY_WEIGHT_LOW
-  );
-};
-
-const clusterInstructionsByDepthAndProximity = (
-  nodes: InstructionNode[],
-  allGroups: InternalIngredientGroup[]
-): InstructionNode[] => {
-  if (nodes.length === 0) return [];
-  const depthElementGroups = new Map<string, InstructionNode[]>();
-  for (const instructionNode of nodes) {
-    const depth = instructionNode.depth;
-    const elementType = instructionNode.node.elementType;
-    const key = `${depth}:${elementType}`;
-    if (!depthElementGroups.has(key)) {
-      depthElementGroups.set(key, []);
-    }
-    depthElementGroups.get(key)!.push(instructionNode);
-  }
-  const allClusters: InstructionNode[][] = [];
-  for (const depthElementGroup of depthElementGroups.values()) {
-    const sorted = [...depthElementGroup].sort(
-      (a, b) => a.originalIndex - b.originalIndex
-    );
-    let currentCluster: InstructionNode[] = [sorted[0]];
-    for (let i = 1; i < sorted.length; i++) {
-      const lastIndex = currentCluster[currentCluster.length - 1].originalIndex;
-      const nextIndex = sorted[i].originalIndex;
-      const distance = nextIndex - lastIndex;
-      const missingNodes: InstructionNode[] = [];
-      for (let j = lastIndex + 1; j < nextIndex; j++) {
-        if (j >= 0 && j < allGroups.length) {
-          const missingGroup = allGroups[j];
-          if (
-            missingGroup.nodes.length === 1 &&
-            missingGroup.nodes[0].depth === sorted[0].depth &&
-            missingGroup.nodes[0].elementType === sorted[0].node.elementType &&
-            !startsWithCookingVerb(missingGroup.nodes[0].text)
-          ) {
-            missingNodes.push({
-              node: missingGroup.nodes[0],
-              depth: missingGroup.nodes[0].depth,
-              originalIndex: j,
-              probability: missingGroup.instructionsProbability || 0,
-            });
-          }
-        }
-      }
-      if (missingNodes.length > 0) {
-        currentCluster.push(...missingNodes);
-      }
-      if (distance <= THRESHOLDS.CLUSTER_DISTANCE) {
-        currentCluster.push(sorted[i]);
-      } else {
-        allClusters.push(currentCluster);
-        currentCluster = [sorted[i]];
-      }
-    }
-    if (currentCluster.length > 0) {
-      allClusters.push(currentCluster);
-    }
-  }
-  if (allClusters.length === 0) return [];
-  const clusterWithHighestScore = allClusters.reduce((max, cluster) => {
-    const maxScore = calculateClusterScore(max);
-    const clusterScore = calculateClusterScore(cluster);
-    return clusterScore > maxScore ? cluster : max;
-  });
-  return clusterWithHighestScore;
-};
+export interface InstructionGroup {
+  title?: string;
+  instructions: { text: string }[];
+}
 
 export const extractInstructions = (
-  allGroups: InternalIngredientGroup[],
-  filteredResult: InternalIngredientGroup[],
-  maxInstructionsProbability: number
-): { text: string }[] => {
-  const singleNodeInstructionCandidates: InstructionNode[] = [];
-  for (let i = 0; i < allGroups.length; i++) {
-    const group = allGroups[i];
-    if (group.nodes.length === 1) {
-      if (!hasCookingImperatives(group)) continue;
-      const probability = group.instructionsProbability || 0;
-      if (meetsInstructionThreshold(probability, maxInstructionsProbability)) {
-        singleNodeInstructionCandidates.push({
-          node: group.nodes[0],
-          depth: group.nodes[0].depth,
-          originalIndex: i,
-          probability,
-        });
-      }
-    }
+  allGroups: InternalIngredientGroup[]
+): InstructionGroup[] => {
+  if (allGroups.length === 0) {
+    return [];
   }
 
-  const multiNodeInstructionGroups = filteredResult.filter((group) => {
-    if (!hasCookingImperatives(group)) return false;
-    const probability = group.instructionsProbability || 0;
-    return meetsInstructionThreshold(probability, maxInstructionsProbability);
+  const bestInstructionGroup = allGroups.reduce((max, group) => {
+    const maxProbability = max.instructionsProbability || 0;
+    const groupProbability = group.instructionsProbability || 0;
+    return groupProbability > maxProbability ? group : max;
   });
 
-  const allInstructionNodes: InstructionNode[] = [
-    ...singleNodeInstructionCandidates,
-    ...multiNodeInstructionGroups.flatMap((group) => {
-      const originalIndex = findGroupIndexInResult(group, allGroups);
-      return group.nodes.map((node) => ({
-        node,
-        depth: node.depth,
-        originalIndex,
-        probability: group.instructionsProbability || 0,
-      }));
-    }),
-  ];
+  console.log("[extractInstructions] allGroups length:", allGroups.length);
+  console.log("[extractInstructions] bestInstructionGroup:", {
+    originalIndex: bestInstructionGroup.originalIndex,
+    instructionsProbability: bestInstructionGroup.instructionsProbability,
+    nodesLength: bestInstructionGroup.nodes.length,
+    depth: bestInstructionGroup.nodes[0]?.depth,
+    elementType: bestInstructionGroup.nodes[0]?.elementType,
+  });
 
-  const clusteredInstructions = clusterInstructionsByDepthAndProximity(
-    allInstructionNodes,
-    allGroups
+  const allInstructionGroups = (() => {
+    const matchingGroups = allGroups.filter((group) => {
+      if (group.nodes.length === 0) {
+        return false;
+      }
+      const { depth, elementType } = bestInstructionGroup.nodes[0];
+      return group.nodes.every(
+        (node) => node.depth === depth && node.elementType === elementType
+      );
+    });
+    console.log(
+      "[extractInstructions] matchingGroups length:",
+      matchingGroups.length
+    );
+    if (matchingGroups.length <= 1) {
+      return matchingGroups;
+    }
+    const targetIndex = bestInstructionGroup.originalIndex;
+    const indexToGroup = new Map(
+      matchingGroups.map((group) => [group.originalIndex, group])
+    );
+    const targetGroup = indexToGroup.get(targetIndex);
+    if (!targetGroup) {
+      return matchingGroups;
+    }
+    const sortedIndices = [...indexToGroup.keys()].sort((a, b) => a - b);
+    const differences = Array.from(
+      new Set(
+        sortedIndices
+          .filter((index) => index !== targetIndex)
+          .map((index) => Math.abs(index - targetIndex))
+      )
+    ).sort((a, b) => a - b);
+    if (differences.length === 0) {
+      return [targetGroup];
+    }
+    let bestSequence: InternalIngredientGroup[] = [targetGroup];
+    let bestDifference = Number.POSITIVE_INFINITY;
+    differences.forEach((difference) => {
+      if (difference === 0) {
+        return;
+      }
+      let startIndex = targetIndex;
+      while (indexToGroup.has(startIndex - difference)) {
+        startIndex -= difference;
+      }
+      const sequence: InternalIngredientGroup[] = [];
+      let cursor = startIndex;
+      while (indexToGroup.has(cursor)) {
+        sequence.push(indexToGroup.get(cursor)!);
+        cursor += difference;
+      }
+      if (
+        sequence.length > bestSequence.length ||
+        (sequence.length === bestSequence.length && difference < bestDifference)
+      ) {
+        bestSequence = sequence;
+        bestDifference = difference;
+      }
+    });
+    return bestSequence;
+  })();
+
+  const titlesByIndex =
+    allInstructionGroups.length > 1
+      ? (() => {
+          const instructionGroupIndices = new Set(
+            allInstructionGroups.map((group) => group.originalIndex)
+          );
+          const map = new Map<number, string>();
+          const normalizeTitle = (text: string) =>
+            text
+              .trim()
+              .replace(/[:：]$/, "")
+              .trim();
+          allInstructionGroups.forEach((group) => {
+            let cursor = group.originalIndex - 1;
+            while (cursor >= 0 && !instructionGroupIndices.has(cursor)) {
+              const candidate = allGroups[cursor];
+              if (!candidate) {
+                break;
+              }
+              if (candidate.nodes.length === 1) {
+                const candidateText = normalizeTitle(candidate.nodes[0].text);
+                if (candidateText.length > 0) {
+                  map.set(group.originalIndex, candidateText);
+                }
+                break;
+              }
+              break;
+            }
+          });
+          return map;
+        })()
+      : new Map<number, string>();
+
+  const result = allInstructionGroups.map((group) => ({
+    title: titlesByIndex.get(group.originalIndex),
+    instructions: group.nodes.map((node) => ({ text: node.text })),
+  }));
+  console.log(
+    "[extractInstructions] final result:",
+    JSON.stringify(result, null, 2)
   );
-  return clusteredInstructions.map(({ node }) => ({ text: node.text }));
+  console.log("[extractInstructions] result length:", result.length);
+  return result;
 };

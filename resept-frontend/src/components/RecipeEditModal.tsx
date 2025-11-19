@@ -186,7 +186,7 @@ export const RecipeEditModal = ({
     instructions:
       initialData.instructions.length > 0
         ? initialData.instructions
-        : [{ text: "" }],
+        : [{ instructions: [{ text: "" }] }],
   });
 
   const [importUrl, setImportUrl] = useState("");
@@ -214,7 +214,7 @@ export const RecipeEditModal = ({
         instructions:
           initialData.instructions.length > 0
             ? initialData.instructions
-            : [{ text: "" }],
+            : [{ instructions: [{ text: "" }] }],
       });
     }
     prevIsOpen.current = isOpen;
@@ -279,15 +279,19 @@ export const RecipeEditModal = ({
     setFormData((prev) => ({ ...prev, ingredients: newGroups }));
   };
 
-  const handleInstructionChange = (index: number, value: string) => {
-    const newInstructions = [...formData.instructions];
-    if (newInstructions[index] && "text" in newInstructions[index]) {
-      (newInstructions[index] as { text: string }).text = value;
-    }
-    setFormData((prev) => ({
-      ...prev,
-      instructions: newInstructions,
-    }));
+  const handleInstructionChange = (
+    groupIndex: number,
+    instructionIndex: number,
+    value: string
+  ) => {
+    setFormData((prev) => {
+      const newGroups = [...prev.instructions];
+      const group = newGroups[groupIndex];
+      const newInstructions = [...group.instructions];
+      newInstructions[instructionIndex] = { text: value };
+      newGroups[groupIndex] = { ...group, instructions: newInstructions };
+      return { ...prev, instructions: newGroups };
+    });
   };
 
   const addGroup = () => {
@@ -325,18 +329,48 @@ export const RecipeEditModal = ({
     });
   };
 
-  const addInstruction = () => {
+  const addInstruction = (groupIndex: number) => {
+    setFormData((prev) => {
+      const newGroups = [...prev.instructions];
+      const group = newGroups[groupIndex];
+      const newInstructions = [...group.instructions, { text: "" }];
+      newGroups[groupIndex] = { ...group, instructions: newInstructions };
+      return { ...prev, instructions: newGroups };
+    });
+  };
+
+  const removeInstruction = (groupIndex: number, instructionIndex: number) => {
+    setFormData((prev) => {
+      const newGroups = [...prev.instructions];
+      const group = newGroups[groupIndex];
+      const newInstructions = group.instructions.filter(
+        (_, i) => i !== instructionIndex
+      );
+      if (newInstructions.length === 0) {
+        newGroups.splice(groupIndex, 1);
+      } else {
+        newGroups[groupIndex] = { ...group, instructions: newInstructions };
+      }
+      return { ...prev, instructions: newGroups };
+    });
+  };
+
+  const addInstructionGroup = () => {
     setFormData((prev) => ({
       ...prev,
-      instructions: [...prev.instructions, { text: "" }],
+      instructions: [...prev.instructions, { instructions: [{ text: "" }] }],
     }));
   };
 
-  const removeInstruction = (index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      instructions: prev.instructions.filter((_, i) => i !== index),
-    }));
+  const handleInstructionGroupTitleChange = (
+    groupIndex: number,
+    value: string
+  ) => {
+    setFormData((prev) => {
+      const newGroups = [...prev.instructions];
+      newGroups[groupIndex] = { ...newGroups[groupIndex], title: value };
+      return { ...prev, instructions: newGroups };
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -361,9 +395,14 @@ export const RecipeEditModal = ({
             })),
         }))
         .filter((g) => g.ingredients.length > 0),
-      instructions: formData.instructions.filter(
-        (inst) => "text" in inst && inst.text.trim() !== ""
-      ),
+      instructions: formData.instructions
+        .map((group) => ({
+          title: group.title,
+          instructions: group.instructions.filter(
+            (inst) => inst.text.trim() !== ""
+          ),
+        }))
+        .filter((g) => g.instructions.length > 0),
     };
 
     onSave(cleanedData);
@@ -414,7 +453,7 @@ export const RecipeEditModal = ({
             instructions:
               transformedData.instructions.length > 0
                 ? transformedData.instructions
-                : [{ text: "" }],
+                : [{ instructions: [{ text: "" }] }],
           });
           setImportUrl("");
         } else {
@@ -670,36 +709,72 @@ export const RecipeEditModal = ({
                 </label>
                 <button
                   type="button"
-                  onClick={addInstruction}
+                  onClick={addInstructionGroup}
                   className="text-sm text-red-600 hover:text-red-800"
                 >
-                  + Toevoegen
+                  + Groep toevoegen
                 </button>
               </div>
-              <div className="space-y-2">
-                {formData.instructions.map((instruction, index) => (
-                  <div key={index} className="flex gap-2">
-                    <div className="flex-1">
-                      <div className="text-sm text-gray-500 mb-1">
-                        Stap {index + 1}
-                      </div>
-                      <Textarea
-                        value={"text" in instruction ? instruction.text : ""}
+              <div className="space-y-4">
+                {formData.instructions.map((group, gIndex) => (
+                  <div
+                    key={gIndex}
+                    className="border border-gray-200 rounded p-4"
+                  >
+                    <div className="mb-2">
+                      <Input
+                        type="text"
+                        value={group.title || ""}
                         onChange={(e) =>
-                          handleInstructionChange(index, e.target.value)
+                          handleInstructionGroupTitleChange(
+                            gIndex,
+                            e.target.value
+                          )
                         }
-                        rows={2}
-                        placeholder="Instructie..."
-                        required
+                        placeholder="Groep titel (optioneel)..."
+                        className="text-sm"
                       />
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => removeInstruction(index)}
-                      className="px-3 py-2 text-red-600 hover:text-red-800 self-end"
-                    >
-                      ×
-                    </button>
+                    <div className="space-y-2">
+                      {group.instructions.map((instruction, index) => (
+                        <div key={index} className="flex gap-2">
+                          <div className="flex-1">
+                            <div className="text-sm text-gray-500 mb-1">
+                              Stap {index + 1}
+                            </div>
+                            <Textarea
+                              value={instruction.text}
+                              onChange={(e) =>
+                                handleInstructionChange(
+                                  gIndex,
+                                  index,
+                                  e.target.value
+                                )
+                              }
+                              rows={2}
+                              placeholder="Instructie..."
+                              required
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeInstruction(gIndex, index)}
+                            className="px-3 py-2 text-red-600 hover:text-red-800 self-end"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-2">
+                      <button
+                        type="button"
+                        onClick={() => addInstruction(gIndex)}
+                        className="text-sm text-red-600 hover:text-red-800"
+                      >
+                        + Instructie toevoegen
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>

@@ -18,6 +18,11 @@ export interface RecipeInstruction {
   text: string;
 }
 
+export interface InstructionGroup {
+  title?: string;
+  instructions: RecipeInstruction[];
+}
+
 export interface RecipeInstructionSection {
   type: "section";
   name: string;
@@ -37,7 +42,7 @@ export interface CreateRecipeData {
   cook_time: string;
   total_time: string;
   ingredients: IngredientGroup[];
-  instructions: RecipeInstructionItem[];
+  instructions: InstructionGroup[];
   source_url: string;
 }
 

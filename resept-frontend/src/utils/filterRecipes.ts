@@ -1,7 +1,5 @@
 import {
-  type RecipeInstructionItem,
-  type RecipeInstruction,
-  type RecipeInstructionSection,
+  type InstructionGroup,
   type IngredientGroup,
   type IngredientLine,
 } from "../types";
@@ -12,26 +10,18 @@ type RecipeListItem = {
   created_at: string;
   ingredients: IngredientGroup[];
   total_time?: string;
-  instructions?: RecipeInstructionItem[];
+  instructions?: InstructionGroup[];
 };
 
-const isSection = (
-  item: RecipeInstructionItem
-): item is RecipeInstructionSection => {
-  return (item as RecipeInstructionSection).type === "section";
-};
-
-const instructionTexts = (items: RecipeInstructionItem[]): string => {
+const instructionTexts = (items: InstructionGroup[]): string => {
   return items
-    .map((item) => {
-      if (!item) return "";
-      if (isSection(item)) {
-        return [
-          item.name || "",
-          ...item.steps.map((s: RecipeInstruction) => s?.text || ""),
-        ].join(" ");
-      }
-      return (item as RecipeInstruction).text || "";
+    .map((group) => {
+      if (!group) return "";
+      const titleText = group.title || "";
+      const instructionTexts = (group.instructions || [])
+        .map((instruction) => instruction?.text || "")
+        .join(" ");
+      return `${titleText} ${instructionTexts}`;
     })
     .join(" ");
 };

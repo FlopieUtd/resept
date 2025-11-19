@@ -7,36 +7,36 @@
         {
           "raw": "280 g (2 1/2 cups) plain (all-purpose) flour",
           "parsed": {
-            "amount": 280,
-            "rawWithoutAmount": "g (2 1/2 cups) plain (all-purpose) flour"
+            "rawWithoutAmount": "g (2 1/2 cups) plain (all-purpose) flour",
+            "amount": 280
           }
         },
         {
           "raw": "1 tsp carom/awjain seeds",
           "parsed": {
-            "amount": 1,
-            "rawWithoutAmount": "tsp carom/awjain seeds"
+            "rawWithoutAmount": "tsp carom/awjain seeds",
+            "amount": 1
           }
         },
         {
           "raw": "1 tsp salt",
           "parsed": {
-            "amount": 1,
-            "rawWithoutAmount": "tsp salt"
+            "rawWithoutAmount": "tsp salt",
+            "amount": 1
           }
         },
         {
           "raw": "5 tbsp melted ghee swap with oil if preferred",
           "parsed": {
-            "amount": 5,
-            "rawWithoutAmount": "tbsp melted ghee swap with oil if preferred"
+            "rawWithoutAmount": "tbsp melted ghee swap with oil if preferred",
+            "amount": 5
           }
         },
         {
           "raw": "7 tbsp water",
           "parsed": {
-            "amount": 7,
-            "rawWithoutAmount": "tbsp water"
+            "rawWithoutAmount": "tbsp water",
+            "amount": 7
           }
         }
       ]
@@ -45,7 +45,12 @@
       "title": "For rolling",
       "ingredients": [
         {
-          "raw": "1-2 tbsp oil"
+          "raw": "1-2 tbsp oil",
+          "parsed": {
+            "amount": 1,
+            "rawWithoutAmount": "tbsp oil",
+            "amountMax": 2
+          }
         }
       ]
     },
@@ -55,92 +60,92 @@
         {
           "raw": "2 medium-large potatoes (about 300g/10.5oz altogether), peeled and chopped into 2cm (~1 inch) chunks",
           "parsed": {
-            "amount": 2,
-            "rawWithoutAmount": "medium-large potatoes (about 300g/10.5oz altogether), peeled and chopped into 2cm (~1 inch) chunks"
+            "rawWithoutAmount": "medium-large potatoes (about 300g/10.5oz altogether), peeled and chopped into 2cm (~1 inch) chunks",
+            "amount": 2
           }
         },
         {
           "raw": "1 tbsp ghee or oil",
           "parsed": {
-            "amount": 1,
-            "rawWithoutAmount": "tbsp ghee or oil"
+            "rawWithoutAmount": "tbsp ghee or oil",
+            "amount": 1
           }
         },
         {
           "raw": "1⁄2 tsp cumin seeds",
           "parsed": {
-            "amount": 0.5,
-            "rawWithoutAmount": "tsp cumin seeds"
+            "rawWithoutAmount": "tsp cumin seeds",
+            "amount": 0.5
           }
         },
         {
           "raw": "1⁄4 tsp ground cumin",
           "parsed": {
-            "amount": 0.25,
-            "rawWithoutAmount": "tsp ground cumin"
+            "rawWithoutAmount": "tsp ground cumin",
+            "amount": 0.25
           }
         },
         {
           "raw": "1⁄4 tsp ground coriander",
           "parsed": {
-            "amount": 0.25,
-            "rawWithoutAmount": "tsp ground coriander"
+            "rawWithoutAmount": "tsp ground coriander",
+            "amount": 0.25
           }
         },
         {
           "raw": "1⁄2 tsp garam masala",
           "parsed": {
-            "amount": 0.5,
-            "rawWithoutAmount": "tsp garam masala"
+            "rawWithoutAmount": "tsp garam masala",
+            "amount": 0.5
           }
         },
         {
           "raw": "1⁄4 tsp asafoetida",
           "parsed": {
-            "amount": 0.25,
-            "rawWithoutAmount": "tsp asafoetida"
+            "rawWithoutAmount": "tsp asafoetida",
+            "amount": 0.25
           }
         },
         {
           "raw": "1 tsp ginger paste",
           "parsed": {
-            "amount": 1,
-            "rawWithoutAmount": "tsp ginger paste"
+            "rawWithoutAmount": "tsp ginger paste",
+            "amount": 1
           }
         },
         {
           "raw": "1 green chilli finely diced",
           "parsed": {
-            "amount": 1,
-            "rawWithoutAmount": "green chilli finely diced"
+            "rawWithoutAmount": "green chilli finely diced",
+            "amount": 1
           }
         },
         {
           "raw": "50 g (1/3 cup) frozen peas",
           "parsed": {
-            "amount": 50,
-            "rawWithoutAmount": "g (1/3 cup) frozen peas"
+            "rawWithoutAmount": "g (1/3 cup) frozen peas",
+            "amount": 50
           }
         },
         {
           "raw": "10 g finely chopped fresh coriander leaves (about 3 tbsp)",
           "parsed": {
-            "amount": 10,
-            "rawWithoutAmount": "g finely chopped fresh coriander leaves (about 3 tbsp)"
+            "rawWithoutAmount": "g finely chopped fresh coriander leaves (about 3 tbsp)",
+            "amount": 10
           }
         },
         {
           "raw": "1⁄2 tsp salt",
           "parsed": {
-            "amount": 0.5,
-            "rawWithoutAmount": "tsp salt"
+            "rawWithoutAmount": "tsp salt",
+            "amount": 0.5
           }
         },
         {
           "raw": "1 tsp lemon juice",
           "parsed": {
-            "amount": 1,
-            "rawWithoutAmount": "tsp lemon juice"
+            "rawWithoutAmount": "tsp lemon juice",
+            "amount": 1
           }
         }
       ]
@@ -151,8 +156,8 @@
         {
           "raw": "2 litres frying oil (a little under half a gallon) or enough to fill your pan one-third to one-half full.",
           "parsed": {
-            "amount": 2,
-            "rawWithoutAmount": "litres frying oil (a little under half a gallon) or enough to fill your pan one-third to one-half full."
+            "rawWithoutAmount": "litres frying oil (a little under half a gallon) or enough to fill your pan one-third to one-half full.",
+            "amount": 2
           }
         }
       ]
@@ -161,24 +166,34 @@
       "title": "To Serve",
       "ingredients": [
         {
-          "raw": "sweet chilli sauce"
+          "raw": "sweet chilli sauce",
+          "parsed": {
+            "rawWithoutAmount": "sweet chilli sauce"
+          }
         }
       ]
     }
   ],
   "instructions": [
     {
-      "type": "section",
-      "name": "Samosa Dough",
-      "steps": [
+      "instructions": [
         {
           "text": "Add the flour, carom seeds, and salt to a bowl and mix together."
+        },
+        {
+          "text": "280 g (2 1/2 cups) plain (all-purpose) flour, 1 tsp carom/awjain seeds, 1 tsp salt"
         },
         {
           "text": "Add the ghee, and mix, using your fingers to gently rub the dough, so you get breadcrumbs."
         },
         {
+          "text": "5 tbsp melted ghee"
+        },
+        {
           "text": "Add three-quarters of the water and mix together with your hands, adding more water, until you get a firm (not sticky) dough."
+        },
+        {
+          "text": "7 tbsp water"
         },
         {
           "text": "Put to one side, cover with a piece of clingfilm/plastic-wrap (or a wax wrap) and rest for 30 minutes. You can make the filling while the dough is resting."
@@ -186,14 +201,15 @@
       ]
     },
     {
-      "type": "section",
-      "name": "Potato and Pea Filling",
-      "steps": [
+      "instructions": [
         {
           "text": "Place the peeled and chopped potatoes into a pan and cover with cold water."
         },
         {
-          "text": "Bring to the boil and simmer for 10-11 minutes, so they're just tender (a knife should slide into them with just a bit of resistance)."
+          "text": "2 medium-large potatoes"
+        },
+        {
+          "text": "Bring to the boil and simmer for 10-11 minutes, so they’re just tender (a knife should slide into them with just a bit of resistance)."
         },
         {
           "text": "Drain and put to one side."
@@ -202,10 +218,19 @@
           "text": "Heat the oil (or ghee) in a large frying pan, over a medium heat."
         },
         {
+          "text": "1 tbsp ghee or oil"
+        },
+        {
           "text": "Add the cumin seeds and fry for one minute, stirring often, until they start to sizzle."
         },
         {
+          "text": "1/2 tsp cumin seeds"
+        },
+        {
           "text": "Add the ground cumin, ground coriander, garam masala, asafoetida, ginger, and chilli."
+        },
+        {
+          "text": "1/4 tsp ground cumin, 1/4 tsp ground coriander, 1/2 tsp garam masala, 1/4 tsp asafoetida, 1 tsp ginger paste, 1 green chilli"
         },
         {
           "text": "Fry for one minute, until fragrant."
@@ -214,10 +239,16 @@
           "text": "Add the peas, and cook for a minute, then add in the potatoes."
         },
         {
+          "text": "50 g (1/3 cup) frozen peas"
+        },
+        {
           "text": "Gently crush the potatoes, with the back of a spoon to break them up slightly."
         },
         {
-          "text": "Sprinkle over the chopped coriander, salt, and lemon juice, and fold everything together, until combined (be sure to fold, so the mixture doesn't go mushy)."
+          "text": "Sprinkle over the chopped coriander, salt, and lemon juice, and fold everything together, until combined (be sure to fold, so the mixture doesn’t go mushy)."
+        },
+        {
+          "text": "10 g finely chopped fresh coriander leaves, 1/2 tsp salt, 1 tsp lemon juice"
         },
         {
           "text": "Put to one side."
@@ -225,14 +256,15 @@
       ]
     },
     {
-      "type": "section",
-      "name": "Making the Samosas",
-      "steps": [
+      "instructions": [
         {
           "text": "Divide the samosa dough into 6 balls."
         },
         {
-          "text": "Oil your board, then roll out one of the balls into an approximate circle, about 15cm (6\") across."
+          "text": "Oil your board, then roll out one of the balls into an approximate circle, about 15cm (6”) across."
+        },
+        {
+          "text": "1-2 tbsp oil"
         },
         {
           "text": "Slice in half through the middle, then take one of the halves and shape it into an open-ended cone shape. Use a little water to seal the edge."
@@ -247,10 +279,13 @@
           "text": "Cover half of the samosas with a damp towel and preheat your oven to a very low temperature (to keep the samosas warm). Place a tray in the oven to heat."
         },
         {
-          "text": "Heat the oil in a large heavy-based pan or Dutch oven, over a medium heat until hot. The oil should reach no further than halfway up the pan and should be around 160-165C/320-329F."
+          "text": "Heat the oil in a large heavy-based pan or Dutch oven, over a medium heat until hot. The oil should reach no further than halfway up the pan (or it might bubble over). You want to be able to add a tiny blob of dough or tiny chunk of bread into the oil, and it should bubble very very slowly (if you have a temperature probe this should be about 160-165C/320-329F). We don’t want the oil too hot. If it’s too hot, the dough will burn before fully cooking."
         },
         {
-          "text": "Carefully add 6 samosas to the pan, one at a time."
+          "text": "2 litres frying oil (a little under half a gallon)"
+        },
+        {
+          "text": "Carefully add 6 samosas to the pan, one at a time.*see note about pan size"
         },
         {
           "text": "Cook for about 10-12 minutes, turning a few times, until golden brown."
@@ -263,9 +298,12 @@
         },
         {
           "text": "Serve with your favourite dipping sauce."
+        },
+        {
+          "text": "sweet chilli sauce"
         }
       ]
     }
   ],
-  "recipe_yield": 12
+  "recipe_yield": 1
 }

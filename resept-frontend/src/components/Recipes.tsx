@@ -12,7 +12,7 @@ import { filterRecipes, getMatchPriority } from "../utils/filterRecipes";
 import {
   type CreateRecipeData,
   type IngredientGroup,
-  type RecipeInstructionItem,
+  type InstructionGroup,
 } from "../types";
 
 export const Recipes = () => {
@@ -29,7 +29,7 @@ export const Recipes = () => {
     created_at: string;
     ingredients: IngredientGroup[];
     total_time?: string;
-    instructions?: RecipeInstructionItem[];
+    instructions?: InstructionGroup[];
   };
 
   const durationToMinutes = (timeString: string | null | undefined) => {
@@ -239,7 +239,7 @@ export const Recipes = () => {
           cook_time: "",
           total_time: "",
           ingredients: [{ ingredients: [{ raw: "" }] }],
-          instructions: [{ text: "" }],
+          instructions: [{ instructions: [{ text: "" }] }],
           source_url: "",
         }}
         isSaving={createRecipe.isPending}

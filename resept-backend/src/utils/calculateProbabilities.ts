@@ -1,5 +1,5 @@
 import { THRESHOLDS } from "./parseNodes.thresholds";
-import { startsWithCookingVerb } from "./parseNodes.lexicon";
+import { countSentencesStartingWithCookingVerb } from "./parseNodes.lexicon";
 import type { InternalIngredientGroup } from "./parseNodes.types";
 
 const calculateInstructionProbability = (
@@ -23,15 +23,43 @@ const calculateInstructionProbability = (
     (nodesWithLongInstructions / group.nodes.length) *
     THRESHOLDS.INSTRUCTION_WORD_BONUS_WEIGHT;
 
-  const nodesStartingWithVerb = group.nodes.filter((node) =>
-    startsWithCookingVerb(node.text)
-  ).length;
+  let totalSentences = 0;
+  let sentencesStartingWithVerb = 0;
+
+  for (const node of group.nodes) {
+    const sentences = node.text
+      .split(/[.!?]+/)
+      .filter((s) => s.trim().length > 0);
+    totalSentences += sentences.length;
+    sentencesStartingWithVerb += countSentencesStartingWithCookingVerb(
+      node.text
+    );
+  }
 
   const verbProbabilityBonus =
-    (nodesStartingWithVerb / group.nodes.length) *
-    THRESHOLDS.INSTRUCTION_VERB_BONUS_WEIGHT;
+    totalSentences > 0
+      ? (sentencesStartingWithVerb / totalSentences) *
+        THRESHOLDS.INSTRUCTION_VERB_BONUS_WEIGHT
+      : 0;
 
-  return Math.min(baseScore + wordProbabilityBonus + verbProbabilityBonus, 1.0);
+  const totalScore = Math.min(
+    baseScore + wordProbabilityBonus + verbProbabilityBonus,
+    1.0
+  );
+
+  const nodeCount = group.nodes.length;
+  const nodeCountMultiplier =
+    nodeCount >= 5
+      ? 1.0
+      : nodeCount >= 4
+      ? 0.8
+      : nodeCount >= 3
+      ? 0.6
+      : nodeCount >= 2
+      ? 0.4
+      : 0.2;
+
+  return totalScore * nodeCountMultiplier;
 };
 
 export const calculateProbabilities = (

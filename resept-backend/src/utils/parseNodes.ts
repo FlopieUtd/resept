@@ -4,11 +4,14 @@ import type { IngredientGroup, IngredientLine } from "../../types";
 import type { InternalIngredientGroup } from "./parseNodes.types";
 import { groupNodesByDepthAndType } from "./groupNodesByDepthAndType";
 import { calculateProbabilities } from "./calculateProbabilities";
-import { extractInstructions } from "./extractInstructions";
+import {
+  extractInstructions,
+  type InstructionGroup,
+} from "./extractInstructions";
 
 interface ParsedResult {
   ingredients: IngredientGroup[];
-  instructions: { text: string }[];
+  instructions: InstructionGroup[];
   maxIngredientProbability: number;
   maxInstructionsProbability: number;
 }
@@ -26,10 +29,14 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
   const allGroups = groupNodesByDepthAndType(textNodes);
   const { maxInstructionsProbability, filteredResult } =
     calculateProbabilities(allGroups);
-  const instructions = extractInstructions(
-    allGroups,
-    filteredResult,
-    maxInstructionsProbability
+  const instructions = extractInstructions(allGroups);
+
+  console.log(
+    JSON.stringify(
+      allGroups.filter((g) => g.instructionsProbability > 0.2),
+      null,
+      2
+    )
   );
 
   const maxIngredientProbability =
@@ -109,6 +116,39 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
     return bestSequence;
   })();
 
+  const titlesByIndex =
+    allIngredientGroups.length > 1
+      ? (() => {
+          const ingredientGroupIndices = new Set(
+            allIngredientGroups.map((group) => group.originalIndex)
+          );
+          const map = new Map<number, string>();
+          const normalizeTitle = (text: string) =>
+            text
+              .trim()
+              .replace(/[:：]$/, "")
+              .trim();
+          allIngredientGroups.forEach((group) => {
+            let cursor = group.originalIndex - 1;
+            while (cursor >= 0 && !ingredientGroupIndices.has(cursor)) {
+              const candidate = allGroups[cursor];
+              if (!candidate) {
+                break;
+              }
+              if (candidate.nodes.length === 1) {
+                const candidateText = normalizeTitle(candidate.nodes[0].text);
+                if (candidateText.length > 0) {
+                  map.set(group.originalIndex, candidateText);
+                }
+                break;
+              }
+              break;
+            }
+          });
+          return map;
+        })()
+      : new Map<number, string>();
+
   const ingredientGroups = allIngredientGroups.reduce<IngredientGroup[]>(
     (acc, group) => {
       const ingredients: IngredientLine[] = group.nodes
@@ -118,8 +158,9 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
           return { raw, parsed };
         })
         .filter((line) => line.raw.trim().length > 0);
+      const title = titlesByIndex.get(group.originalIndex);
       if (ingredients.length > 0) {
-        acc.push({ ingredients });
+        acc.push(title ? { title, ingredients } : { ingredients });
       }
       return acc;
     },
