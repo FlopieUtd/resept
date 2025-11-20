@@ -9,8 +9,62 @@ import {
   type InstructionGroup,
   type CreateRecipeData,
   type IngredientGroup,
+  type RecipeInstructionItem,
   Language,
 } from "../types";
+
+const normalizeInstructions = (
+  instructions:
+    | InstructionGroup[]
+    | RecipeInstructionItem[]
+    | { text: string }[]
+    | unknown
+): InstructionGroup[] => {
+  if (!instructions || !Array.isArray(instructions)) {
+    return [];
+  }
+
+  if (instructions.length === 0) {
+    return [];
+  }
+
+  const firstItem = instructions[0];
+
+  if (
+    firstItem &&
+    "instructions" in firstItem &&
+    Array.isArray(firstItem.instructions)
+  ) {
+    return instructions as InstructionGroup[];
+  }
+
+  if (firstItem && "type" in firstItem && firstItem.type === "section") {
+    return (instructions as RecipeInstructionItem[]).map((item) => {
+      if ("type" in item && item.type === "section") {
+        return {
+          title: item.name,
+          instructions: item.steps,
+        };
+      }
+      return {
+        instructions: [{ text: (item as { text: string }).text }],
+      };
+    });
+  }
+
+  if (firstItem && "text" in firstItem) {
+    return [
+      {
+        instructions: (instructions as { text: string }[]).map((item) => ({
+          text: item.text,
+        })),
+      },
+    ];
+  }
+
+  return [];
+};
+
 import { Loading } from "./Loading";
 import { RecipeEditModal } from "./RecipeEditModal";
 import {
@@ -42,10 +96,14 @@ export const Recipe = () => {
     "ingredients"
   );
 
+  const normalizedInstructions = recipe?.instructions
+    ? normalizeInstructions(recipe.instructions)
+    : [];
+
   const detectedLanguage = useLanguageDetection(
     recipe?.title || "",
     recipe?.description || "",
-    recipe?.instructions || []
+    normalizedInstructions
   );
 
   const t = LABELS[detectedLanguage];
@@ -261,44 +319,18 @@ export const Recipe = () => {
             </div>
           ) : (
             <div className="font-radley text-[18px]">
-              {(() => {
-                console.log("[Recipe] instructions data:", recipe.instructions);
-                console.log(
-                  "[Recipe] instructions type:",
-                  typeof recipe.instructions
-                );
-                console.log(
-                  "[Recipe] instructions isArray:",
-                  Array.isArray(recipe.instructions)
-                );
-                if (
-                  !recipe.instructions ||
-                  !Array.isArray(recipe.instructions)
-                ) {
-                  console.warn(
-                    "[Recipe] instructions is not an array:",
-                    recipe.instructions
-                  );
-                  return <div>No instructions available</div>;
-                }
-                if (recipe.instructions.length === 0) {
-                  console.warn("[Recipe] instructions array is empty");
-                  return <div>No instructions found</div>;
-                }
-                return recipe.instructions.map(
+              {normalizedInstructions.length === 0 ? (
+                <div>No instructions found</div>
+              ) : (
+                normalizedInstructions.map(
                   (group: InstructionGroup, groupIndex: number) => {
-                    console.log(`[Recipe] group ${groupIndex}:`, group);
                     if (!group || !group.instructions) {
-                      console.warn(
-                        `[Recipe] group ${groupIndex} is invalid:`,
-                        group
-                      );
                       return null;
                     }
                     return (
                       <div key={groupIndex} className="pb-[16px]">
                         {group.title && (
-                          <div className="font-bold text-[20px] mb-[12px] text-[#333]">
+                          <div className="font-sans font-bold text-[20px] mb-[12px] text-[#333]">
                             {group.title}
                           </div>
                         )}
@@ -310,8 +342,8 @@ export const Recipe = () => {
                       </div>
                     );
                   }
-                );
-              })()}
+                )
+              )}
             </div>
           )}
         </div>
@@ -364,21 +396,10 @@ export const Recipe = () => {
               {t.instructions}
             </div>
             <div className="font-radley text-[18px]">
-              {(() => {
-                console.log(
-                  "[Recipe] desktop instructions data:",
-                  recipe.instructions
-                );
-                if (
-                  !recipe.instructions ||
-                  !Array.isArray(recipe.instructions)
-                ) {
-                  return <div>No instructions available</div>;
-                }
-                if (recipe.instructions.length === 0) {
-                  return <div>No instructions found</div>;
-                }
-                return recipe.instructions.map(
+              {normalizedInstructions.length === 0 ? (
+                <div>No instructions found</div>
+              ) : (
+                normalizedInstructions.map(
                   (group: InstructionGroup, groupIndex: number) => {
                     if (!group || !group.instructions) {
                       return null;
@@ -386,7 +407,7 @@ export const Recipe = () => {
                     return (
                       <div key={groupIndex} className="pb-[16px]">
                         {group.title && (
-                          <div className="font-bold text-[20px] mb-[12px] text-[#333]">
+                          <div className="font-sans font-bold text-[18px] mb-[12px] text-[#333]">
                             {group.title}
                           </div>
                         )}
@@ -398,8 +419,8 @@ export const Recipe = () => {
                       </div>
                     );
                   }
-                );
-              })()}
+                )
+              )}
             </div>
           </div>
         </div>
