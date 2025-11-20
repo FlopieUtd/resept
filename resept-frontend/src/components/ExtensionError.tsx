@@ -7,7 +7,7 @@ const ExtensionError = () => {
     params.get("message") || "We couldn't authenticate your extension session.";
 
   return (
-    <div className="flex w-full h-screen items-center justify-center px-6">
+    <div className="flex w-full h-[100dvh] items-center justify-center px-6">
       <div className="text-center max-w-lg">
         <div className="text-6xl mb-4">❌</div>
         <h1 className="text-2xl font-bold mb-4">Extension login failed</h1>

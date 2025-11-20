@@ -122,8 +122,8 @@ export const Recipe = () => {
   };
 
   return (
-    <div className="flex w-full min-h-screen justify-center items-start">
-      <div className="flex w-full max-w-[1080px] mx-[16px] sm:mx-[24px] flex-col justify-center min-h-screen pb-[64px] sm:pb-0">
+    <div className="flex w-full min-h-[100dvh] justify-center items-start">
+      <div className="flex w-full max-w-[1080px] mx-[16px] sm:mx-[24px] flex-col sm:justify-center min-h-[100dvh] pb-[64px] sm:pb-0">
         <div
           className="flex flex-col border-b-[2px] border-black mb-[12px] sm:mb-[24px] mt-[12px] sm:mt-[36px]"
           key={refreshTrigger}
@@ -294,7 +294,7 @@ export const Recipe = () => {
           )}
         </div>
 
-        <div className="hidden sm:flex gap-[36px] pb-[36px]">
+        <div className="hidden sm:flex gap-[24px] pb-[36px]">
           <div className="w-1/3 flex flex-col gap-[24px]">
             <div className="text-[24px] pb-[12px] font-bold border-b-[2px] border-black tracking-[1px]">
               {t.ingredients}

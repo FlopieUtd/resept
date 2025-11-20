@@ -152,7 +152,7 @@ export const ExtensionAuth = () => {
 
   if (status === "loading" || status === "redirecting") {
     return (
-      <div className="flex w-full h-screen justify-center items-center">
+      <div className="flex w-full h-[100dvh] justify-center items-center">
         <div className="text-center">
           <Loading />
           <p className="mt-4 text-lg">
@@ -166,7 +166,7 @@ export const ExtensionAuth = () => {
   }
 
   return (
-    <div className="flex w-full h-screen justify-center items-center">
+    <div className="flex w-full h-[100dvh] justify-center items-center">
       <div className="text-center max-w-md mx-auto p-6">
         <div
           className={`text-6xl mb-4 ${
