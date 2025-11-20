@@ -20,7 +20,7 @@ import {
   ArrowsInSimple,
   CaretLeft,
 } from "@phosphor-icons/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRecipeYield } from "../hooks/useRecipeYield";
 import { extractDomainFromUrl } from "../utils/extractDomainFromUrl";
 import { decodeHtmlEntities } from "../utils/decodeHtmlEntities";
@@ -44,6 +44,8 @@ export const Recipe = () => {
   const [activeTab, setActiveTab] = useState<"ingredients" | "instructions">(
     "ingredients"
   );
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [headerOffset, setHeaderOffset] = useState(0);
 
   const normalizedInstructions =
     (recipe?.instructions as InstructionGroup[]) || [];
@@ -79,6 +81,25 @@ export const Recipe = () => {
       document.title = "Resept";
     };
   }, [recipe?.title]);
+
+  useEffect(() => {
+    const updateOffset = () => {
+      if (headerRef.current) {
+        setHeaderOffset(headerRef.current.getBoundingClientRect().height);
+      }
+    };
+    updateOffset();
+    window.addEventListener("resize", updateOffset);
+    let observer: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined" && headerRef.current) {
+      observer = new ResizeObserver(updateOffset);
+      observer.observe(headerRef.current);
+    }
+    return () => {
+      window.removeEventListener("resize", updateOffset);
+      observer?.disconnect();
+    };
+  }, []);
 
   if (isLoading && !recipe) {
     return <Loading />;
@@ -127,6 +148,7 @@ export const Recipe = () => {
     <div className="flex w-full min-h-[100dvh] justify-center items-start">
       <div className="flex w-full max-w-[1080px] mx-[16px] sm:mx-[24px] lg:justify-center flex-col min-h-[100dvh]">
         <div
+          ref={headerRef}
           className="flex flex-col border-b-[2px] border-black mb-[12px] sm:mb-[24px] mt-[12px] sm:mt-[36px] sticky top-0 bg-white z-10"
           key={refreshTrigger}
         >
@@ -224,9 +246,12 @@ export const Recipe = () => {
         </div>
 
         <div className="sm:hidden flex flex-col gap-[24px] pb-[24px]">
-          <div className="flex border-b-[2px] border-black gap-[24px] sticky top-[60px] bg-white pt-[12px] z-5">
+          <div
+            className="flex border-b-[2px] border-black gap-[24px] sticky bg-white pt-[12px] z-5"
+            style={{ top: headerOffset }}
+          >
             <button
-              className="text-[20px] pb-[12px] tracking-[1px]"
+              className="text-[18px] pb-[12px] tracking-[1px]"
               style={{
                 fontWeight: activeTab === "ingredients" ? "bold" : "normal",
               }}
@@ -235,7 +260,7 @@ export const Recipe = () => {
               {t.ingredients}
             </button>
             <button
-              className="text-[20px] pb-[12px] tracking-[1px]"
+              className="text-[18px] pb-[12px] tracking-[1px]"
               style={{
                 fontWeight: activeTab === "instructions" ? "bold" : "normal",
               }}
@@ -316,7 +341,10 @@ export const Recipe = () => {
 
         <div className="hidden sm:flex gap-[24px] pb-[36px]">
           <div className="w-1/3 flex flex-col gap-[24px]">
-            <div className="text-[24px] py-[12px] font-bold border-b-[2px] border-black tracking-[1px] sticky top-[96px] bg-white z-5">
+            <div
+              className="text-[24px] py-[12px] font-bold border-b-[2px] border-black tracking-[1px] sticky bg-white z-5"
+              style={{ top: headerOffset }}
+            >
               {t.ingredients}
             </div>
             <div className="flex flex-col gap-[16px]">
@@ -358,7 +386,10 @@ export const Recipe = () => {
             </div>
           </div>
           <div className="w-2/3 flex flex-col gap-[24px]">
-            <div className="text-[24px] py-[12px] font-bold border-b-[2px] border-black tracking-[1px] sticky top-[96px] bg-white z-5">
+            <div
+              className="text-[24px] py-[12px] font-bold border-b-[2px] border-black tracking-[1px] sticky bg-white z-5"
+              style={{ top: headerOffset }}
+            >
               {t.instructions}
             </div>
             <div className="font-radley text-[18px]">
