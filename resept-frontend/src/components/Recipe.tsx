@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   useRecipe,
   useUpdateRecipe,
@@ -18,6 +18,7 @@ import {
   PencilSimple,
   ArrowsOutSimple,
   ArrowsInSimple,
+  CaretLeft,
 } from "@phosphor-icons/react";
 import { useState, useEffect } from "react";
 import { useRecipeYield } from "../hooks/useRecipeYield";
@@ -129,9 +130,17 @@ export const Recipe = () => {
           key={refreshTrigger}
         >
           <div className="flex justify-between items-center mb-[6px] sm:mb-[12px] gap-[12px]">
-            <h1 className="text-[24px] sm:text-[36px] sm:text-[48px] font-bold text-balance">
-              {recipe.title}
-            </h1>
+            <div className="flex gap-[12px] items-center">
+              <Link
+                to="/recipes"
+                className="bg-white text-black p-[8px] rounded-lg hover:bg-gray-200 transition-colors sm:hidden"
+              >
+                <CaretLeft size={24} />
+              </Link>
+              <h1 className="text-[24px] sm:text-[36px] sm:text-[48px] font-bold text-balance">
+                {recipe.title}
+              </h1>
+            </div>
             <div className="flex gap-[8px]">
               <button
                 onClick={() => setIsEditModalOpen(true)}
@@ -160,7 +169,7 @@ export const Recipe = () => {
             </div>
           </div>
         </div>
-        <div className="mb-[16px] sm:mb-[36px] flex flex-col gap-[16px]">
+        <div className="mb-[16px] sm:mb-[24px] flex flex-col gap-[16px]">
           {recipe.description && (
             <div className="font-radley text-[18px] whitespace-pre-line">
               {recipe.description}
