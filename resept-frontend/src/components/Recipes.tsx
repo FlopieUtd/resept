@@ -120,8 +120,8 @@ export const Recipes = () => {
 
   return (
     <div className="flex w-full h-full justify-center">
-      <div className="flex w-full max-w-[1080px] m-[12px] sm:m-[24px] flex-col">
-        <div className="flex justify-between items-center mb-6 w-full border-b-2 border-black pb-[12px]">
+      <div className="flex w-full max-w-[1080px] m-[16px] sm:m-[24px] flex-col">
+        <div className="flex justify-between items-center mb-[12px] sm:mb-[16px] w-full border-b-2 border-black pb-[12px] sm:pb-[16px]">
           <h1 className="text-3xl font-bold">
             {recipes ? recipes.length : ""} Recepten
           </h1>
@@ -154,7 +154,7 @@ export const Recipes = () => {
         ) : (
           <div className="flex flex-col gap-4">
             <div className="w-full flex gap-3 items-center">
-              <div className="w-[75%]">
+              <div className="w-2/3">
                 <Input
                   type="text"
                   value={query}
@@ -162,7 +162,7 @@ export const Recipes = () => {
                   placeholder="Zoek recepten..."
                 />
               </div>
-              <div className="w-[25%]">
+              <div className="w-1/3">
                 <Select
                   value={sortKey}
                   onChange={(e) =>
