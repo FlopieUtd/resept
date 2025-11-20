@@ -154,7 +154,7 @@ export const Recipes = () => {
         ) : (
           <div className="flex flex-col gap-4">
             <div className="w-full flex gap-3 items-center">
-              <div className="w-2/3">
+              <div className="w-1/2">
                 <Input
                   type="text"
                   value={query}
@@ -162,7 +162,7 @@ export const Recipes = () => {
                   placeholder="Zoek recepten..."
                 />
               </div>
-              <div className="w-1/3">
+              <div className="w-1/2">
                 <Select
                   value={sortKey}
                   onChange={(e) =>

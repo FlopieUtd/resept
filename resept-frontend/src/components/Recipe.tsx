@@ -129,7 +129,7 @@ export const Recipe = () => {
           key={refreshTrigger}
         >
           <div className="flex justify-between items-center mb-[6px] sm:mb-[12px] gap-[12px]">
-            <h1 className="text-[36px] sm:text-[48px] font-bold text-balance">
+            <h1 className="text-[24px] sm:text-[36px] sm:text-[48px] font-bold text-balance">
               {recipe.title}
             </h1>
             <div className="flex gap-[8px]">
@@ -222,7 +222,7 @@ export const Recipe = () => {
         </div>
 
         <div className="sm:hidden flex flex-col gap-[24px] pb-[24px]">
-          <div className="text-[24px] pb-[12px] font-bold border-b-[2px] border-black tracking-[1px]">
+          <div className="text-[20px] pb-[12px] font-bold border-b-[2px] border-black tracking-[1px]">
             {activeTab === "ingredients" ? t.ingredients : t.instructions}
           </div>
           {activeTab === "ingredients" ? (
@@ -294,7 +294,7 @@ export const Recipe = () => {
           )}
         </div>
 
-        <div className="hidden sm:flex gap-[24px] pb-[36px]">
+        <div className="hidden sm:flex gap-[px] pb-[36px]">
           <div className="w-1/3 flex flex-col gap-[24px]">
             <div className="text-[24px] pb-[12px] font-bold border-b-[2px] border-black tracking-[1px]">
               {t.ingredients}
