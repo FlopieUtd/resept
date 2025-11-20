@@ -7,43 +7,43 @@
         {
           "raw": "3 cups all purpose flour",
           "parsed": {
-            "amount": 3,
-            "rawWithoutAmount": "cups all purpose flour"
+            "rawWithoutAmount": "cups all purpose flour",
+            "amount": 3
           }
         },
         {
           "raw": "1 scant tablespoon active dry yeast",
           "parsed": {
-            "amount": 1,
-            "rawWithoutAmount": "scant tablespoon active dry yeast"
+            "rawWithoutAmount": "scant tablespoon active dry yeast",
+            "amount": 1
           }
         },
         {
           "raw": "1 teaspoon sugar",
           "parsed": {
-            "amount": 1,
-            "rawWithoutAmount": "teaspoon sugar"
+            "rawWithoutAmount": "teaspoon sugar",
+            "amount": 1
           }
         },
         {
           "raw": "2 teaspoons salt",
           "parsed": {
-            "amount": 2,
-            "rawWithoutAmount": "teaspoons salt"
+            "rawWithoutAmount": "teaspoons salt",
+            "amount": 2
           }
         },
         {
           "raw": "1 cup lukewarm water",
           "parsed": {
-            "amount": 1,
-            "rawWithoutAmount": "cup lukewarm water"
+            "rawWithoutAmount": "cup lukewarm water",
+            "amount": 1
           }
         },
         {
           "raw": "2 tablespoons olive oil",
           "parsed": {
-            "amount": 2,
-            "rawWithoutAmount": "tablespoons olive oil"
+            "rawWithoutAmount": "tablespoons olive oil",
+            "amount": 2
           }
         },
         {
@@ -60,29 +60,29 @@
         {
           "raw": "1 cup of shredded mozzarella or mild cheddar",
           "parsed": {
-            "amount": 1,
-            "rawWithoutAmount": "cup of shredded mozzarella or mild cheddar"
+            "rawWithoutAmount": "cup of shredded mozzarella or mild cheddar",
+            "amount": 1
           }
         },
         {
           "raw": "1 cup feta",
           "parsed": {
-            "amount": 1,
-            "rawWithoutAmount": "cup feta"
+            "rawWithoutAmount": "cup feta",
+            "amount": 1
           }
         },
         {
           "raw": "1 1⁄2 bags of baby spinach ~500 grams",
           "parsed": {
-            "amount": 1.5,
-            "rawWithoutAmount": "bags of baby spinach ~500 grams"
+            "rawWithoutAmount": "bags of baby spinach ~500 grams",
+            "amount": 1.5
           }
         },
         {
           "raw": "1 small onion (finely diced)",
           "parsed": {
-            "amount": 1,
-            "rawWithoutAmount": "small onion (finely diced)"
+            "rawWithoutAmount": "small onion (finely diced)",
+            "amount": 1
           }
         },
         {
@@ -94,8 +94,8 @@
         {
           "raw": "1 tablespoon olive oil",
           "parsed": {
-            "amount": 1,
-            "rawWithoutAmount": "tablespoon olive oil"
+            "rawWithoutAmount": "tablespoon olive oil",
+            "amount": 1
           }
         },
         {
@@ -107,8 +107,8 @@
         {
           "raw": "1⁄4 teaspoon cumin seeds (optional)",
           "parsed": {
-            "amount": 0.25,
-            "rawWithoutAmount": "teaspoon cumin seeds (optional)"
+            "rawWithoutAmount": "teaspoon cumin seeds (optional)",
+            "amount": 0.25
           }
         }
       ]
@@ -116,37 +116,71 @@
   ],
   "instructions": [
     {
-      "text": "Sautee your onion in a pan with olive oil until translucent."
+      "title": "Spinach Filling",
+      "instructions": [
+        {
+          "text": "1 cup of shredded mozzarella or mild cheddar"
+        },
+        {
+          "text": "1 cup feta"
+        },
+        {
+          "text": "1 1⁄2 bags of baby spinach ~500 grams"
+        },
+        {
+          "text": "1 small onion (finely diced)"
+        },
+        {
+          "text": "Small bunch parsley (finely chopped)"
+        },
+        {
+          "text": "1 tablespoon olive oil"
+        },
+        {
+          "text": "Salt and pepper to taste"
+        },
+        {
+          "text": "1⁄4 teaspoon cumin seeds (optional)"
+        }
+      ]
     },
     {
-      "text": "Add spinach and stir until wilted."
-    },
-    {
-      "text": "Add a really small pinch of salt and season with pepper and set aside to cool."
-    },
-    {
-      "text": "Mix spinach and onion with grated mozzarella, crumbled feta and parsley."
-    },
-    {
-      "text": "Dough and Form Pide"
-    },
-    {
-      "text": "Bloom your yeast by adding it to your warm water and sugar and letting it sit for 10 minutes"
-    },
-    {
-      "text": "Mix together your flour, walt , bloomed yeast and olive oil."
-    },
-    {
-      "text": "Knead for at least 6 minutes until dough comes together and place in an oiled bowl, cover with kitchen towel and let rise for 1 hour until doubled in size."
-    },
-    {
-      "text": "Punch dough down, and divide into 5, form into balls and cover with kitchen towel to let rise for 30 minutes."
-    },
-    {
-      "text": "Preheat the oven to 485 degrees."
-    },
-    {
-      "text": "Roll out each dough ball on a lightly floured surface nice and thin, you can make it thicker if you like. Fill, fold, brush edges with egg wash or olive oil and bake on a baking sheet for 12-13 minutes. If adding egg, add half way through bake time."
+      "title": "Spinach Cheese Filling",
+      "instructions": [
+        {
+          "text": "Sautee your onion in a pan with olive oil until translucent."
+        },
+        {
+          "text": "Add spinach and stir until wilted."
+        },
+        {
+          "text": "Add a really small pinch of salt and season with pepper and set aside to cool."
+        },
+        {
+          "text": "Mix spinach and onion with grated mozzarella, crumbled feta and parsley."
+        },
+        {
+          "text": "Dough and Form Pide"
+        },
+        {
+          "text": "Bloom your yeast by adding it to your warm water and sugar and letting it sit for 10 minutes"
+        },
+        {
+          "text": "Mix together your flour, walt , bloomed yeast and olive oil."
+        },
+        {
+          "text": "Knead for at least 6 minutes until dough comes together and place in an oiled bowl, cover with kitchen towel and let rise for 1 hour until doubled in size."
+        },
+        {
+          "text": "Punch dough down, and divide into 5, form into balls and cover with kitchen towel to let rise for 30 minutes."
+        },
+        {
+          "text": "Preheat the oven to 485 degrees."
+        },
+        {
+          "text": "Roll out each dough ball on a lightly floured surface nice and thin, you can make it thicker if you like. Fill, fold, brush edges with egg wash or olive oil and bake on a baking sheet for 12-13 minutes. If adding egg, add half way through bake time."
+        }
+      ]
     }
   ],
   "recipe_yield": 5

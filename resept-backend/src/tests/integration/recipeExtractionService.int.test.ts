@@ -12,30 +12,30 @@ const readFixture = (name: string) => {
 };
 
 const testCases = [
-  // {
-  //   name: "cinnamonRolls",
-  //   expectedSuccess: true,
-  // },
-  // {
-  //   name: "boeufStroganoff",
-  //   expectedSuccess: true,
-  // },
-  // {
-  //   name: "roti",
-  //   expectedSuccess: true,
-  // },
-  // {
-  //   name: "aubergineParmigiana",
-  //   expectedSuccess: true,
-  // },
-  // {
-  //   name: "notARecipe",
-  //   expectedSuccess: false,
-  // },
-  // {
-  //   name: "turkishPide",
-  //   expectedSuccess: true,
-  // },
+  {
+    name: "cinnamonRolls",
+    expectedSuccess: true,
+  },
+  {
+    name: "boeufStroganoff",
+    expectedSuccess: true,
+  },
+  {
+    name: "roti",
+    expectedSuccess: true,
+  },
+  {
+    name: "aubergineParmigiana",
+    expectedSuccess: true,
+  },
+  {
+    name: "notARecipe",
+    expectedSuccess: false,
+  },
+  {
+    name: "turkishPide",
+    expectedSuccess: true,
+  },
   {
     name: "samosas",
     expectedSuccess: true,

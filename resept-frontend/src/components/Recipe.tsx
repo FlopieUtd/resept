@@ -9,61 +9,8 @@ import {
   type InstructionGroup,
   type CreateRecipeData,
   type IngredientGroup,
-  type RecipeInstructionItem,
   Language,
 } from "../types";
-
-const normalizeInstructions = (
-  instructions:
-    | InstructionGroup[]
-    | RecipeInstructionItem[]
-    | { text: string }[]
-    | unknown
-): InstructionGroup[] => {
-  if (!instructions || !Array.isArray(instructions)) {
-    return [];
-  }
-
-  if (instructions.length === 0) {
-    return [];
-  }
-
-  const firstItem = instructions[0];
-
-  if (
-    firstItem &&
-    "instructions" in firstItem &&
-    Array.isArray(firstItem.instructions)
-  ) {
-    return instructions as InstructionGroup[];
-  }
-
-  if (firstItem && "type" in firstItem && firstItem.type === "section") {
-    return (instructions as RecipeInstructionItem[]).map((item) => {
-      if ("type" in item && item.type === "section") {
-        return {
-          title: item.name,
-          instructions: item.steps,
-        };
-      }
-      return {
-        instructions: [{ text: (item as { text: string }).text }],
-      };
-    });
-  }
-
-  if (firstItem && "text" in firstItem) {
-    return [
-      {
-        instructions: (instructions as { text: string }[]).map((item) => ({
-          text: item.text,
-        })),
-      },
-    ];
-  }
-
-  return [];
-};
 
 import { Loading } from "./Loading";
 import { RecipeEditModal } from "./RecipeEditModal";
@@ -96,9 +43,8 @@ export const Recipe = () => {
     "ingredients"
   );
 
-  const normalizedInstructions = recipe?.instructions
-    ? normalizeInstructions(recipe.instructions)
-    : [];
+  const normalizedInstructions =
+    (recipe?.instructions as InstructionGroup[]) || [];
 
   const detectedLanguage = useLanguageDetection(
     recipe?.title || "",

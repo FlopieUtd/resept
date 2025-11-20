@@ -31,14 +31,6 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
     calculateProbabilities(allGroups);
   const instructions = extractInstructions(allGroups);
 
-  console.log(
-    JSON.stringify(
-      allGroups.filter((g) => g.instructionsProbability > 0.2),
-      null,
-      2
-    )
-  );
-
   const maxIngredientProbability =
     filteredResult.length > 0
       ? Math.max(...filteredResult.map((g) => g.ingredientProbability))

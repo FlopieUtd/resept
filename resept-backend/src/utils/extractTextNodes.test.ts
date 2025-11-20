@@ -24,7 +24,9 @@ describe("extractTextNodes", () => {
     expect(allText).toContain("paragraph with");
     expect(allText).toContain("italic");
     expect(allText).toContain("text");
-    expect(allText).toContain("Some textin a span");
+    expect(allText).toContain(
+      "This is a bold paragraph with italic text. Some text in a span Another div with underlined content"
+    );
     expect(allText).toContain("Another div with underlined content");
   });
 

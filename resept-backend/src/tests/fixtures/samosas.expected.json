@@ -176,6 +176,7 @@
   ],
   "instructions": [
     {
+      "title": "Samosa Dough",
       "instructions": [
         {
           "text": "Add the flour, carom seeds, and salt to a bowl and mix together."
@@ -201,6 +202,7 @@
       ]
     },
     {
+      "title": "Potato and Pea Filling",
       "instructions": [
         {
           "text": "Place the peeled and chopped potatoes into a pan and cover with cold water."
@@ -256,6 +258,7 @@
       ]
     },
     {
+      "title": "Making the Samosas",
       "instructions": [
         {
           "text": "Divide the samosa dough into 6 balls."
@@ -285,7 +288,7 @@
           "text": "2 litres frying oil (a little under half a gallon)"
         },
         {
-          "text": "Carefully add 6 samosas to the pan, one at a time.*see note about pan size"
+          "text": "Carefully add 6 samosas to the pan, one at a time. *see note about pan size"
         },
         {
           "text": "Cook for about 10-12 minutes, turning a few times, until golden brown."
@@ -305,5 +308,5 @@
       ]
     }
   ],
-  "recipe_yield": 1
+  "recipe_yield": 12
 }

@@ -18,15 +18,6 @@ export const extractInstructions = (
     return groupProbability > maxProbability ? group : max;
   });
 
-  console.log("[extractInstructions] allGroups length:", allGroups.length);
-  console.log("[extractInstructions] bestInstructionGroup:", {
-    originalIndex: bestInstructionGroup.originalIndex,
-    instructionsProbability: bestInstructionGroup.instructionsProbability,
-    nodesLength: bestInstructionGroup.nodes.length,
-    depth: bestInstructionGroup.nodes[0]?.depth,
-    elementType: bestInstructionGroup.nodes[0]?.elementType,
-  });
-
   const allInstructionGroups = (() => {
     const matchingGroups = allGroups.filter((group) => {
       if (group.nodes.length === 0) {
@@ -37,10 +28,7 @@ export const extractInstructions = (
         (node) => node.depth === depth && node.elementType === elementType
       );
     });
-    console.log(
-      "[extractInstructions] matchingGroups length:",
-      matchingGroups.length
-    );
+
     if (matchingGroups.length <= 1) {
       return matchingGroups;
     }
@@ -127,10 +115,6 @@ export const extractInstructions = (
     title: titlesByIndex.get(group.originalIndex),
     instructions: group.nodes.map((node) => ({ text: node.text })),
   }));
-  console.log(
-    "[extractInstructions] final result:",
-    JSON.stringify(result, null, 2)
-  );
-  console.log("[extractInstructions] result length:", result.length);
+
   return result;
 };

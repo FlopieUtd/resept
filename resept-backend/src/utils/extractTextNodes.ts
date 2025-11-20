@@ -41,6 +41,34 @@ export const extractTextNodes = (html: string): TextNode[] => {
 
     const textNodes: TextNode[] = [];
 
+    const collectInlineText = (element: cheerio.Element): string => {
+      const parts: string[] = [];
+      const $element = $cleanWithBrDivs(element);
+      $element.contents().each((_, child) => {
+        if (child.type === "text") {
+          const data = ((child as any).data as string) || "";
+          const cleaned = stripHtmlTags(data).trim();
+          if (cleaned) {
+            parts.push(cleaned);
+          }
+        } else if (child.type === "tag") {
+          const name = (child as any).name?.toLowerCase();
+          if (name === "br") {
+            parts.push("\n");
+          } else {
+            const nested = collectInlineText(child as cheerio.Element);
+            if (nested) {
+              parts.push(nested);
+            }
+          }
+        }
+      });
+      return parts
+        .join(" ")
+        .replace(/\s{2,}/g, " ")
+        .trim();
+    };
+
     const extractTextNodes = (element: cheerio.Element, depth: number = 0) => {
       const $el = $cleanWithBrDivs(element);
 
@@ -97,34 +125,31 @@ export const extractTextNodes = (html: string): TextNode[] => {
         } else if (node.type === "tag") {
           const name = (node as any).name?.toLowerCase();
           if (name === "br") {
-            if (buffer.trim()) {
+            const cleanedBuffer = buffer.replace(/\s{2,}/g, " ").trim();
+            if (cleanedBuffer) {
               const parentTag = $el.prop("tagName")?.toLowerCase() || "unknown";
               textNodes.push({
                 depth: adjustedDepth,
-                text: normalizeListItemPrefix(stripHtmlTags(buffer.trim())),
+                text: normalizeListItemPrefix(stripHtmlTags(cleanedBuffer)),
                 elementType: parentTag,
               });
             }
             buffer = "";
           } else if (name === "span") {
-            // For span elements, just extract their text content and add to buffer
-            // without creating new text nodes or changing depth
-            const $span = $cleanWithBrDivs(node);
-            const spanText = $span.text().trim();
-            if (spanText) {
-              // Add space before span content if buffer is not empty
-              if (buffer.trim()) {
-                buffer += " " + stripHtmlTags(spanText);
-              } else {
-                buffer += stripHtmlTags(spanText);
+            const content = collectInlineText(node as cheerio.Element);
+            if (content) {
+              if (buffer && !buffer.endsWith(" ")) {
+                buffer += " ";
               }
+              buffer += content;
             }
           } else {
-            if (buffer.trim()) {
+            const cleanedBuffer = buffer.replace(/\s{2,}/g, " ").trim();
+            if (cleanedBuffer) {
               const parentTag = $el.prop("tagName")?.toLowerCase() || "unknown";
               textNodes.push({
                 depth: adjustedDepth,
-                text: normalizeListItemPrefix(stripHtmlTags(buffer.trim())),
+                text: normalizeListItemPrefix(stripHtmlTags(cleanedBuffer)),
                 elementType: parentTag,
               });
               buffer = "";
@@ -134,11 +159,12 @@ export const extractTextNodes = (html: string): TextNode[] => {
         }
       });
 
-      if (buffer.trim()) {
+      const cleanedBuffer = buffer.replace(/\s{2,}/g, " ").trim();
+      if (cleanedBuffer) {
         const parentTag = $el.prop("tagName")?.toLowerCase() || "unknown";
         textNodes.push({
           depth: adjustedDepth,
-          text: normalizeListItemPrefix(stripHtmlTags(buffer.trim())),
+          text: normalizeListItemPrefix(stripHtmlTags(cleanedBuffer)),
           elementType: parentTag,
         });
       }
