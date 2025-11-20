@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
@@ -11,7 +11,8 @@ export const Login = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, user } = useAuth();
+
   const location = useLocation();
   const navigate = useNavigate();
   const successMessage = location.state?.message;
@@ -72,6 +73,12 @@ export const Login = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/", { replace: true });
+    }
+  }, [user, navigate]);
 
   return (
     <div className="flex w-full h-full justify-center items-center">
