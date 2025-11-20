@@ -222,9 +222,27 @@ export const Recipe = () => {
         </div>
 
         <div className="sm:hidden flex flex-col gap-[24px] pb-[24px]">
-          <div className="text-[20px] pb-[12px] font-bold border-b-[2px] border-black tracking-[1px]">
-            {activeTab === "ingredients" ? t.ingredients : t.instructions}
+          <div className="flex border-b-[2px] border-black gap-[32px]">
+            <button
+              className="text-[20px] pb-[12px] tracking-[1px]"
+              style={{
+                fontWeight: activeTab === "ingredients" ? "bold" : "normal",
+              }}
+              onClick={() => setActiveTab("ingredients")}
+            >
+              {t.ingredients}
+            </button>
+            <button
+              className="text-[20px] pb-[12px] tracking-[1px]"
+              style={{
+                fontWeight: activeTab === "instructions" ? "bold" : "normal",
+              }}
+              onClick={() => setActiveTab("instructions")}
+            >
+              {t.instructions}
+            </button>
           </div>
+
           {activeTab === "ingredients" ? (
             <div className="flex flex-col gap-[16px]">
               {scaledGroups.map((group, gIndex) => (
@@ -371,26 +389,7 @@ export const Recipe = () => {
           </div>
         </div>
       </div>
-      <div className="sm:hidden fixed bottom-0 left-0 right-0 border-t border-black/10 bg-white">
-        <div className="max-w-[1080px] mx-auto flex">
-          <button
-            onClick={() => setActiveTab("ingredients")}
-            className={`flex-1 py-[8px] border-r ${
-              activeTab === "ingredients" ? "font-bold" : "bg-[#f9f9f9]"
-            }`}
-          >
-            {t.ingredients}
-          </button>
-          <button
-            onClick={() => setActiveTab("instructions")}
-            className={`flex-1 py-[8px] ${
-              activeTab === "instructions" ? "font-bold" : "bg-[#f9f9f9]"
-            }`}
-          >
-            {t.instructions}
-          </button>
-        </div>
-      </div>
+
       <RecipeEditModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
