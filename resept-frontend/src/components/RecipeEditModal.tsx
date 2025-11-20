@@ -479,12 +479,12 @@ export const RecipeEditModal = ({
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-25  flex items-center justify-center p-4 z-50"
+      className="fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center sm:p-4 z-50"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white max-w-[1080px] w-full max-h-[95vh] overflow-y-auto rounded-[8px] shadow-xl">
+      <div className="bg-white max-w-[1080px] w-full max-h-[100vh] sm:max-h-[95vh] overflow-y-auto sm:rounded-[8px] shadow-xl">
         <div className="">
-          <div className="flex justify-between items-center mb-6 py-[16px] px-[16px] sticky top-0 bg-white">
+          <div className="flex justify-between items-center py-[16px] px-[16px] sticky top-0 bg-white">
             <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
             <button onClick={onClose} className="">
               <X size={24} weight="bold" />
@@ -529,17 +529,6 @@ export const RecipeEditModal = ({
                   value={formData.title}
                   onChange={(e) => handleInputChange("title", e.target.value)}
                   required
-                />
-              </div>
-
-              <div>
-                <Input
-                  label="Categorie"
-                  type="text"
-                  value={formData.recipe_category}
-                  onChange={(e) =>
-                    handleInputChange("recipe_category", e.target.value)
-                  }
                 />
               </div>
 
@@ -631,8 +620,11 @@ export const RecipeEditModal = ({
               </div>
               <div className="space-y-4">
                 {formData.ingredients.map((group, gIndex) => (
-                  <div key={gIndex} className="border p-3 rounded">
-                    <div className="flex justify-between items-center mb-2">
+                  <div
+                    key={gIndex}
+                    className="border border-neutral-400 p-3 rounded"
+                  >
+                    <div className="flex justify-between items-center">
                       {(formData.ingredients.length >= 2 ||
                         (group.title || "").trim()) && (
                         <div className="flex-1 mr-2">
@@ -719,7 +711,7 @@ export const RecipeEditModal = ({
                 {formData.instructions.map((group, gIndex) => (
                   <div
                     key={gIndex}
-                    className="border border-gray-200 rounded p-4"
+                    className="border border-gray-400 rounded p-3"
                   >
                     <div className="mb-2">
                       <Input
