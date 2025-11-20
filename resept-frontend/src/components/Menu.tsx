@@ -13,7 +13,7 @@ export const Menu = () => {
   };
 
   return (
-    <div className="w-[240px] h-full border-r flex-col bg-[#f9f9f9] fixed lg:flex hidden text-[14px]">
+    <div className="w-[240px] h-full border-r flex-col bg-[#f9f9f9] fixed lg:flex hidden text-[16px]">
       <Link
         to="/recipes"
         className="px-[12px] py-[8px] border-b hover:bg-[#f0f0f0] cursor-pointer"
@@ -23,7 +23,7 @@ export const Menu = () => {
 
       {user && (
         <div className="mt-auto p-3 border-t">
-          <div className="text-sm text-gray-600 mb-2">{user.email}</div>
+          <div className="text-[14px] text-gray-600 mb-2">{user.email}</div>
           <button
             onClick={handleSignOut}
             className="w-full px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"

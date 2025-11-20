@@ -1,4 +1,4 @@
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   useRecipe,
   useUpdateRecipe,
@@ -29,6 +29,7 @@ import { isDurationEmpty } from "../utils/isDurationEmpty";
 import { useFullscreen } from "../contexts/FullscreenContext";
 import { LABELS } from "../utils/constants";
 import { useLanguageDetection } from "../hooks/useLanguageDetection";
+import { HeaderIconButton } from "./HeaderIconButton";
 
 export const Recipe = () => {
   const { recipeId } = useParams();
@@ -124,31 +125,30 @@ export const Recipe = () => {
 
   return (
     <div className="flex w-full min-h-[100dvh] justify-center items-start">
-      <div className="flex w-full max-w-[1080px] mx-[16px] sm:mx-[24px] flex-col sm:justify-center min-h-[100dvh] pb-[64px] sm:pb-0">
+      <div className="flex w-full max-w-[1080px] mx-[16px] sm:mx-[24px] lg:justify-center flex-col min-h-[100dvh]">
         <div
-          className="flex flex-col border-b-[2px] border-black mb-[12px] sm:mb-[24px] mt-[12px] sm:mt-[36px]"
+          className="flex flex-col border-b-[2px] border-black mb-[12px] sm:mb-[24px] mt-[12px] sm:mt-[36px] sticky top-0 bg-white z-10"
           key={refreshTrigger}
         >
-          <div className="flex justify-between items-center mb-[6px] sm:mb-[12px] gap-[12px]">
-            <div className="flex gap-[12px] items-center">
-              <Link
+          <div className="flex justify-between items-center py-[6px] sm:py-[12px] gap-[12px]">
+            <div className="flex gap-[6px] sm:gap-[12px] items-center">
+              <HeaderIconButton
+                icon={CaretLeft}
                 to="/recipes"
-                className="bg-white text-black p-[8px] rounded-lg hover:bg-gray-200 transition-colors sm:hidden"
-              >
-                <CaretLeft size={24} />
-              </Link>
-              <h1 className="text-[24px] sm:text-[36px] sm:text-[48px] font-bold text-balance">
+                className="lg:hidden"
+              />
+              <h1 className="text-[24px] sm:text-[36px] sm:text-[48px] font-bold text-balance py-[8px]">
                 {recipe.title}
               </h1>
             </div>
             <div className="flex gap-[8px]">
-              <button
+              <HeaderIconButton
+                icon={PencilSimple}
                 onClick={() => setIsEditModalOpen(true)}
-                className="bg-white text-black p-[8px] rounded-lg hover:bg-gray-200 transition-colors"
-              >
-                <PencilSimple size={24} />
-              </button>
-              <button
+              />
+              <HeaderIconButton
+                icon={isFullscreen ? ArrowsInSimple : ArrowsOutSimple}
+                className="hidden sm:flex"
                 onClick={async () => {
                   if (!document.fullscreenElement) {
                     await document.documentElement.requestFullscreen();
@@ -158,18 +158,11 @@ export const Recipe = () => {
                     setIsFullscreen(false);
                   }
                 }}
-                className="hidden sm:flex bg-white text-black p-[8px] rounded-lg hover:bg-gray-200 transition-colors"
-              >
-                {isFullscreen ? (
-                  <ArrowsInSimple size={24} />
-                ) : (
-                  <ArrowsOutSimple size={24} />
-                )}
-              </button>
+              />
             </div>
           </div>
         </div>
-        <div className="mb-[16px] sm:mb-[24px] flex flex-col gap-[16px]">
+        <div className="mb-[16px] sm:mb-[24px] flex flex-col gap-[16px] px-[2px]">
           {recipe.description && (
             <div className="font-radley text-[18px] whitespace-pre-line">
               {recipe.description}
@@ -231,7 +224,7 @@ export const Recipe = () => {
         </div>
 
         <div className="sm:hidden flex flex-col gap-[24px] pb-[24px]">
-          <div className="flex border-b-[2px] border-black gap-[32px]">
+          <div className="flex border-b-[2px] border-black gap-[24px] sticky top-[60px] bg-white pt-[12px] z-5">
             <button
               className="text-[20px] pb-[12px] tracking-[1px]"
               style={{
@@ -301,7 +294,7 @@ export const Recipe = () => {
                       return null;
                     }
                     return (
-                      <div key={groupIndex} className="pb-[16px]">
+                      <div key={groupIndex} className="sm:pb-[16px]">
                         {group.title && (
                           <div className="font-sans font-bold text-[20px] mb-[12px] text-[#333]">
                             {group.title}
@@ -321,9 +314,9 @@ export const Recipe = () => {
           )}
         </div>
 
-        <div className="hidden sm:flex gap-[px] pb-[36px]">
+        <div className="hidden sm:flex gap-[24px] pb-[36px]">
           <div className="w-1/3 flex flex-col gap-[24px]">
-            <div className="text-[24px] pb-[12px] font-bold border-b-[2px] border-black tracking-[1px]">
+            <div className="text-[24px] py-[12px] font-bold border-b-[2px] border-black tracking-[1px] sticky top-[96px] bg-white z-5">
               {t.ingredients}
             </div>
             <div className="flex flex-col gap-[16px]">
@@ -365,7 +358,7 @@ export const Recipe = () => {
             </div>
           </div>
           <div className="w-2/3 flex flex-col gap-[24px]">
-            <div className="text-[24px] pb-[12px] font-bold border-b-[2px] border-black tracking-[1px]">
+            <div className="text-[24px] py-[12px] font-bold border-b-[2px] border-black tracking-[1px] sticky top-[96px] bg-white z-5">
               {t.instructions}
             </div>
             <div className="font-radley text-[18px]">
@@ -378,7 +371,7 @@ export const Recipe = () => {
                       return null;
                     }
                     return (
-                      <div key={groupIndex} className="pb-[16px]">
+                      <div key={groupIndex} className="sm:pb-[16px]">
                         {group.title && (
                           <div className="font-sans font-bold text-[18px] mb-[12px] text-[#333]">
                             {group.title}
