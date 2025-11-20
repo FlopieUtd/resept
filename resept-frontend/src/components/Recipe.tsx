@@ -251,7 +251,7 @@ export const Recipe = () => {
             style={{ top: headerOffset }}
           >
             <button
-              className="text-[18px] pb-[12px] tracking-[1px]"
+              className="text-[16px] pb-[12px] tracking-[1px]"
               style={{
                 fontWeight: activeTab === "ingredients" ? "bold" : "normal",
               }}
@@ -260,7 +260,7 @@ export const Recipe = () => {
               {t.ingredients}
             </button>
             <button
-              className="text-[18px] pb-[12px] tracking-[1px]"
+              className="text-[16px] pb-[12px] tracking-[1px]"
               style={{
                 fontWeight: activeTab === "instructions" ? "bold" : "normal",
               }}
