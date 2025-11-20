@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
 import { Input } from "./Input";
 import garlicImage from "../assets/garlic.png";
+import { Loading } from "./Loading";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
@@ -11,7 +12,7 @@ export const Login = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { signIn, signUp, user } = useAuth();
+  const { signIn, signUp, user, loading: authLoading } = useAuth();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -74,11 +75,15 @@ export const Login = () => {
     }
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (user) {
       navigate("/", { replace: true });
     }
   }, [user, navigate]);
+
+  if (authLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="flex w-full h-full justify-center items-center">
