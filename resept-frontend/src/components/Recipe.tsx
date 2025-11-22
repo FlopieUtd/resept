@@ -101,6 +101,10 @@ export const Recipe = () => {
     };
   }, []);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [recipeId]);
+
   if (isLoading && !recipe) {
     return <Loading />;
   }
