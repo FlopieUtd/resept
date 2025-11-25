@@ -123,7 +123,9 @@ export const Recipes = () => {
       <div className="flex w-full max-w-[1080px] m-[16px] sm:m-[24px] flex-col">
         <div className="flex justify-between items-center mb-[12px] sm:mb-[16px] w-full border-b-2 border-black pb-[12px] sm:pb-[16px]">
           <h1 className="text-3xl font-bold">
-            {recipes ? recipes.length : ""} Recepten
+            {recipes && recipes.length > 0 ? (
+              <span> {recipes ? recipes.length : ""} Recepten</span>
+            ) : null}
           </h1>
           <div className="flex gap-2">
             <button

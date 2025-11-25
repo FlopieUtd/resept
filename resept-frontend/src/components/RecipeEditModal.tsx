@@ -627,7 +627,7 @@ export const RecipeEditModal = ({
                     <div className="flex justify-between items-center">
                       {(formData.ingredients.length >= 2 ||
                         (group.title || "").trim()) && (
-                        <div className="flex-1 mr-2">
+                        <div className="flex-1 mr-2 mb-2">
                           <Input
                             type="text"
                             value={group.title || ""}
