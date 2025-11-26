@@ -1,5 +1,4 @@
-import type { InstructionGroup } from "./extractInstructions";
-import type { RecipeInstructionItem } from "../../types";
+import type { InstructionGroup, RecipeInstructionItem } from "../../types";
 
 const sanitizeInstructionGroup = (group: any): InstructionGroup => {
   const title =

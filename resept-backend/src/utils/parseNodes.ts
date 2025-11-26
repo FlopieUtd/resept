@@ -4,10 +4,8 @@ import type { IngredientGroup, IngredientLine } from "../../types";
 import type { InternalIngredientGroup } from "./parseNodes.types";
 import { groupNodesByDepthAndType } from "./groupNodesByDepthAndType";
 import { calculateProbabilities } from "./calculateProbabilities";
-import {
-  extractInstructions,
-  type InstructionGroup,
-} from "./extractInstructions";
+import { extractInstructions } from "./extractInstructions";
+import type { InstructionGroup } from "../../types";
 
 interface ParsedResult {
   ingredients: IngredientGroup[];

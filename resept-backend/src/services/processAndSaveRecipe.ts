@@ -1,6 +1,7 @@
 import { extractRecipeFromHtml } from "./recipeExtractionService";
 import { createRecipe } from "./createRecipe";
 import { type CreateRecipeData } from "../../types";
+import { normalizeInstructionGroups } from "../utils/normalizeInstructionGroups";
 
 interface ProcessAndSaveRecipeRequest {
   html: string;
@@ -34,6 +35,10 @@ export const processAndSaveRecipe = async (
 
     const extractedRecipe = extractionResult.data;
 
+    const normalizedInstructions = normalizeInstructionGroups(
+      extractedRecipe.instructions || []
+    );
+
     // Step 2: Transform to CreateRecipeData format
     const recipeData: CreateRecipeData = {
       title: extractedRecipe.title || "Untitled Recipe",
@@ -44,7 +49,7 @@ export const processAndSaveRecipe = async (
       cook_time: extractedRecipe.cook_time || "",
       total_time: extractedRecipe.total_time || "",
       ingredients: extractedRecipe.ingredients || [],
-      instructions: extractedRecipe.instructions || [],
+      instructions: normalizedInstructions,
       source_url: url || "",
     };
 

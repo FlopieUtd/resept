@@ -1,9 +1,5 @@
 import type { InternalIngredientGroup } from "./parseNodes.types";
-
-export interface InstructionGroup {
-  title?: string;
-  instructions: { text: string }[];
-}
+import type { InstructionGroup } from "../../types";
 
 export const extractInstructions = (
   allGroups: InternalIngredientGroup[]

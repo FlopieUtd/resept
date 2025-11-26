@@ -188,7 +188,7 @@ export const Recipe = () => {
             </div>
           </div>
         </div>
-        <div className="mb-[16px] sm:mb-[24px] flex flex-col gap-[16px] px-[2px]">
+        <div className="mb-[16px] flex flex-col gap-[16px] px-[2px]">
           {recipe.description && (
             <div className="font-radley text-[18px] whitespace-pre-line">
               {recipe.description}

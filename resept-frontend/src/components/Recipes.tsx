@@ -201,7 +201,7 @@ export const Recipes = () => {
                     to={`/recipes/${recipe.id}`}
                     className="flex flex-col cursor-pointer bg-[#f9f9f9]  hover:bg-white hover:border-black border-2 border-[#f9f9f9] p-[12px] gap-[6px]"
                   >
-                    <h2 className="text-xl font-semibold line-clamp-3 overflow-hidden">
+                    <h2 className="text-xl text-balance font-semibold line-clamp-3 overflow-hidden">
                       {recipe.title}
                     </h2>
                     <div className="flex gap-[6px] items-center text-[14px]">
