@@ -153,17 +153,17 @@ export const Recipe = () => {
       <div className="flex w-full max-w-[1080px] mx-[16px] sm:mx-[24px] lg:justify-center flex-col min-h-[100dvh]">
         <div
           ref={headerRef}
-          className="flex flex-col border-b-[2px] border-black mb-[12px] sm:mb-[24px] mt-[12px] sm:mt-[36px] sticky top-0 bg-white z-10"
+          className="flex flex-col border-b-[2px] border-black mb-[12px] sm:mb-[24px] sticky top-0 bg-white z-10"
           key={refreshTrigger}
         >
           <div className="flex justify-between items-center py-[6px] sm:py-[12px] gap-[12px]">
-            <div className="flex gap-[6px] sm:gap-[12px] items-center">
+            <div className="flex gap-[12px]  items-center">
               <HeaderIconButton
                 icon={CaretLeft}
                 to="/recipes"
                 className="lg:hidden"
               />
-              <h1 className="text-[24px] sm:text-[36px] sm:text-[48px] font-bold text-balance py-[8px]">
+              <h1 className="text-[24px] sm:text-[36px] lg:text-[48px] font-bold text-balance py-[8px]">
                 {recipe.title}
               </h1>
             </div>
@@ -346,7 +346,7 @@ export const Recipe = () => {
         <div className="hidden sm:flex gap-[24px] pb-[36px]">
           <div className="w-1/3 flex flex-col gap-[24px]">
             <div
-              className="text-[24px] py-[12px] font-bold border-b-[2px] border-black tracking-[1px] sticky bg-white z-5"
+              className="text-[22px] py-[12px] font-bold border-b-[2px] border-black tracking-[1px] sticky bg-white z-5"
               style={{ top: headerOffset }}
             >
               {t.ingredients}
@@ -391,7 +391,7 @@ export const Recipe = () => {
           </div>
           <div className="w-2/3 flex flex-col gap-[24px]">
             <div
-              className="text-[24px] py-[12px] font-bold border-b-[2px] border-black tracking-[1px] sticky bg-white z-5"
+              className="text-[22px] py-[12px] font-bold border-b-[2px] border-black tracking-[1px] sticky bg-white z-5"
               style={{ top: headerOffset }}
             >
               {t.instructions}

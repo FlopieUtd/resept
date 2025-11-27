@@ -88,11 +88,11 @@ export const Login = () => {
   return (
     <div className="flex w-full h-full justify-center items-center">
       <div className="w-full max-w-[400px] p-[16px] bg-white">
-        <h2 className="text-[48px] font-bold mb-[24px] text-center tracking-[6px]">
+        <h2 className="text-[40px] font-bold mb-[24px] text-center tracking-[10px]">
           Resept
         </h2>
         <div className="flex justify-center w-full mb-[24px]">
-          <img src={garlicImage} className="w-[100px] md:w-[140px]" />
+          <img src={garlicImage} className="w-[100px] md:w-[120px]" />
         </div>
         {successMessage && (
           <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">

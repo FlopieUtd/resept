@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { User, Session } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
+import { cookieStorage } from "../lib/cookieStorage";
 
 interface AuthContextType {
   user: User | null;
@@ -142,7 +143,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (session) {
         const { error } = await supabase.auth.signOut();
         if (error) {
-          // If session is missing, just clear local state and continue
           if (
             error.message?.includes("Auth session missing") ||
             error.name === "AuthSessionMissingError"
@@ -155,7 +155,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
       }
     } catch (error: any) {
-      // If session is missing, just clear local state
       if (
         error?.message?.includes("Auth session missing") ||
         error?.name === "AuthSessionMissingError"
@@ -166,6 +165,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         throw error;
       }
     }
+    cookieStorage.removeItem("resept-supabase-auth");
     // Clear local state and navigate regardless
     setSession(null);
     setUser(null);
