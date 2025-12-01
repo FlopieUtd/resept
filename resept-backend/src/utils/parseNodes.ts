@@ -47,6 +47,8 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
     group.ingredientProbability > max.ingredientProbability ? group : max
   );
 
+  console.log(JSON.stringify(bestIngredientGroup, null, 2));
+
   const allIngredientGroups = (() => {
     const matchingGroups = allGroups.filter((group) => {
       if (group.nodes.length === 0) {

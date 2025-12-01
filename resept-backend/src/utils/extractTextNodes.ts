@@ -135,7 +135,7 @@ export const extractTextNodes = (html: string): TextNode[] => {
               });
             }
             buffer = "";
-          } else if (name === "span") {
+          } else if (name === "span" || name === "a") {
             const content = collectInlineText(node as cheerio.Element);
             if (content) {
               if (buffer && !buffer.endsWith(" ")) {

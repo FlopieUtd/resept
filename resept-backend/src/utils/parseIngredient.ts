@@ -1,3 +1,5 @@
+import { WRITTEN_NUMBERS } from "./constants";
+
 export interface ParsedIngredient {
   amount?: number;
   rawWithoutAmount: string;
@@ -145,30 +147,7 @@ export const parseIngredient = (text: string): ParsedIngredient => {
       // Whole numbers
       amount = parseInt(matchedAmount);
     } else {
-      // Written numbers
-      const writtenNumbers: Record<string, number> = {
-        one: 1,
-        een: 1,
-        two: 2,
-        twee: 2,
-        three: 3,
-        drie: 3,
-        four: 4,
-        vier: 4,
-        five: 5,
-        vijf: 5,
-        six: 6,
-        zes: 6,
-        seven: 7,
-        zeven: 7,
-        eight: 8,
-        acht: 8,
-        nine: 9,
-        negen: 9,
-        ten: 10,
-        tien: 10,
-      };
-      amount = writtenNumbers[matchedAmount.toLowerCase()] || 1;
+      amount = WRITTEN_NUMBERS[matchedAmount.toLowerCase()] || 1;
     }
 
     // Extract text without the amount

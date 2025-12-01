@@ -7,6 +7,7 @@ import { extractTextNodes } from "../utils/extractTextNodes";
 import { parseNodes } from "../utils/parseNodes";
 import { extractTitle } from "../utils/extractTitle";
 import { extractYield } from "../utils/extractYield";
+import { normalizeInstructionGroups } from "../utils/normalizeInstructionGroups";
 
 export interface RecipeResult {
   success: boolean;
@@ -63,11 +64,20 @@ export const processRecipeExtraction = async (
     const title = extractTitle(html, url || "");
     const recipeYield = extractYield(textNodes);
 
+    const normalizedInstructions = normalizeInstructionGroups(
+      parsedNodes.instructions || []
+    );
+
     // Validate recipe based on probability scores
-    const RECIPE_VALIDATION_THRESHOLD = 0.3; // Adjust this threshold as needed
+    const RECIPE_VALIDATION_THRESHOLD = 0.38; // Adjust this threshold as needed
     const isRecipeValid =
       parsedNodes.maxIngredientProbability >= RECIPE_VALIDATION_THRESHOLD &&
       parsedNodes.maxInstructionsProbability >= RECIPE_VALIDATION_THRESHOLD;
+
+    console.log(
+      parsedNodes.maxIngredientProbability,
+      parsedNodes.maxInstructionsProbability
+    );
 
     if (!isRecipeValid) {
       return {
@@ -83,7 +93,7 @@ export const processRecipeExtraction = async (
       data: {
         title,
         ingredients: parsedNodes.ingredients,
-        instructions: parsedNodes.instructions,
+        instructions: normalizedInstructions,
         recipe_yield: recipeYield,
       },
     };

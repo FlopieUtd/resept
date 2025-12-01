@@ -32,10 +32,10 @@
           }
         },
         {
-          "raw": "600 gr rumpsteakin dikke repen",
+          "raw": "600 gr rumpsteak in dikke repen",
           "parsed": {
             "amount": 600,
-            "rawWithoutAmount": "gr rumpsteakin dikke repen"
+            "rawWithoutAmount": "gr rumpsteak in dikke repen"
           }
         },
         {

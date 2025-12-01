@@ -1,5 +1,57 @@
 import type { InstructionGroup, RecipeInstructionItem } from "../../types";
 
+const containsStepPattern = (title: string): boolean => {
+  return /step/i.test(title);
+};
+
+const extractNumber = (title: string): number | null => {
+  const match = title.match(/\d+/);
+  return match ? parseInt(match[0], 10) : null;
+};
+
+const hasIncrementingNumbers = (groups: InstructionGroup[]): boolean => {
+  const groupsWithTitles = groups.filter((group) => group.title);
+  if (groupsWithTitles.length === 0) {
+    return false;
+  }
+
+  const numbers = groupsWithTitles.map((group) => extractNumber(group.title!));
+
+  if (numbers.some((num) => num === null)) {
+    return false;
+  }
+
+  const sortedNumbers = [...numbers].sort((a, b) => a! - b!);
+  if (sortedNumbers[0] !== 1) {
+    return false;
+  }
+
+  for (let i = 0; i < sortedNumbers.length - 1; i++) {
+    if (sortedNumbers[i + 1]! - sortedNumbers[i]! !== 1) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+const shouldRemoveTitles = (groups: InstructionGroup[]): boolean => {
+  const groupsWithTitles = groups.filter((group) => group.title);
+  if (groupsWithTitles.length === 0) {
+    return false;
+  }
+
+  const allContainStep = groupsWithTitles.every((group) =>
+    containsStepPattern(group.title!)
+  );
+
+  if (allContainStep) {
+    return true;
+  }
+
+  return hasIncrementingNumbers(groups);
+};
+
 const sanitizeInstructionGroup = (group: any): InstructionGroup => {
   const title =
     typeof group?.title === "string" && group.title.trim().length > 0
@@ -58,7 +110,7 @@ const fromInstructionItems = (
                     typeof step?.text === "string"
                       ? step.text.trim()
                       : typeof step === "string"
-                      ? step.trim()
+                      ? (step as string).trim()
                       : "";
                   return text.length > 0 ? { text } : null;
                 })
@@ -93,7 +145,7 @@ const fromInstructionItems = (
           return text.length > 0 ? { text } : null;
         }
         if (typeof item === "string") {
-          const text = item.trim();
+          const text = (item as string).trim();
           return text.length > 0 ? { text } : null;
         }
         return null;
@@ -107,7 +159,7 @@ const fromInstructionItems = (
 
   if (typeof first === "string") {
     const instructions = items
-      .map((item) => (typeof item === "string" ? item.trim() : ""))
+      .map((item) => (typeof item === "string" ? (item as string).trim() : ""))
       .filter((text) => text.length > 0)
       .map((text) => ({ text }));
 
@@ -124,5 +176,14 @@ export const normalizeInstructionGroups = (
     return [];
   }
 
-  return fromInstructionItems(instructions as RecipeInstructionItem[]);
+  const groups = fromInstructionItems(instructions as RecipeInstructionItem[]);
+
+  if (shouldRemoveTitles(groups)) {
+    const allInstructions = groups.flatMap((group) => group.instructions);
+    return allInstructions.length > 0
+      ? [{ instructions: allInstructions }]
+      : [];
+  }
+
+  return groups;
 };

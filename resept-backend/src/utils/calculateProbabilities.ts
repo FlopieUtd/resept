@@ -52,12 +52,12 @@ const calculateInstructionProbability = (
     nodeCount >= 5
       ? 1.0
       : nodeCount >= 4
-      ? 0.8
+      ? 0.9
       : nodeCount >= 3
-      ? 0.6
+      ? 0.8
       : nodeCount >= 2
-      ? 0.4
-      : 0.2;
+      ? 0.7
+      : 0.6;
 
   return totalScore * nodeCountMultiplier;
 };

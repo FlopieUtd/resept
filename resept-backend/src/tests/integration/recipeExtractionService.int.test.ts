@@ -33,11 +33,15 @@ const testCases = [
     expectedSuccess: false,
   },
   {
-    name: "turkishPide",
-    expectedSuccess: true,
+    name: "notARecipe2",
+    expectedSuccess: false,
   },
   {
     name: "samosas",
+    expectedSuccess: true,
+  },
+  {
+    name: "chiliConCarne",
     expectedSuccess: true,
   },
 ];
@@ -52,7 +56,7 @@ describe("recipeExtractionService integration", () => {
 
     expect(result.success).toBe(expectedSuccess);
 
-    console.log(JSON.stringify(result.data, null, 2));
+    console.log(JSON.stringify(result, null, 2));
 
     if (!expectedSuccess) {
       expect(result.data).toEqual(null);

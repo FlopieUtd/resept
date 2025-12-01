@@ -1,13 +1,21 @@
 import type { TextNode } from "./extractTextNodes";
 import { THRESHOLDS } from "./parseNodes.thresholds";
+import { WRITTEN_NUMBERS } from "./constants";
 import { containsNutritionKeyword } from "./parseNodes.lexicon";
 import { containsUnitKeyword } from "./parseNodes.lexicon";
 import type { InternalIngredientGroup } from "./parseNodes.types";
 
+const startsWithWrittenNumber = (text: string): boolean => {
+  const trimmed = text.trim().toLowerCase();
+  const firstWord = trimmed.split(/\s+/)[0];
+  return firstWord ? firstWord in WRITTEN_NUMBERS : false;
+};
+
 const computeIngredientProbability = (nodes: TextNode[]): number => {
-  const nodesStartingWithNumber = nodes.filter((node) =>
-    /^\d/.test(node.text.trim())
-  ).length;
+  const nodesStartingWithNumber = nodes.filter((node) => {
+    const text = node.text.trim();
+    return /^\d/.test(text) || startsWithWrittenNumber(text);
+  }).length;
   const nodesWithValidIngredientLength = nodes.filter((node) => {
     const wordCount = node.text.trim().split(/\s+/).length;
     return (
