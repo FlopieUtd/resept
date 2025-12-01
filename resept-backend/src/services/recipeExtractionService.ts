@@ -68,6 +68,11 @@ export const processRecipeExtraction = async (
       parsedNodes.instructions || []
     );
 
+    const finalInstructions =
+      normalizedInstructions.length === 1
+        ? normalizedInstructions[0].instructions
+        : normalizedInstructions;
+
     // Validate recipe based on probability scores
     const RECIPE_VALIDATION_THRESHOLD = 0.38; // Adjust this threshold as needed
     const isRecipeValid =
@@ -93,7 +98,7 @@ export const processRecipeExtraction = async (
       data: {
         title,
         ingredients: parsedNodes.ingredients,
-        instructions: normalizedInstructions,
+        instructions: finalInstructions,
         recipe_yield: recipeYield,
       },
     };
