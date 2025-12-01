@@ -25,6 +25,7 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
   }
 
   const allGroups = groupNodesByDepthAndType(textNodes);
+
   const { maxInstructionsProbability, filteredResult } =
     calculateProbabilities(allGroups);
   const instructions = extractInstructions(allGroups);
@@ -46,8 +47,6 @@ export const parseNodes = (textNodes: TextNode[]): ParsedResult => {
   const bestIngredientGroup = filteredResult.reduce((max, group) =>
     group.ingredientProbability > max.ingredientProbability ? group : max
   );
-
-  console.log(JSON.stringify(bestIngredientGroup, null, 2));
 
   const allIngredientGroups = (() => {
     const matchingGroups = allGroups.filter((group) => {

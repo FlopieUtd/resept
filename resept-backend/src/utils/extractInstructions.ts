@@ -74,11 +74,18 @@ export const extractInstructions = (
     return bestSequence;
   })();
 
+  const INSTRUCTION_PROBABILITY_THRESHOLD = 0.2;
+
+  const filteredInstructionGroups = allInstructionGroups.filter(
+    (group) =>
+      (group.instructionsProbability || 0) >= INSTRUCTION_PROBABILITY_THRESHOLD
+  );
+
   const titlesByIndex =
-    allInstructionGroups.length > 1
+    filteredInstructionGroups.length > 1
       ? (() => {
           const instructionGroupIndices = new Set(
-            allInstructionGroups.map((group) => group.originalIndex)
+            filteredInstructionGroups.map((group) => group.originalIndex)
           );
           const map = new Map<number, string>();
           const normalizeTitle = (text: string) =>
@@ -86,7 +93,7 @@ export const extractInstructions = (
               .trim()
               .replace(/[:：]$/, "")
               .trim();
-          allInstructionGroups.forEach((group) => {
+          filteredInstructionGroups.forEach((group) => {
             let cursor = group.originalIndex - 1;
             while (cursor >= 0 && !instructionGroupIndices.has(cursor)) {
               const candidate = allGroups[cursor];
@@ -107,7 +114,7 @@ export const extractInstructions = (
         })()
       : new Map<number, string>();
 
-  const result = allInstructionGroups.map((group) => ({
+  const result = filteredInstructionGroups.map((group) => ({
     title: titlesByIndex.get(group.originalIndex),
     instructions: group.nodes.map((node) => ({ text: node.text })),
   }));

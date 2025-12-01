@@ -79,11 +79,6 @@ export const processRecipeExtraction = async (
       parsedNodes.maxIngredientProbability >= RECIPE_VALIDATION_THRESHOLD &&
       parsedNodes.maxInstructionsProbability >= RECIPE_VALIDATION_THRESHOLD;
 
-    console.log(
-      parsedNodes.maxIngredientProbability,
-      parsedNodes.maxInstructionsProbability
-    );
-
     if (!isRecipeValid) {
       return {
         success: false,
