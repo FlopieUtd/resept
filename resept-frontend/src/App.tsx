@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Menu } from "./components/Menu";
 import { Recipe } from "./components/Recipe";
 import { Recipes } from "./components/Recipes";
 import { Login } from "./components/Login";
@@ -11,7 +10,7 @@ import ExtensionError from "./components/ExtensionError";
 import NoRecipe from "./components/NoRecipe";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { useFullscreen } from "./contexts/FullscreenContext";
+import { Settings } from "./components/Settings";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,7 +29,6 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-  const { isFullscreen } = useFullscreen();
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -46,40 +44,26 @@ const App = () => {
           <Route
             path="/recipes/"
             element={
-              <div className="flex w-full h-[100vh]">
-                {!isFullscreen && <Menu />}
-                <div
-                  className={
-                    isFullscreen
-                      ? "ml-0 w-full flex"
-                      : "lg:ml-[240px] w-full flex"
-                  }
-                >
-                  <ProtectedRoute>
-                    <Recipes />
-                  </ProtectedRoute>
-                </div>
-              </div>
+              <ProtectedRoute>
+                <Recipes />
+              </ProtectedRoute>
             }
             index
           />
           <Route
             path="/recipes/:recipeId"
             element={
-              <div className="flex w-full h-[100vh]">
-                {!isFullscreen && <Menu />}
-                <div
-                  className={
-                    isFullscreen
-                      ? "ml-0 w-full flex"
-                      : "lg:ml-[240px] w-full flex"
-                  }
-                >
-                  <ProtectedRoute>
-                    <Recipe />
-                  </ProtectedRoute>
-                </div>
-              </div>
+              <ProtectedRoute>
+                <Recipe />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
             }
           />
         </Routes>
