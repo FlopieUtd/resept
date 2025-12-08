@@ -106,17 +106,12 @@
           }
         },
         {
-          "raw": "1 tl",
+          "raw": "1 tl vanille-extract",
           "parsed": {
-            "rawWithoutAmount": "tl",
+            "rawWithoutAmount": "tl vanille-extract",
             "amount": 1
           }
-        }
-      ]
-    },
-    {
-      "title": "vanille-extract",
-      "ingredients": [
+        },
         {
           "raw": "2-3 el melk",
           "parsed": {
@@ -192,6 +187,9 @@
       "instructions": [
         {
           "text": "Om de American cinnamon rolls helemaal af te maken, bestrijk je de (afgekoelde) kaneelbroodjes met een roomkaas glazuur. Je kunt dit glazuur prima maken wanneer de kaneelbroodjes in de oven staan of wanneer ze aan het afkoelen zijn. Doe voor het glazuur de roomkaas, boter, poedersuiker en het vanille-extract in een kom en klop dit met een (hand)mixer met garde(s) tot een glad geheel. Voeg geleidelijk de melk toe tot het glazuur de gewenste dikte heeft. Besprenkel of bestrijk de cinnamon rolls met het glazuur."
+        },
+        {
+          "text": "Ben je nieuwsgierig geworden naar De Bakatlas? Kijk hier voor meer informatie!"
         }
       ]
     }
