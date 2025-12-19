@@ -2,7 +2,6 @@
   "title": "Cinnamon rolls",
   "ingredients": [
     {
-      "title": "Voor het deeg",
       "ingredients": [
         {
           "raw": "500 gr patentbloem",
@@ -56,7 +55,6 @@
       ]
     },
     {
-      "title": "Voor de vulling",
       "ingredients": [
         {
           "raw": "90 gr boter, op kamertemperatuur",
@@ -82,7 +80,6 @@
       ]
     },
     {
-      "title": "Voor het glazuur",
       "ingredients": [
         {
           "raw": "100 gr roomkaas, op kamertemperatuur",
@@ -123,7 +120,6 @@
       ]
     },
     {
-      "title": "Verder nodig",
       "ingredients": [
         {
           "raw": "boter, om in te vetten",
@@ -194,5 +190,5 @@
       ]
     }
   ],
-  "recipe_yield": 4
+  "recipe_yield": 0
 }

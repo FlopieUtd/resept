@@ -1,0 +1,2067 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Banoffee Pie</title>
+  </head>
+  <body
+    class="wp-singular recipes-template-default single single-recipes postid-8079 wp-theme-hhb"
+    cz-shortcut-listen="true"
+  >
+    <div class="newsletter-popup js-newsletter-popup">
+      <span class="newsletter-popup__close js-close"></span>
+      <h4 class="newsletter-popup__title">
+        E-meel? Schrijf je in voor de Heel Holland Bakt nieuwsbrief
+      </h4>
+      <p class="newsletter-popup__text">
+        Ontvang de laatste nieuwtjes en recepten.
+      </p>
+      <div class="newsletter-popup__form">
+        <script>
+          var gform;
+          gform ||
+            (document.addEventListener(
+              "gform_main_scripts_loaded",
+              function () {
+                gform.scriptsLoaded = !0;
+              }
+            ),
+            document.addEventListener(
+              "gform/theme/scripts_loaded",
+              function () {
+                gform.themeScriptsLoaded = !0;
+              }
+            ),
+            window.addEventListener("DOMContentLoaded", function () {
+              gform.domLoaded = !0;
+            }),
+            (gform = {
+              domLoaded: !1,
+              scriptsLoaded: !1,
+              themeScriptsLoaded: !1,
+              isFormEditor: () => "function" == typeof InitializeEditor,
+              callIfLoaded: function (o) {
+                return !(
+                  !gform.domLoaded ||
+                  !gform.scriptsLoaded ||
+                  (!gform.themeScriptsLoaded && !gform.isFormEditor()) ||
+                  (gform.isFormEditor() &&
+                    console.warn(
+                      "The use of gform.initializeOnLoaded() is deprecated in the form editor context and will be removed in Gravity Forms 3.1."
+                    ),
+                  o(),
+                  0)
+                );
+              },
+              initializeOnLoaded: function (o) {
+                gform.callIfLoaded(o) ||
+                  (document.addEventListener(
+                    "gform_main_scripts_loaded",
+                    () => {
+                      (gform.scriptsLoaded = !0), gform.callIfLoaded(o);
+                    }
+                  ),
+                  document.addEventListener(
+                    "gform/theme/scripts_loaded",
+                    () => {
+                      (gform.themeScriptsLoaded = !0), gform.callIfLoaded(o);
+                    }
+                  ),
+                  window.addEventListener("DOMContentLoaded", () => {
+                    (gform.domLoaded = !0), gform.callIfLoaded(o);
+                  }));
+              },
+              hooks: { action: {}, filter: {} },
+              addAction: function (o, r, e, t) {
+                gform.addHook("action", o, r, e, t);
+              },
+              addFilter: function (o, r, e, t) {
+                gform.addHook("filter", o, r, e, t);
+              },
+              doAction: function (o) {
+                gform.doHook("action", o, arguments);
+              },
+              applyFilters: function (o) {
+                return gform.doHook("filter", o, arguments);
+              },
+              removeAction: function (o, r) {
+                gform.removeHook("action", o, r);
+              },
+              removeFilter: function (o, r, e) {
+                gform.removeHook("filter", o, r, e);
+              },
+              addHook: function (o, r, e, t, n) {
+                null == gform.hooks[o][r] && (gform.hooks[o][r] = []);
+                var d = gform.hooks[o][r];
+                null == n && (n = r + "_" + d.length),
+                  gform.hooks[o][r].push({
+                    tag: n,
+                    callable: e,
+                    priority: (t = null == t ? 10 : t),
+                  });
+              },
+              doHook: function (r, o, e) {
+                var t;
+                if (
+                  ((e = Array.prototype.slice.call(e, 1)),
+                  null != gform.hooks[r][o] &&
+                    ((o = gform.hooks[r][o]).sort(function (o, r) {
+                      return o.priority - r.priority;
+                    }),
+                    o.forEach(function (o) {
+                      "function" != typeof (t = o.callable) && (t = window[t]),
+                        "action" == r
+                          ? t.apply(null, e)
+                          : (e[0] = t.apply(null, e));
+                    })),
+                  "filter" == r)
+                )
+                  return e[0];
+              },
+              removeHook: function (o, r, t, n) {
+                var e;
+                null != gform.hooks[o][r] &&
+                  ((e = (e = gform.hooks[o][r]).filter(function (o, r, e) {
+                    return !!(
+                      (null != n && n != o.tag) ||
+                      (null != t && t != o.priority)
+                    );
+                  })),
+                  (gform.hooks[o][r] = e));
+              },
+            }));
+        </script>
+
+        <div
+          class="gf_browser_safari gform_wrapper gravity-theme gform-theme--no-framework"
+          data-form-theme="gravity-theme"
+          data-form-index="0"
+          id="gform_wrapper_5"
+        >
+          <form
+            method="post"
+            enctype="multipart/form-data"
+            id="gform_5"
+            action="/recepten/banoffee-pie-recept/"
+            data-formid="5"
+            novalidate=""
+          >
+            <div class="gform-body gform_body">
+              <div
+                id="gform_fields_5"
+                class="gform_fields top_label form_sublabel_below description_below validation_below"
+              >
+                <div
+                  id="field_5_1"
+                  class="gfield gfield--type-email gfield_contains_required field_sublabel_below gfield--no-description field_description_below hidden_label field_validation_below gfield_visibility_visible"
+                >
+                  <label class="gfield_label gform-field-label" for="input_5_1"
+                    >E-mailadres<span class="gfield_required"
+                      ><span class="gfield_required gfield_required_text"
+                        >(Vereist)</span
+                      ></span
+                    ></label
+                  >
+                  <div class="ginput_container ginput_container_email">
+                    <input
+                      name="input_1"
+                      id="input_5_1"
+                      type="email"
+                      value=""
+                      class="large"
+                      placeholder="Jouw e-mail"
+                      aria-required="true"
+                      aria-invalid="false"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="gform-footer gform_footer top_label">
+              <input
+                type="submit"
+                id="gform_submit_button_5"
+                class="gform_button button"
+                onclick="gform.submission.handleButtonClick(this);"
+                data-submission-type="submit"
+                value="Inschrijven"
+              />
+              <input
+                type="hidden"
+                class="gform_hidden"
+                name="gform_submission_method"
+                data-js="gform_submission_method_5"
+                value="postback"
+              />
+              <input
+                type="hidden"
+                class="gform_hidden"
+                name="gform_theme"
+                data-js="gform_theme_5"
+                id="gform_theme_5"
+                value="gravity-theme"
+              />
+              <input
+                type="hidden"
+                class="gform_hidden"
+                name="gform_style_settings"
+                data-js="gform_style_settings_5"
+                id="gform_style_settings_5"
+                value="[]"
+              />
+              <input
+                type="hidden"
+                class="gform_hidden"
+                name="is_submit_5"
+                value="1"
+              />
+              <input
+                type="hidden"
+                class="gform_hidden"
+                name="gform_submit"
+                value="5"
+              />
+
+              <input
+                type="hidden"
+                class="gform_hidden"
+                name="gform_unique_id"
+                value=""
+              />
+              <input
+                type="hidden"
+                class="gform_hidden"
+                name="state_5"
+                value="WyJbXSIsIjRhODg2M2VkNDRiMjIwYjQzNjY4YzA0ZGFiNTkyNDVkIl0="
+              />
+              <input
+                type="hidden"
+                autocomplete="off"
+                class="gform_hidden"
+                name="gform_target_page_number_5"
+                id="gform_target_page_number_5"
+                value="0"
+              />
+              <input
+                type="hidden"
+                autocomplete="off"
+                class="gform_hidden"
+                name="gform_source_page_number_5"
+                id="gform_source_page_number_5"
+                value="1"
+              />
+              <input type="hidden" name="gform_field_values" value="" />
+            </div>
+          </form>
+        </div>
+        <script>
+          gform.initializeOnLoaded(function () {
+            gformInitSpinner(
+              5,
+              "https://www.heelhollandbakt.nl/wp-content/plugins/gravityforms/images/spinner.svg",
+              true
+            );
+            jQuery("#gform_ajax_frame_5").on("load", function () {
+              var contents = jQuery(this).contents().find("*").html();
+              var is_postback = contents.indexOf("GF_AJAX_POSTBACK") >= 0;
+              if (!is_postback) {
+                return;
+              }
+              var form_content = jQuery(this)
+                .contents()
+                .find("#gform_wrapper_5");
+              var is_confirmation =
+                jQuery(this).contents().find("#gform_confirmation_wrapper_5")
+                  .length > 0;
+              var is_redirect = contents.indexOf("gformRedirect(){") >= 0;
+              var is_form =
+                form_content.length > 0 && !is_redirect && !is_confirmation;
+              var mt =
+                parseInt(jQuery("html").css("margin-top"), 10) +
+                parseInt(jQuery("body").css("margin-top"), 10) +
+                100;
+              if (is_form) {
+                jQuery("#gform_wrapper_5").html(form_content.html());
+                if (form_content.hasClass("gform_validation_error")) {
+                  jQuery("#gform_wrapper_5").addClass("gform_validation_error");
+                } else {
+                  jQuery("#gform_wrapper_5").removeClass(
+                    "gform_validation_error"
+                  );
+                }
+                setTimeout(function () {
+                  /* delay the scroll by 50 milliseconds to fix a bug in chrome */
+                }, 50);
+                if (window["gformInitDatepicker"]) {
+                  gformInitDatepicker();
+                }
+                if (window["gformInitPriceFields"]) {
+                  gformInitPriceFields();
+                }
+                var current_page = jQuery("#gform_source_page_number_5").val();
+                gformInitSpinner(
+                  5,
+                  "https://www.heelhollandbakt.nl/wp-content/plugins/gravityforms/images/spinner.svg",
+                  true
+                );
+                jQuery(document).trigger("gform_page_loaded", [
+                  5,
+                  current_page,
+                ]);
+                window["gf_submitting_5"] = false;
+              } else if (!is_redirect) {
+                var confirmation_content = jQuery(this)
+                  .contents()
+                  .find(".GF_AJAX_POSTBACK")
+                  .html();
+                if (!confirmation_content) {
+                  confirmation_content = contents;
+                }
+                jQuery("#gform_wrapper_5").replaceWith(confirmation_content);
+                jQuery(document).trigger("gform_confirmation_loaded", [5]);
+                window["gf_submitting_5"] = false;
+                wp.a11y.speak(jQuery("#gform_confirmation_message_5").text());
+              } else {
+                jQuery("#gform_5").append(contents);
+                if (window["gformRedirect"]) {
+                  gformRedirect();
+                }
+              }
+              jQuery(document).trigger("gform_pre_post_render", [
+                {
+                  formId: "5",
+                  currentPage: "current_page",
+                  abort: function () {
+                    this.preventDefault();
+                  },
+                },
+              ]);
+              if (event && event.defaultPrevented) {
+                return;
+              }
+              const gformWrapperDiv =
+                document.getElementById("gform_wrapper_5");
+              if (gformWrapperDiv) {
+                const visibilitySpan = document.createElement("span");
+                visibilitySpan.id = "gform_visibility_test_5";
+                gformWrapperDiv.insertAdjacentElement(
+                  "afterend",
+                  visibilitySpan
+                );
+              }
+              const visibilityTestDiv = document.getElementById(
+                "gform_visibility_test_5"
+              );
+              let postRenderFired = false;
+              function triggerPostRender() {
+                if (postRenderFired) {
+                  return;
+                }
+                postRenderFired = true;
+                gform.core.triggerPostRenderEvents(5, current_page);
+                if (visibilityTestDiv) {
+                  visibilityTestDiv.parentNode.removeChild(visibilityTestDiv);
+                }
+              }
+              function debounce(func, wait, immediate) {
+                var timeout;
+                return function () {
+                  var context = this,
+                    args = arguments;
+                  var later = function () {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                  };
+                  var callNow = immediate && !timeout;
+                  clearTimeout(timeout);
+                  timeout = setTimeout(later, wait);
+                  if (callNow) func.apply(context, args);
+                };
+              }
+              const debouncedTriggerPostRender = debounce(function () {
+                triggerPostRender();
+              }, 200);
+              if (
+                visibilityTestDiv &&
+                visibilityTestDiv.offsetParent === null
+              ) {
+                const observer = new MutationObserver((mutations) => {
+                  mutations.forEach((mutation) => {
+                    if (
+                      mutation.type === "attributes" &&
+                      visibilityTestDiv.offsetParent !== null
+                    ) {
+                      debouncedTriggerPostRender();
+                      observer.disconnect();
+                    }
+                  });
+                });
+                observer.observe(document.body, {
+                  attributes: true,
+                  childList: false,
+                  subtree: true,
+                  attributeFilter: ["style", "class"],
+                });
+              } else {
+                triggerPostRender();
+              }
+            });
+          });
+        </script>
+      </div>
+      <div class="newsletter-popup__privacy">
+        <p>
+          Lees hier de
+          <a href="https://www.omroepmax.nl/over-max/privacyverklaring/"
+            >privacyverklaring</a
+          >.
+        </p>
+      </div>
+      <div class="newsletter-popup__subtitle">
+        <span class="newsletter-popup__cta-text"></span>
+        <span class="newsletter-popup__subtext"></span>
+      </div>
+    </div>
+    <a class="skip-link screen-reader-text" href="#content"
+      >Ga naar de inhoud</a
+    >
+    <header class="header">
+      <div class="topbar topbar--colorWhite">
+        <div class="container container-fw">
+          <div class="row">
+            <div class="col-12">
+              <div class="header-topbar">
+                <div class="header-topbar-sentence">
+                  <span></span>
+                </div>
+                <div class="topbar-item">
+                  <nav class="topbar-login-nav">
+                    <ul class="topbar-login-menu topbar-item">
+                      <li class="topbar-login-menu__item">
+                        <a
+                          href="/wordpress/wp-login.php?redirect_to=https://www.heelhollandbakt.nl/recepten/banoffee-pie-recept/"
+                          class="link--transparent"
+                        >
+                          <span>Inloggen</span>
+                        </a>
+                      </li>
+                      <li class="topbar-login-menu__item">
+                        <a
+                          href="/wordpress/wp-login.php?action=register"
+                          class="link--transparent"
+                        >
+                          <span>Registreren</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+                <div class="topbar-item d-none d-md-block">
+                  <a
+                    class="readspeaker link--transparent"
+                    href="#"
+                    title="Lees voor"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg">
+                      <g fill="currentColor">
+                        <path
+                          d="M11.2 4.4c-.6-.3-1.3-.2-1.9.3L5.6 7.9H3.5c-1 0-1.8.8-1.8 1.8v4.8c0 1 .8 1.8 1.8 1.8h2.1l3.8 3.2c.3.3.7.4 1.1.4 .2 0 .5-.1.7-.2 .6-.3 1-.9 1-1.6V6c0-.7-.3-1.3-1-1.6ZM10.8 18c0 .1-.1.2-.1.2 -.1 0-.2.1-.3 0l-4-3.4c-.1-.1-.3-.2-.5-.2H3.5c-.1 0-.2-.1-.2-.2V9.6c0-.1.1-.2.2-.2h2.4c.2 0 .3-.1.5-.2l4-3.4c.1-.1.2-.1.3 0 .1 0 .1.1.1.2v12Z"
+                        ></path>
+                        <path
+                          d="M15.9 7.4c-.4-.2-.8-.1-1 .2 -.2.4-.1.8.2 1 1 .6 1.6 1.9 1.6 3.3s-.6 2.7-1.6 3.3c-.4.2-.5.7-.2 1 .1.2.4.4.6.4 .1 0 .3 0 .4-.1 1.4-.9 2.3-2.7 2.3-4.6 0-1.8-.8-3.6-2.3-4.5Z"
+                        ></path>
+                        <path
+                          d="M19 4.4c-.3-.3-.8-.2-1.1.1 -.3.3-.2.8.1 1.1 1.7 1.5 2.7 3.9 2.7 6.5s-1 5-2.7 6.5c-.3.3-.3.7-.1 1.1 .1.2.4.3.6.3 .2 0 .3-.1.5-.2 2-1.8 3.3-4.6 3.3-7.6C22.2 9 21 6.1 19 4.4Z"
+                        ></path>
+                      </g>
+                    </svg>
+                    <span>Lees voor</span>
+                  </a>
+                </div>
+                <div class="logos topbar-item justify-content-between">
+                  <div class="d-inline">
+                    <a
+                      class="branding logo-max"
+                      href="https://www.omroepmax.nl/"
+                      title="Omroep MAX"
+                      target="_blank"
+                    >
+                      <span class="hide-span">Omroep MAX</span>
+                      <svg
+                        width="126"
+                        height="99"
+                        viewBox="0 0 126 99"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <g clip-path="url(#clip0_214_10238)">
+                          <path
+                            d="M78.8845 92.8854C112.546 80.6344 132.723 51.1656 123.95 27.0651C115.178 2.96456 80.7782 -6.64139 47.1167 5.6096C13.4553 17.8606 -6.7213 47.3293 2.05114 71.4299C10.8236 95.5304 45.2231 105.136 78.8845 92.8854Z"
+                            fill="#FB5E00"
+                          ></path>
+                          <path
+                            d="M78.8845 92.8854C112.546 80.6344 132.723 51.1656 123.95 27.0651C115.178 2.96456 80.7782 -6.64139 47.1167 5.6096C13.4553 17.8606 -6.7213 47.3293 2.05114 71.4299C10.8236 95.5304 45.2231 105.136 78.8845 92.8854Z"
+                            fill="#FB5E00"
+                          ></path>
+                          <path
+                            d="M98.5077 47.8212L111.151 32.1504H98.183L92.1622 40.3268L87.2877 32.1504H74.3238L86.2467 47.8212L80.4914 54.7031L69.8676 21.5762H60.9743L52.2724 47.9517L49.2576 32.1489H40.262L34.007 48.9363L27.7104 32.1489H18.7163L12.3159 65.6925H21.5487L24.8854 47.8048L31.8404 65.6925H35.7361L43.0796 47.7618L46.4207 65.694L42.9313 76.2637H53.53L57.1217 64.3194H73.3362L76.8656 76.2637H87.4049L84.0178 65.6999L92.5997 55.2354L99.915 65.694H112.735L98.5077 47.8197V47.8212ZM59.5552 56.2334L65.3016 37.1239L70.9486 56.2334H59.5552Z"
+                            fill="white"
+                          ></path>
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_214_10238">
+                            <rect
+                              width="126"
+                              height="97.926"
+                              fill="white"
+                              transform="translate(0 0.28418)"
+                            ></rect>
+                          </clipPath>
+                        </defs>
+                      </svg>
+                    </a>
+                  </div>
+                  <div class="d-inline">
+                    <a
+                      class="branding logo-npo"
+                      href="https://www.npostart.nl/"
+                      target="_blank"
+                      title="NPO Start"
+                    >
+                      <span class="hide-span">NPO Start</span>
+                      <svg
+                        width="30"
+                        height="30"
+                        viewBox="0 0 30 30"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <g clip-path="url(#clip0_2725_33448)">
+                          <path
+                            d="M17.2818 4.48274L16.3926 3.59561C15.5118 2.71267 14.4508 2.69728 13.4616 3.68726L12.7571 4.39248C11.7665 5.38211 11.7829 6.44135 12.6641 7.32393L13.5533 8.21071C14.4348 9.09574 15.4954 9.11079 16.4846 8.12116L17.1887 7.41523C18.1794 6.42561 18.1636 5.36567 17.2818 4.48274ZM12.8274 8.93728L11.9368 8.05085C11.0553 7.16826 9.9958 7.15182 9.00656 8.1425L8.30137 8.84807C7.31143 9.837 7.32682 10.8955 8.20867 11.7792L11.0606 14.6298C11.3901 14.9576 11.7609 14.9097 12.0138 14.6567C12.267 14.4035 12.3097 14.0393 11.9813 13.7095L11.325 13.0549C11.5034 13.0172 11.7231 12.8811 11.9816 12.6233L12.7344 11.8694C13.7257 10.8801 13.7086 9.82126 12.8274 8.93728V8.93728ZM9.29165 14.4741L7.40273 12.5862C6.52018 11.7036 5.46169 11.6872 4.47105 12.6771L3.76586 13.3813C2.77592 14.3713 2.79166 15.4312 3.67456 16.3138L5.56208 18.2039C5.89229 18.5327 6.26168 18.4834 6.51529 18.2319C6.76749 17.9775 6.81122 17.6106 6.48136 17.2835L4.60993 15.4099C4.25523 15.0562 4.26607 14.7222 4.66484 14.3241L5.41272 13.5765C5.81009 13.1777 6.14485 13.1662 6.4992 13.5223L8.37098 15.3935C8.69874 15.7233 9.06533 15.6793 9.31823 15.4267C9.57184 15.1731 9.62046 14.8033 9.29165 14.4741V14.4741ZM28.5712 16.855L16.8561 28.5696C15.6769 29.7495 14.3239 29.7495 13.1454 28.5696L1.43129 16.8557C0.251418 15.6761 0.251418 14.3241 1.43129 13.1445L13.1457 1.43095C14.3256 0.250325 15.6772 0.250325 16.8561 1.43095L28.5702 13.1445C29.7504 14.323 29.7504 15.6758 28.5712 16.855V16.855ZM15.4905 4.53101C15.1344 4.17595 14.801 4.18644 14.4033 4.58558L13.6551 5.33384C13.2577 5.73088 13.2461 6.0653 13.6022 6.41931L14.4568 7.27531C14.8122 7.63142 15.1449 7.62058 15.544 7.22144L16.2918 6.47318C16.6885 6.07649 16.7001 5.74102 16.3454 5.38736L15.4905 4.53101V4.53101ZM11.8903 9.8426C12.245 10.197 12.2338 10.5317 11.8357 10.9284L11.0882 11.6767C10.6888 12.0751 10.3575 12.086 10.0017 11.7302L9.14613 10.8742C8.79109 10.5202 8.80123 10.1858 9.19895 9.78838L9.94613 9.04012C10.3459 8.64133 10.679 8.63154 11.0347 8.98625L11.8903 9.8426V9.8426Z"
+                            fill="#FF6D00"
+                          ></path>
+                          <path
+                            d="M11.8903 9.84267L11.0347 8.98632C10.6789 8.63161 10.3459 8.64105 9.94609 9.04019L9.19892 9.78845C8.80119 10.1855 8.79105 10.5203 9.1461 10.8739L10.0017 11.7303C10.3575 12.086 10.6887 12.0752 11.0882 11.6767L11.8357 10.9285C12.2338 10.5318 12.245 10.197 11.8903 9.84267ZM12.8274 8.93735C13.7085 9.82098 13.7257 10.8802 12.7343 11.8695L11.9816 12.6233C11.7231 12.8812 11.5034 13.0172 11.325 13.055L11.9812 13.7095C12.3097 14.0394 12.267 14.4036 12.0141 14.6568C11.7609 14.9094 11.3901 14.9577 11.0606 14.6299L8.20863 11.7792C7.32679 10.8956 7.3114 9.83672 8.30133 8.84779L9.00653 8.14257C9.99576 7.15189 11.0553 7.16798 11.9368 8.05092L12.8274 8.93735ZM16.3453 5.38743L15.4904 4.53073C15.1343 4.17602 14.801 4.18651 14.4032 4.58565L13.655 5.33355C13.2576 5.73094 13.2461 6.06537 13.6026 6.41938L14.4568 7.27538C14.8125 7.63149 15.1448 7.62029 15.5439 7.2215L16.2918 6.47325C16.6885 6.07621 16.7 5.74074 16.3453 5.38743ZM17.2817 4.4828C18.1636 5.36574 18.1793 6.42533 17.1887 7.4153L16.4846 8.12123C15.4953 9.11085 14.4347 9.09546 13.5532 8.21078L12.664 7.324C11.7829 6.44107 11.7664 5.38218 12.7574 4.39255L13.4616 3.68698C14.4508 2.697 15.5121 2.71274 16.3926 3.59567L17.2817 4.4828V4.4828ZM9.29161 14.4739C9.62043 14.8034 9.57215 15.1728 9.3182 15.4268C9.06529 15.6793 8.6987 15.7234 8.37094 15.3935L6.49916 13.5224C6.14481 13.1663 5.81006 13.1778 5.41268 13.5766L4.66481 14.3241C4.26604 14.7219 4.25519 15.056 4.60989 15.41L6.48132 17.2836C6.81118 17.6107 6.76746 17.9776 6.51525 18.2316C6.26165 18.4834 5.89261 18.5328 5.56205 18.2036L3.67453 16.3139C2.79163 15.4313 2.77589 14.371 3.76582 13.381L4.47137 12.6772C5.462 11.6869 6.52015 11.7033 7.40269 12.5863L9.29161 14.4739V14.4739Z"
+                            fill="white"
+                          ></path>
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_2725_33448">
+                            <rect
+                              width="30"
+                              height="30"
+                              fill="white"
+                              transform="translate(0.000976562)"
+                            ></rect>
+                          </clipPath>
+                        </defs>
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="site-header bgr-primary-1">
+        <div class="container-xxl">
+          <div class="row align-items-start" role="banner">
+            <div class="col-sm-6 col-md-10 col-lg-8 hdr-left">
+              <div class="site-logo" role="heading" aria-level="1">
+                <a
+                  class="site-logo-link"
+                  href="https://www.heelhollandbakt.nl"
+                  rel="home"
+                >
+                  <span class="hide-span">Heel Holland Bakt</span>
+                  <img
+                    src="https://www.heelhollandbakt.nl/wp-content/themes/hhb/assets/general-assets/images/logo-heelhollandbakt.svg"
+                    width="185"
+                    height="109"
+                    alt="Heel Holland Bakt"
+                  />
+                </a>
+              </div>
+              <nav
+                id="nav-main"
+                class="nav-main d-none d-md-block"
+                role="navigation"
+                aria-label="Hoofdmenu"
+              >
+                <ul>
+                  <li
+                    class="home-menu-item menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-9"
+                  >
+                    <a href="https://www.heelhollandbakt.nl/"
+                      ><span>Home</span></a
+                    >
+                  </li>
+                  <li
+                    class="menu-item menu-item-type-post_type_archive menu-item-object-recipes menu-item-5379"
+                  >
+                    <a href="https://www.heelhollandbakt.nl/recepten/"
+                      ><span>Recepten</span></a
+                    >
+                  </li>
+                  <li
+                    class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11 menu-item-has-children"
+                  >
+                    <a href="https://www.heelhollandbakt.nl/bakken/"
+                      ><span>Bakken</span></a
+                    >
+                    <ul>
+                      <li
+                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4663"
+                      >
+                        <a href="/artikel-categorie/inspiratie/"
+                          ><span>Inspiratie</span></a
+                        >
+                      </li>
+                      <li
+                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-9586"
+                      >
+                        <a href="/artikel-categorie/bakhulp/"
+                          ><span>Bakhulp</span></a
+                        >
+                      </li>
+                      <li
+                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4664"
+                      >
+                        <a href="/artikel-categorie/instructievideos/"
+                          ><span>Instructievideo's</span></a
+                        >
+                      </li>
+                      <li
+                        class="menu-item menu-item-type-post_type_archive menu-item-object-concepts menu-item-3412"
+                      >
+                        <a
+                          href="https://www.heelhollandbakt.nl/begrippen-en-technieken/"
+                          ><span>Begrippen &amp; technieken</span></a
+                        >
+                      </li>
+                      <li
+                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6951"
+                      >
+                        <a href="https://www.heelhollandbakt.nl/vraagbaak/"
+                          ><span>Vraagbaak</span></a
+                        >
+                      </li>
+                    </ul>
+                  </li>
+                  <li
+                    class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10 menu-item-has-children"
+                  >
+                    <a href="https://www.heelhollandbakt.nl/programma/"
+                      ><span>Programma</span></a
+                    >
+                    <ul>
+                      <li
+                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4456"
+                      >
+                        <a href="/artikel-categorie/nieuws/"
+                          ><span>Nieuws</span></a
+                        >
+                      </li>
+                      <li
+                        class="menu-item menu-item-type-post_type_archive menu-item-object-poms-broadcasts menu-item-3408"
+                      >
+                        <a href="https://www.heelhollandbakt.nl/uitzending/"
+                          ><span>Uitzendingen</span></a
+                        >
+                      </li>
+                      <li
+                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4830"
+                      >
+                        <a href="/bakkers/seizoen-2025/"
+                          ><span>Kandidaten</span></a
+                        >
+                      </li>
+                      <li
+                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5676"
+                      >
+                        <a href="/artikel-categorie/videosnacks/"
+                          ><span>Videosnacks</span></a
+                        >
+                      </li>
+                      <li
+                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-10505"
+                      >
+                        <a
+                          href="https://www.heelhollandbakt.nl/artikelen/aanmelden-nieuw-seizoen-heel-holland-bakt/"
+                          ><span>Aanmelden</span></a
+                        >
+                      </li>
+                    </ul>
+                  </li>
+                  <li
+                    class="menu-item menu-item-type-custom menu-item-object-custom d-inline d-md-none pn-max-login-lock"
+                  >
+                    <a
+                      href="https://www.heelhollandbakt.nl/wordpress/wp-login.php?action=register"
+                      >Registreren</a
+                    >
+                  </li>
+                  <li
+                    class="menu-item menu-item-type-custom menu-item-object-custom d-inline d-md-none pn-max-login-lock"
+                  >
+                    <a
+                      href="https://www.heelhollandbakt.nl/wordpress/wp-login.php?redirect_to=https://www.heelhollandbakt.nl:8081/recepten/banoffee-pie-recept/"
+                      class="login"
+                      >Inloggen</a
+                    >
+                  </li>
+                </ul>
+                <div class="top-bar top-bar-mobilemenu">
+                  <div class="mobilemenu-some">
+                    <nav
+                      class="social-media left-header"
+                      role="navigation"
+                      aria-label="Social media buttons"
+                    >
+                      <ul>
+                        <li class="some-follow">
+                          <a
+                            target="_blank"
+                            href="https://www.facebook.com/HeelHollandBakt"
+                            class="facebook-icon"
+                            ><span class="hide-span"
+                              >Volg ons op Facebook</span
+                            ></a
+                          >
+                        </li>
+                        <li class="some-follow">
+                          <a
+                            target="_blank"
+                            href="https://www.tiktok.com/@omroepmax"
+                            class="tiktok-icon"
+                            ><span class="hide-span"
+                              >Volg ons op TikTok</span
+                            ></a
+                          >
+                        </li>
+                        <li class="some-follow">
+                          <a
+                            target="_blank"
+                            href="https://www.instagram.com/heelhollandbakt"
+                            class="instagram-icon"
+                            ><span class="hide-span"
+                              >Volg ons op Instagram</span
+                            ></a
+                          >
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                  <figure class="wave-mobilemenu">
+                    <img
+                      src="https://www.heelhollandbakt.nl/wp-content/themes/hhb/assets/general-assets/images/wave-mobilemenu.svg"
+                      alt=""
+                    />
+                  </figure>
+                </div>
+              </nav>
+            </div>
+            <div class="col-sm-6 col-md-2 col-lg-4 hdr-search">
+              <div class="search-opened d-none d-lg-inline-block">
+                <form
+                  class="searchform hdr-searchbar"
+                  method="get"
+                  role="search"
+                  action="https://www.heelhollandbakt.nl"
+                >
+                  <label class="hide-item">Zoeken</label>
+                  <input
+                    type="text"
+                    placeholder="zoeken..."
+                    name="s"
+                    value=""
+                  />
+                  <button type="submit" class="button-search">
+                    <span class="hide-span">Zoeken</span>
+                  </button>
+                </form>
+              </div>
+              <div class="search-collapse d-inline-block d-lg-none">
+                <button
+                  type="submit"
+                  title="Zoeken"
+                  class="search-submit"
+                  id="header-search-button"
+                >
+                  <span class="hide-span search-button">Zoeken</span>
+                </button>
+                <form
+                  class="searchform hdr-searchbar"
+                  method="get"
+                  role="search"
+                  action="https://www.heelhollandbakt.nl"
+                >
+                  <label class="hide-item">Zoeken</label>
+                  <input
+                    class="search-input"
+                    type="text"
+                    placeholder="zoeken..."
+                    name="s"
+                    value=""
+                  />
+                  <button type="submit" class="button-search">
+                    <span class="hide-span">Zoeken</span>
+                  </button>
+                </form>
+              </div>
+              <div class="mobile-user d-none">
+                <a
+                  href="https://www.heelhollandbakt.nl/wordpress/wp-login.php?redirect_to=https://www.heelhollandbakt.nl:8081/recepten/banoffee-pie-recept/"
+                  class="login"
+                >
+                  <span class="hide-span">Inloggen</span>
+                </a>
+              </div>
+              <button class="mburger mburger--collapse d-block d-md-none">
+                <div class="burger-button">
+                  <span>Menu</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <section class="hero hero-single-recipe">
+      <div class="hero-background bgr-primary-1 bgr-shape-1"></div>
+      <div class="hero-content">
+        <div class="container-xxl">
+          <div class="row align-items-center">
+            <div class="col-md-12 col-lg-7 offset-lg-1">
+              <a class="back-button" href="/recepten/">Terug</a>
+              <h1>Banoffee pie recept</h1>
+              <p>
+                Koekjes, karamel, banaan en slagroom: dat klinkt alleen al als
+                een heerlijke combinatie. Goed nieuws: het zijn de ingrediënten
+                van Banoffee Pie. Zo maak je het.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <main id="content" role="main" class="content-wrapper">
+      <section class="single-recipe post-type-recipes" id="post-8079">
+        <div class="container-xxl">
+          <div class="row highlighted-info">
+            <div class="col-12 col-lg-9 highlighted-image">
+              <figure>
+                <img
+                  src="https://cdn.heelhollandbakt.nl/2023/03/Banoffee-Pie-950x550.jpg"
+                />
+              </figure>
+            </div>
+            <div class="col-12 col-lg-3 side-specials bgr-white">
+              <div class="specials-content">
+                <div class="recipe-results">
+                  <div class="primary-category taart">
+                    <span class="tag"> Taart </span>
+                  </div>
+                </div>
+                <div id="recipe-difficulty"></div>
+                <div class="rating-time">
+                  <div id="post-rating-vote" data-voteid="8079">
+                    <div class="post-rating">
+                      <div class="stars">
+                        <i data-rating="1" class="fas fa-star"></i>
+                        <i data-rating="2" class="fas fa-star"></i>
+                        <i data-rating="3" class="fas fa-star"></i>
+                        <i data-rating="4" class="fas fa-star-half-alt"></i>
+                        <i data-rating="5" class="fas fa-disabled fa-star"></i>
+                      </div>
+                      <div class="votes">(633) reviews</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="top-bar top-bar-ingredients">
+                <h2 class="flag-heading has-no-span">Ingrediënten</h2>
+              </div>
+            </div>
+          </div>
+          <div class="row recipe-ingredients">
+            <div class="col-12 col-md-6 col-lg-4">
+              <h3>Banoffee pie</h3>
+              <ul>
+                <li>200 gram koekjes</li>
+                <li>125 gram ongezouten boter</li>
+                <li>Bekertje slagroom</li>
+                <li>Beetje suiker (op smaak)</li>
+                <li>Blikje gecondenseerde melk</li>
+                <li>Bananen</li>
+              </ul>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="top-bar top-bar-prep">
+                <h2 class="flag-heading has-no-span">Bereidingswijze</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="article-body">
+          <section class="buildingblock content-block">
+            <div class="container-xxl">
+              <div class="row">
+                <div class="col-12 col-md-8 offset-md-2">
+                  <p>&nbsp;</p>
+                  <h2>Zo maak je banoffee pie</h2>
+                  <ul>
+                    <li>Verkruimel de koekjes.</li>
+                    <li>
+                      Smelt de boter en roer het door de koekkruimel. Druk het
+                      mengsel in een taartvorm en laat de bodem opstijven in de
+                      koelkast.
+                    </li>
+                    <li>
+                      Voor de karamel gebruiken we dulce de leche. Dit maak je
+                      door een blikje gecondenseerde melk minstens 3 uur lang,
+                      ongeopend, in een grote pan met water te koken.
+                    </li>
+                    <li>
+                      Zorg ervoor dat het blikje de hele kooktijd volledig onder
+                      water blijft.
+                    </li>
+                    <li>
+                      Laat het blikje daarna afkoelen en verdeel de karamel over
+                      de koeklaag.
+                    </li>
+                    <li>
+                      Snijd een paar bananen in plakjes en leg dit op de
+                      karamellaag.
+                    </li>
+                    <li>
+                      Klop tot slot een bekertje slagroom stijf met een beetje
+                      suiker en spatel dat op de bananen.
+                    </li>
+                    <li>
+                      Decoreer de taart eventueel met chocoladedecoraties.
+                      <a
+                        href="https://www.heelhollandbakt.nl/recepten/chocolade-vouwen/"
+                        target="_blank"
+                        rel="noopener"
+                        >Zoals chocolade vouwen.</a
+                      >
+                    </li>
+                    <li>En dan: smullen maar!</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </section>
+          <script type="application/ld+json">
+            {
+              "@context": "http://schema.org",
+              "@type": "Recipe",
+              "name": "Banoffee pie recept",
+              "image": {
+                "@type": "ImageObject",
+                "url": "https://cdn.heelhollandbakt.nl/2023/03/Banoffee-Pie.jpg",
+                "height": 1080,
+                "width": 1920,
+                "caption": "Banoffee Pie"
+              },
+              "recipeCategory": "Taart",
+              "description": "Koekjes, karamel, banaan en slagroom: dat klinkt alleen al als een heerlijke combinatie. Goed nieuws: het zijn de ingrediënten van Banoffee Pie. Zo maak je het. ",
+              "recipeIngredient": [
+                "200 gram koekjes",
+                "125 gram ongezouten boter",
+                "Bekertje slagroom",
+                "Beetje suiker (op smaak)",
+                "Blikje gecondenseerde melk",
+                "Bananen"
+              ],
+              "recipeInstructions": "<p>                                &nbsp;<br />\nZo maak je banoffee pie</p>\n<p>Verkruimel de koekjes.<br />\nSmelt de boter en roer het door de koekkruimel. Druk het mengsel in een taartvorm en laat de bodem opstijven in de koelkast.<br />\nVoor de karamel gebruiken we dulce de leche. Dit maak je door een blikje gecondenseerde melk minstens 3 uur lang, ongeopend, in een grote pan met water te koken.<br />\nZorg ervoor dat het blikje de hele kooktijd volledig onder water blijft.<br />\nLaat het blikje daarna afkoelen en verdeel de karamel over de koeklaag.<br />\nSnijd een paar bananen in plakjes en leg dit op de karamellaag.<br />\nKlop tot slot een bekertje slagroom stijf met een beetje suiker en spatel dat op de bananen.<br />\nDecoreer de taart eventueel met chocoladedecoraties. Zoals chocolade vouwen.<br />\nEn dan: smullen maar!</p>\n",
+              "recipeCuisine": "Taart",
+              "author": { "@type": "Person" },
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": 3.5335106431182,
+                "bestRating": 5,
+                "worstRating": 1,
+                "ratingCount": 633
+              }
+            }
+          </script>
+          <section class="post-share">
+            <div class="container-xxl">
+              <div class="row">
+                <div class="col-12 col-md-8 offset-md-2">
+                  <div class="share-options">
+                    <ul>
+                      <li>Deel nu</li>
+                      <li class="social mailto">
+                        <a
+                          title="E-mail"
+                          href="mailto:?body=%0D%0Ahttps://www.heelhollandbakt.nl/recepten/banoffee-pie-recept/&amp;subject=Banoffee pie recept"
+                          target="_blank"
+                          ><span class="hide-span">Deel via E-mail</span></a
+                        >
+                      </li>
+                      <li class="social facebook">
+                        <a
+                          title="Deel op Facebook"
+                          href="https://www.facebook.com/sharer/sharer.php?u=https://www.heelhollandbakt.nl/recepten/banoffee-pie-recept/"
+                          target="_blank"
+                          ><span class="hide-span">Deel op Facebook</span></a
+                        >
+                      </li>
+                      <li class="social twitter">
+                        <a
+                          title="Deel op Twitter"
+                          href="https://twitter.com/intent/tweet?url=https://www.heelhollandbakt.nl/recepten/banoffee-pie-recept/&amp;text="
+                          target="_blank"
+                          ><span class="hide-span">Deel op Twitter</span></a
+                        >
+                      </li>
+                      <li class="social pinterest">
+                        <a
+                          title="Deel op Pinterest"
+                          href="http://pinterest.com/pin/create/link/?url=https://www.heelhollandbakt.nl/recepten/banoffee-pie-recept/"
+                          target="_blank"
+                          ><span class="hide-span">Deel op Pinterest</span></a
+                        >
+                      </li>
+                      <li class="social whatsapp">
+                        <a
+                          title="Deel via Whatsapp"
+                          href="whatsapp://send?text=https://www.heelhollandbakt.nl/recepten/banoffee-pie-recept/"
+                          target="_blank"
+                          ><span class="hide-span">Deel via Whatsapp</span></a
+                        >
+                      </li>
+                    </ul>
+                    <ul>
+                      <li class="print">
+                        <a title="Print deze pagina" href="#"
+                          ><span>Afdrukken</span></a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+      <!-- MEER LEKKERS -->
+      <section
+        class="more-articles block-latest-items bgr-primary-1 bgr-shape-2"
+      >
+        <div class="container-xxl recipe-results archive-results">
+          <div class="row">
+            <div class="col-12">
+              <div class="top-bar">
+                <h2 class="flag-heading has-no-span">Meer lekkers</h2>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="small col-12 col-md-6 col-lg-4">
+              <a
+                class="card"
+                href="https://www.heelhollandbakt.nl/recepten/marie-antoinette-taart-met-pecan-gezouten-karamel-en-appel/"
+              >
+                <article class="tease tease-recipes" id="tease-14821">
+                  <header>
+                    <div class="post-info">
+                      <div class="primary-category taart">Taart</div>
+                      <div class="baker">
+                        <figure>
+                          <img
+                            src="https://cdn.heelhollandbakt.nl/2025/10/anne-fleur-kandidaat-500x500.jpg"
+                            alt="Anne Fleur"
+                          />
+                        </figure>
+                      </div>
+                    </div>
+                    <figure class="thumbnail">
+                      <img
+                        src="https://cdn.heelhollandbakt.nl/2025/12/marie-antoinette-anne-fleur-800x665.jpg"
+                        alt="Marie Antoinette taart met pecan, gezouten karamel en appel"
+                      />
+                    </figure>
+                  </header>
+                  <div class="tease-content">
+                    <div class="content">
+                      <h1>
+                        Marie Antoinette taart met pecan, gezouten karamel en
+                        appel
+                      </h1>
+                      <p>
+                        Deze Marie Antoinette taart heeft heerlijke, warme
+                        smaken van appel, pecan en gezouten karamel. Een
+                        combinatie die niet fout kan…
+                      </p>
+                    </div>
+                    <footer>
+                      <div class="rating">
+                        <div class="post-rating">
+                          <div class="stars">
+                            <i
+                              data-rating="1"
+                              class="fas fa-disabled fa-star"
+                            ></i>
+                            <i
+                              data-rating="2"
+                              class="fas fa-disabled fa-star"
+                            ></i>
+                            <i
+                              data-rating="3"
+                              class="fas fa-disabled fa-star"
+                            ></i>
+                            <i
+                              data-rating="4"
+                              class="fas fa-disabled fa-star"
+                            ></i>
+                            <i
+                              data-rating="5"
+                              class="fas fa-disabled fa-star"
+                            ></i>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="difficulty-level">Expert</div>
+                    </footer>
+                  </div>
+                </article>
+              </a>
+            </div>
+            <div class="small col-12 col-md-6 col-lg-4">
+              <a
+                class="card"
+                href="https://www.heelhollandbakt.nl/recepten/marie-antoinette-taart-met-lemon-curd-en-walnootpraline/"
+              >
+                <article class="tease tease-recipes" id="tease-14795">
+                  <header>
+                    <div class="post-info">
+                      <div class="primary-category taart">Taart</div>
+                      <div class="baker">
+                        <figure>
+                          <img
+                            src="https://cdn.heelhollandbakt.nl/2025/10/shai-kandidaat-500x500.jpg"
+                            alt="Shai"
+                          />
+                        </figure>
+                      </div>
+                    </div>
+                    <figure class="thumbnail">
+                      <img
+                        src="https://cdn.heelhollandbakt.nl/2025/12/marie-antoinette-shai-800x665.jpg"
+                        alt="Marie Antoinette taart met lemon curd en walnootpraliné"
+                      />
+                    </figure>
+                  </header>
+                  <div class="tease-content">
+                    <div class="content">
+                      <h1>
+                        Marie Antoinette taart met lemon curd en walnootpraliné
+                      </h1>
+                      <p>
+                        Deze rijke Marie Antoinette taart is rijkelijk gevuld
+                        met een walnootpraliné en een botercrème van Italiaanse
+                        meringue.
+                      </p>
+                    </div>
+                    <footer>
+                      <div class="rating">
+                        <div class="post-rating">
+                          <div class="stars">
+                            <i
+                              data-rating="1"
+                              class="fas fa-disabled fa-star"
+                            ></i>
+                            <i
+                              data-rating="2"
+                              class="fas fa-disabled fa-star"
+                            ></i>
+                            <i
+                              data-rating="3"
+                              class="fas fa-disabled fa-star"
+                            ></i>
+                            <i
+                              data-rating="4"
+                              class="fas fa-disabled fa-star"
+                            ></i>
+                            <i
+                              data-rating="5"
+                              class="fas fa-disabled fa-star"
+                            ></i>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="difficulty-level">Expert</div>
+                    </footer>
+                  </div>
+                </article>
+              </a>
+            </div>
+            <div class="small col-12 col-md-6 col-lg-4">
+              <a
+                class="card"
+                href="https://www.heelhollandbakt.nl/recepten/marie-antoinette-met-bosvruchten-en-zwitserse-room/"
+              >
+                <article class="tease tease-recipes" id="tease-14818">
+                  <header>
+                    <div class="post-info">
+                      <div class="primary-category taart">Taart</div>
+                      <div class="baker">
+                        <figure>
+                          <img
+                            src="https://cdn.heelhollandbakt.nl/2025/10/bianca-kandidaat-500x500.jpg"
+                            alt="Bianca"
+                          />
+                        </figure>
+                      </div>
+                    </div>
+                    <figure class="thumbnail">
+                      <img
+                        src="https://cdn.heelhollandbakt.nl/2025/12/marie-antoinette-bianca-800x665.jpg"
+                        alt="Marie Antoinette met bosvruchten en Zwitserse room"
+                      />
+                    </figure>
+                  </header>
+                  <div class="tease-content">
+                    <div class="content">
+                      <h1>
+                        Marie Antoinette met bosvruchten en Zwitserse room
+                      </h1>
+                      <p>
+                        Deze Marie Antoinette taart heeft een zacht biscuit en
+                        een heerlijke vulling van bosvruchten, walnotenpraliné
+                        en botercrème.
+                      </p>
+                    </div>
+                    <footer>
+                      <div class="rating">
+                        <div class="post-rating">
+                          <div class="stars">
+                            <i
+                              data-rating="1"
+                              class="fas fa-disabled fa-star"
+                            ></i>
+                            <i
+                              data-rating="2"
+                              class="fas fa-disabled fa-star"
+                            ></i>
+                            <i
+                              data-rating="3"
+                              class="fas fa-disabled fa-star"
+                            ></i>
+                            <i
+                              data-rating="4"
+                              class="fas fa-disabled fa-star"
+                            ></i>
+                            <i
+                              data-rating="5"
+                              class="fas fa-disabled fa-star"
+                            ></i>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="difficulty-level">Expert</div>
+                    </footer>
+                  </div>
+                </article>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="comments-area">
+        <div class="container-xxl">
+          <div class="row">
+            <div
+              class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 top-bar ill-honey"
+            >
+              <h2>Reageren</h2>
+              <p>Je kunt op dit moment niet reageren.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer id="footer">
+      <div class="container-xxl">
+        <div class="row">
+          <div class="col-sm-12 col-md-6">
+            <div class="footer-logos">
+              <a
+                href="http://www.omroepmax.nl/"
+                class="max"
+                title="Omroep MAX"
+                target="_blank"
+              >
+                <figure>
+                  <span class="hide-span">Max</span>
+                  <img
+                    src="https://www.heelhollandbakt.nl/wp-content/themes/hhb/assets/general-assets/images/logo_omroepmax.svg"
+                    width="140"
+                    height="90"
+                    alt="Omroep MAX"
+                  />
+                </figure>
+              </a>
+            </div>
+            <div class="copyright d-none d-md-block">
+              Alle rechten voorbehouden © Heel Holland Bakt 2025.
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3">
+            <nav
+              id="nav-overview"
+              class="footer-nav nav-overview"
+              role="navigation"
+            >
+              <h2>Overzicht</h2>
+              <ul>
+                <li
+                  class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5489"
+                >
+                  <a href="https://www.heelhollandbakt.nl/over/"
+                    ><span>Over Heel Holland Bakt</span></a
+                  >
+                </li>
+                <li
+                  class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6811"
+                >
+                  <a href="https://www.heelhollandbakt.nl/recepten/"
+                    ><span>Recepten</span></a
+                  >
+                </li>
+                <li
+                  class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6812"
+                >
+                  <a
+                    href="https://www.heelhollandbakt.nl/artikel-categorie/nieuws/"
+                    ><span>Nieuws</span></a
+                  >
+                </li>
+                <li
+                  class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6813"
+                >
+                  <a href="https://www.heelhollandbakt.nl/uitzending/"
+                    ><span>Uitzendingen</span></a
+                  >
+                </li>
+                <li
+                  class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7160"
+                >
+                  <a href="https://www.heelhollandbakt.nl/sitemap/"
+                    ><span>Sitemap</span></a
+                  >
+                </li>
+                <li
+                  class="menu-item menu-item-type-custom menu-item-object-custom d-inline d-md-none pn-max-login-lock"
+                >
+                  <a
+                    href="https://www.heelhollandbakt.nl/wordpress/wp-login.php?action=register"
+                    >Registreren</a
+                  >
+                </li>
+                <li
+                  class="menu-item menu-item-type-custom menu-item-object-custom d-inline d-md-none pn-max-login-lock"
+                >
+                  <a
+                    href="https://www.heelhollandbakt.nl/wordpress/wp-login.php?redirect_to=https://www.heelhollandbakt.nl:8081/recepten/banoffee-pie-recept/"
+                    class="login"
+                    >Inloggen</a
+                  >
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <div class="col-sm-5 col-md-2">
+            <nav
+              id="nav-service"
+              class="footer-nav nav-service"
+              role="navigation"
+            >
+              <h2>Service</h2>
+              <ul>
+                <li
+                  class="menu-item menu-item-type-custom menu-item-object-custom menu-item-19"
+                >
+                  <a href="https://www.omroepmax.nl/over-max/"
+                    ><span>Over Omroep MAX</span></a
+                  >
+                </li>
+                <li
+                  class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22"
+                >
+                  <a href="http://pers.omroepmax.nl/"><span>Pers</span></a>
+                </li>
+                <li
+                  class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5374"
+                >
+                  <a
+                    href="https://www.omroepmax.nl/over-max/contact/vragen-aan-max/"
+                    ><span>Contact</span></a
+                  >
+                </li>
+                <li
+                  class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6814"
+                >
+                  <a
+                    href="https://www.omroepmax.nl/over-max/algemene-voorwaarden/inhoud/"
+                    ><span>Algemene voorwaarden</span></a
+                  >
+                </li>
+                <li
+                  class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6815"
+                >
+                  <a href="https://www.omroepmax.nl/over-max/privacyverklaring/"
+                    ><span>Privacyverklaring</span></a
+                  >
+                </li>
+                <li
+                  class="cookie-settings npo_cc_settings_link ccm_message_link menu-item menu-item-type-custom menu-item-object-custom menu-item-6816"
+                >
+                  <a
+                    href="https://cookies.heelhollandbakt.nl/sites/MAX/heelhollandbakt.nl/settings.html?version=v1.1.3"
+                    ><span>Cookieverklaring</span></a
+                  >
+                </li>
+                <li
+                  class="menu-item menu-item-type-custom menu-item-object-custom menu-item-14142"
+                >
+                  <a href="https://www.omroepmax.nl/kwetsbaarheid-melden/"
+                    ><span>Kwetsbaarheid melden</span></a
+                  >
+                </li>
+                <li
+                  class="menu-item menu-item-type-custom menu-item-object-custom d-inline d-md-none pn-max-login-lock"
+                >
+                  <a
+                    href="https://www.heelhollandbakt.nl/wordpress/wp-login.php?action=register"
+                    >Registreren</a
+                  >
+                </li>
+                <li
+                  class="menu-item menu-item-type-custom menu-item-object-custom d-inline d-md-none pn-max-login-lock"
+                >
+                  <a
+                    href="https://www.heelhollandbakt.nl/wordpress/wp-login.php?redirect_to=https://www.heelhollandbakt.nl:8081/recepten/banoffee-pie-recept/"
+                    class="login"
+                    >Inloggen</a
+                  >
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <div class="col-sm-1">
+            <nav class="social-media">
+              <h2 class="hide-item">Volg ons op facebook</h2>
+              <ul>
+                <li class="some-follow">
+                  <a
+                    target="_blank"
+                    href="https://www.facebook.com/HeelHollandBakt"
+                    class="facebook-icon"
+                    ><span class="hide-span">Volg ons op Facebook</span></a
+                  >
+                </li>
+                <li class="some-follow">
+                  <a
+                    target="_blank"
+                    href="https://www.tiktok.com/@omroepmax"
+                    class="tiktok-icon"
+                    ><span class="hide-span">Volg ons op TikTok</span></a
+                  >
+                </li>
+                <li class="some-follow">
+                  <a
+                    target="_blank"
+                    href="https://www.instagram.com/heelhollandbakt"
+                    class="instagram-icon"
+                    ><span class="hide-span">Volg ons op Instagram</span></a
+                  >
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <div class="row d-block d-md-none">
+          <div class="col-12">
+            <div class="copyright">
+              Alle rechten voorbehouden © Heel Holland Bakt 2025.
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script type="speculationrules">
+      {
+        "prefetch": [
+          {
+            "source": "document",
+            "where": {
+              "and": [
+                { "href_matches": "\/*" },
+                {
+                  "not": {
+                    "href_matches": [
+                      "\/wordpress\/wp-*.php",
+                      "\/wordpress\/wp-admin\/*",
+                      "\/wp-content\/uploads\/*",
+                      "\/wp-content\/*",
+                      "\/wp-content\/plugins\/*",
+                      "\/wp-content\/themes\/hhb\/*",
+                      "\/*\\?(.+)"
+                    ]
+                  }
+                },
+                { "not": { "selector_matches": "a[rel~=\"nofollow\"]" } },
+                {
+                  "not": { "selector_matches": ".no-prefetch, .no-prefetch a" }
+                }
+              ]
+            },
+            "eagerness": "conservative"
+          }
+        ]
+      }
+    </script>
+    <!-- START NPO Tag tracker -->
+    <script>
+      let tracker = npotag.newPageTracker(tag, {
+        chapter_1: "recepten",
+        page: "banoffee-pie-recept",
+        broadcasters: "omroepmax",
+        program: "heelhollandbakt",
+      });
+      tracker.pageView();
+    </script>
+    <!-- END NPO Tag tracker -->
+    <link
+      rel="stylesheet"
+      id="gform_basic-css"
+      href="https://www.heelhollandbakt.nl/wp-content/plugins/gravityforms/assets/css/dist/basic.min.css?ver=2.9.23"
+      media="all"
+    />
+    <link
+      rel="stylesheet"
+      id="gform_theme_components-css"
+      href="https://www.heelhollandbakt.nl/wp-content/plugins/gravityforms/assets/css/dist/theme-components.min.css?ver=2.9.23"
+      media="all"
+    />
+    <link
+      rel="stylesheet"
+      id="gform_theme-css"
+      href="https://www.heelhollandbakt.nl/wp-content/plugins/gravityforms/assets/css/dist/theme.min.css?ver=2.9.23"
+      media="all"
+    />
+    <script
+      src="https://www.heelhollandbakt.nl/wp-content/plugins/pn-max-topbar/assets/js/pn-max-topbar-public.js?ver=1.0.0"
+      id="pn-max-topbar-js"
+    ></script>
+    <script id="app-js-extra">
+      var HeelHollandBaktAPI = {
+        nonce: "bdb05f43fd",
+        url: "https:\/\/www.heelhollandbakt.nl\/wp-json\/hhb\/v1\/",
+      };
+    </script>
+    <script
+      src="https://www.heelhollandbakt.nl/wp-content/themes/hhb/assets/served-assets/production/javascript/front-end/app.js?ver=1764162297"
+      id="app-js"
+    ></script>
+    <script
+      src="https://www.heelhollandbakt.nl/wordpress/wp-includes/js/dist/dom-ready.min.js?ver=f77871ff7694fffea381"
+      id="wp-dom-ready-js"
+    ></script>
+    <script
+      src="https://www.heelhollandbakt.nl/wordpress/wp-includes/js/dist/hooks.min.js?ver=4d63a3d491d11ffd8ac6"
+      id="wp-hooks-js"
+    ></script>
+    <script
+      src="https://www.heelhollandbakt.nl/wordpress/wp-includes/js/dist/i18n.min.js?ver=5e580eb46a90c2b997e6"
+      id="wp-i18n-js"
+    ></script>
+    <script id="wp-i18n-js-after">
+      wp.i18n.setLocaleData({ "text direction\u0004ltr": ["ltr"] });
+    </script>
+    <script id="wp-a11y-js-translations">
+      (function (domain, translations) {
+        var localeData =
+          translations.locale_data[domain] || translations.locale_data.messages;
+        localeData[""].domain = domain;
+        wp.i18n.setLocaleData(localeData, domain);
+      })("default", {
+        "translation-revision-date": "2025-09-30 21:34:29+0000",
+        generator: "GlotPress\/4.0.1",
+        domain: "messages",
+        locale_data: {
+          messages: {
+            "": {
+              domain: "messages",
+              "plural-forms": "nplurals=2; plural=n != 1;",
+              lang: "nl",
+            },
+            Notifications: ["Meldingen"],
+          },
+        },
+        comment: { reference: "wp-includes\/js\/dist\/a11y.js" },
+      });
+    </script>
+    <script
+      src="https://www.heelhollandbakt.nl/wordpress/wp-includes/js/dist/a11y.min.js?ver=3156534cc54473497e14"
+      id="wp-a11y-js"
+    ></script>
+    <script
+      defer="defer"
+      src="https://www.heelhollandbakt.nl/wp-content/plugins/gravityforms/js/jquery.json.min.js?ver=2.9.23"
+      id="gform_json-js"
+    ></script>
+    <script id="gform_gravityforms-js-extra">
+      var gform_i18n = {
+        datepicker: {
+          days: {
+            monday: "Ma",
+            tuesday: "Di",
+            wednesday: "Wo",
+            thursday: "Do",
+            friday: "Vr",
+            saturday: "Za",
+            sunday: "Zo",
+          },
+          months: {
+            january: "Januari",
+            february: "Februari",
+            march: "Maart",
+            april: "April",
+            may: "Mei",
+            june: "Juni",
+            july: "Juli",
+            august: "Augustus",
+            september: "September",
+            october: "Oktober",
+            november: "November",
+            december: "December",
+          },
+          firstDay: 1,
+          iconText: "Selecteer een datum",
+        },
+      };
+      var gf_legacy_multi = [];
+      var gform_gravityforms = {
+        strings: {
+          invalid_file_extension:
+            "Dit bestandstype is niet toegestaan. Moet \u00e9\u00e9n van de volgende zijn:",
+          delete_file: "Dit bestand verwijderen",
+          in_progress: "in behandeling",
+          file_exceeds_limit: "Bestand overschrijdt limiet bestandsgrootte",
+          illegal_extension: "Dit type bestand is niet toegestaan.",
+          max_reached: "Maximale aantal bestanden bereikt",
+          unknown_error:
+            "Er was een probleem bij het opslaan van het bestand op de server",
+          currently_uploading: "Wacht tot het uploaden is voltooid",
+          cancel: "Annuleren",
+          cancel_upload: "Deze upload annuleren",
+          cancelled: "Geannuleerd",
+          error: "Fout",
+          message: "Bericht",
+        },
+        vars: {
+          images_url:
+            "https:\/\/www.heelhollandbakt.nl\/wp-content\/plugins\/gravityforms\/images",
+        },
+      };
+      var gf_global = {
+        gf_currency_config: {
+          name: "Euro",
+          symbol_left: "",
+          symbol_right: "&#8364;",
+          symbol_padding: " ",
+          thousand_separator: ".",
+          decimal_separator: ",",
+          decimals: 2,
+          code: "EUR",
+        },
+        base_url:
+          "https:\/\/www.heelhollandbakt.nl\/wp-content\/plugins\/gravityforms",
+        number_formats: [],
+        spinnerUrl:
+          "https:\/\/www.heelhollandbakt.nl\/wp-content\/plugins\/gravityforms\/images\/spinner.svg",
+        version_hash: "92a8caf7713d869376cf498ad9a5fd6b",
+        strings: {
+          newRowAdded: "Nieuwe rij toegevoegd.",
+          rowRemoved: "Rij verwijderd",
+          formSaved:
+            "Het formulier is opgeslagen. De inhoud bevat de link om terug te keren en het formulier in te vullen.",
+        },
+      };
+    </script>
+    <script
+      defer="defer"
+      src="https://www.heelhollandbakt.nl/wp-content/plugins/gravityforms/js/gravityforms.min.js?ver=2.9.23"
+      id="gform_gravityforms-js"
+    ></script>
+    <script
+      defer="defer"
+      src="https://www.heelhollandbakt.nl/wp-content/plugins/gravityforms/js/placeholders.jquery.min.js?ver=2.9.23"
+      id="gform_placeholder-js"
+    ></script>
+    <script
+      defer="defer"
+      src="https://www.heelhollandbakt.nl/wp-content/plugins/gravityforms/assets/js/dist/utils.min.js?ver=380b7a5ec0757c78876bc8a59488f2f3"
+      id="gform_gravityforms_utils-js"
+    ></script>
+    <script
+      defer="defer"
+      src="https://www.heelhollandbakt.nl/wp-content/plugins/gravityforms/assets/js/dist/vendor-theme.min.js?ver=8673c9a2ff188de55f9073009ba56f5e"
+      id="gform_gravityforms_theme_vendors-js"
+    ></script>
+    <script id="gform_gravityforms_theme-js-extra">
+      var gform_theme_config = {
+        common: {
+          form: {
+            honeypot: { version_hash: "92a8caf7713d869376cf498ad9a5fd6b" },
+            ajax: {
+              ajaxurl:
+                "https:\/\/www.heelhollandbakt.nl\/wordpress\/wp-admin\/admin-ajax.php",
+              ajax_submission_nonce: "6f02d93d3c",
+              i18n: {
+                step_announcement: "Stap %1$s van %2$s, %3$s",
+                unknown_error:
+                  "Er was een onbekende fout bij het verwerken van je aanvraag. Probeer het opnieuw.",
+              },
+            },
+          },
+        },
+        hmr_dev: "",
+        public_path:
+          "https:\/\/www.heelhollandbakt.nl\/wp-content\/plugins\/gravityforms\/assets\/js\/dist\/",
+        config_nonce: "ec75fc50c9",
+      };
+    </script>
+    <script
+      defer="defer"
+      src="https://www.heelhollandbakt.nl/wp-content/plugins/gravityforms/assets/js/dist/scripts-theme.min.js?ver=96b168b3a480baf99058dabf9338533b"
+      id="gform_gravityforms_theme-js"
+    ></script>
+    <script type="text/javascript">
+      (function () {
+        // Function to get cookie value
+        function getCookie(name) {
+          var nameEQ = name + "=";
+          var ca = document.cookie.split(";");
+          for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == " ") c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0)
+              return c.substring(nameEQ.length, c.length);
+          }
+          return null;
+        }
+
+        // Function to check if overall consent has been given
+        function hasGeneralConsent() {
+          var consentCookie = getCookie("Cookie_Consent");
+          if (!consentCookie) {
+            return false;
+          }
+
+          // Check if the cookie value is a valid date
+          var consentDate = new Date(consentCookie);
+          return consentDate instanceof Date && !isNaN(consentDate.getTime());
+        }
+
+        // Function to check if a cookie category is accepted
+        function isCategoryAccepted(category) {
+          // First check if general consent has been given
+          if (!hasGeneralConsent()) {
+            return false;
+          }
+
+          var cookieName =
+            "Cookie_Category_" +
+            category.charAt(0).toUpperCase() +
+            category.slice(1);
+          var cookieValue = getCookie(cookieName);
+          return cookieValue === "true" || cookieValue === "1";
+        }
+
+        // Function to enable scripts for a category
+        function enableScriptsForCategory(category) {
+          var scripts = document.querySelectorAll(
+            "script.npo_cc_" + category + "[data-src]"
+          );
+          scripts.forEach(function (script) {
+            if (script.dataset.src) {
+              // Create a new script element
+              var newScript = document.createElement("script");
+              newScript.src = script.dataset.src;
+
+              // Copy other attributes
+              for (var i = 0; i < script.attributes.length; i++) {
+                var attr = script.attributes[i];
+                if (attr.name !== "data-src" && attr.name !== "src") {
+                  newScript.setAttribute(attr.name, attr.value);
+                }
+              }
+
+              // Remove the npo_cc class and data-src
+              newScript.className = newScript.className
+                .replace("npo_cc_" + category, "")
+                .trim();
+
+              // Replace the old script with the new one
+              script.parentNode.insertBefore(newScript, script);
+              script.parentNode.removeChild(script);
+
+              // Hide the placeholder
+              var placeholder = script.previousElementSibling;
+              if (
+                placeholder &&
+                placeholder.classList.contains("npo_cc_placeholder_" + category)
+              ) {
+                placeholder.style.display = "none";
+              }
+            }
+          });
+        }
+
+        // Function to manage Instagram media visibility
+        function manageInstagramMedia() {
+          var instagramElements = document.querySelectorAll(".instagram-media");
+          var socialAccepted = isCategoryAccepted("social");
+
+          instagramElements.forEach(function (element) {
+            if (socialAccepted) {
+              // Show Instagram media
+              element.style.display = "";
+              element.style.visibility = "";
+            } else {
+              // Hide Instagram media
+              element.style.display = "none";
+            }
+          });
+        }
+
+        // Function to check all categories and enable scripts
+        function checkAndEnableScripts() {
+          var categories = [
+            "necessary",
+            "analytics",
+            "recommendations",
+            "social",
+            "advertising",
+            "miscellaneous",
+          ];
+
+          categories.forEach(function (category) {
+            if (isCategoryAccepted(category)) {
+              enableScriptsForCategory(category);
+            }
+          });
+
+          // Also manage Instagram media visibility
+          manageInstagramMedia();
+        }
+
+        // Run on page load
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", checkAndEnableScripts);
+        } else {
+          checkAndEnableScripts();
+        }
+
+        // Listen for cookie changes (if the consent module triggers custom events)
+        document.addEventListener(
+          "cookieConsentChanged",
+          checkAndEnableScripts
+        );
+
+        // Periodically check for cookie changes (fallback)
+        var lastCookieString = document.cookie;
+        setInterval(function () {
+          if (document.cookie !== lastCookieString) {
+            lastCookieString = document.cookie;
+            checkAndEnableScripts();
+          }
+        }, 1000);
+
+        // Also check when user interacts with consent elements
+        document.addEventListener("click", function (e) {
+          if (
+            e.target.classList.contains("ccm_message_link") ||
+            e.target.classList.contains("npo_cc_settings_link") ||
+            e.target.classList.contains("npo_cc_enable_social")
+          ) {
+            setTimeout(checkAndEnableScripts, 100);
+          }
+        });
+      })();
+    </script>
+    <script>
+      gform.initializeOnLoaded(function () {
+        jQuery(document).on(
+          "gform_post_render",
+          function (event, formId, currentPage) {
+            if (formId == 5) {
+              if (typeof Placeholders != "undefined") {
+                Placeholders.enable();
+              }
+            }
+          }
+        );
+        jQuery(document).on(
+          "gform_post_conditional_logic",
+          function (event, formId, fields, isInit) {}
+        );
+      });
+    </script>
+    <script>
+      gform.initializeOnLoaded(function () {
+        jQuery(document).trigger("gform_pre_post_render", [
+          {
+            formId: "5",
+            currentPage: "1",
+            abort: function () {
+              this.preventDefault();
+            },
+          },
+        ]);
+        if (event && event.defaultPrevented) {
+          return;
+        }
+        const gformWrapperDiv = document.getElementById("gform_wrapper_5");
+        if (gformWrapperDiv) {
+          const visibilitySpan = document.createElement("span");
+          visibilitySpan.id = "gform_visibility_test_5";
+          gformWrapperDiv.insertAdjacentElement("afterend", visibilitySpan);
+        }
+        const visibilityTestDiv = document.getElementById(
+          "gform_visibility_test_5"
+        );
+        let postRenderFired = false;
+        function triggerPostRender() {
+          if (postRenderFired) {
+            return;
+          }
+          postRenderFired = true;
+          gform.core.triggerPostRenderEvents(5, 1);
+          if (visibilityTestDiv) {
+            visibilityTestDiv.parentNode.removeChild(visibilityTestDiv);
+          }
+        }
+        function debounce(func, wait, immediate) {
+          var timeout;
+          return function () {
+            var context = this,
+              args = arguments;
+            var later = function () {
+              timeout = null;
+              if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+          };
+        }
+        const debouncedTriggerPostRender = debounce(function () {
+          triggerPostRender();
+        }, 200);
+        if (visibilityTestDiv && visibilityTestDiv.offsetParent === null) {
+          const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+              if (
+                mutation.type === "attributes" &&
+                visibilityTestDiv.offsetParent !== null
+              ) {
+                debouncedTriggerPostRender();
+                observer.disconnect();
+              }
+            });
+          });
+          observer.observe(document.body, {
+            attributes: true,
+            childList: false,
+            subtree: true,
+            attributeFilter: ["style", "class"],
+          });
+        } else {
+          triggerPostRender();
+        }
+      });
+    </script>
+
+    <p
+      id="a11y-speak-intro-text"
+      class="a11y-speak-intro-text"
+      style="
+        position: absolute;
+        margin: -1px;
+        padding: 0;
+        height: 1px;
+        width: 1px;
+        overflow: hidden;
+        clip: rect(1px, 1px, 1px, 1px);
+        -webkit-clip-path: inset(50%);
+        clip-path: inset(50%);
+        border: 0;
+        word-wrap: normal !important;
+      "
+      hidden="hidden"
+    >
+      Meldingen
+    </p>
+    <div
+      id="a11y-speak-assertive"
+      class="a11y-speak-region"
+      style="
+        position: absolute;
+        margin: -1px;
+        padding: 0;
+        height: 1px;
+        width: 1px;
+        overflow: hidden;
+        clip: rect(1px, 1px, 1px, 1px);
+        -webkit-clip-path: inset(50%);
+        clip-path: inset(50%);
+        border: 0;
+        word-wrap: normal !important;
+      "
+      aria-live="assertive"
+      aria-relevant="additions text"
+      aria-atomic="true"
+    ></div>
+    <div
+      id="a11y-speak-polite"
+      class="a11y-speak-region"
+      style="
+        position: absolute;
+        margin: -1px;
+        padding: 0;
+        height: 1px;
+        width: 1px;
+        overflow: hidden;
+        clip: rect(1px, 1px, 1px, 1px);
+        -webkit-clip-path: inset(50%);
+        clip-path: inset(50%);
+        border: 0;
+        word-wrap: normal !important;
+      "
+      aria-live="polite"
+      aria-relevant="additions text"
+      aria-atomic="true"
+    ></div>
+  </body>
+</html>

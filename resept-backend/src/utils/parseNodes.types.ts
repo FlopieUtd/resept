@@ -1,5 +1,4 @@
 import type { TextNode } from "./extractTextNodes";
-import type { IngredientLine } from "../../types";
 
 export interface InternalIngredientGroup {
   ingredientProbability: number;
@@ -13,11 +12,4 @@ export interface InstructionNode {
   depth: number;
   originalIndex: number;
   probability: number;
-}
-
-export interface GroupWithMetadata {
-  group: InternalIngredientGroup;
-  originalIndex: number;
-  title: string | undefined;
-  ingredientLines: IngredientLine[];
 }

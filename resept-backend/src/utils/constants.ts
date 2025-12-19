@@ -322,7 +322,8 @@ export const UNIT_KEYWORDS: Record<
   },
   ounce: {
     english: ["oz", "ounce", "ounces"],
-    dutch: ["ons"],
+    // Ons can lead to false positives, so we don't include it
+    dutch: [],
   },
   cups: {
     dutch: [],

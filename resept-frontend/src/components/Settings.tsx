@@ -13,10 +13,10 @@ export const Settings = () => {
           <div className="rounded-lg border border-gray-200 p-4 bg-white shadow-sm flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold">
-                Automatisch synchroniseren
+                Verberg Brits-Amerikaanse eenheden
               </h2>
               <p className="text-gray-600 text-sm">
-                Houd recepten gelijk tussen app en extensie.
+                Verberg eenheden als oz, cups, gallon.
               </p>
             </div>
             <button

@@ -44,6 +44,10 @@ const testCases = [
     name: "chiliConCarne",
     expectedSuccess: true,
   },
+  {
+    name: "banoffeePie",
+    expectedSuccess: true,
+  },
 ];
 
 describe("recipeExtractionService integration", () => {

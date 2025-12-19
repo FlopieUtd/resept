@@ -1,6 +1,8 @@
 import { YIELD_KEYWORDS, WRITTEN_NUMBERS } from "./constants";
 import { TextNode } from "./extractTextNodes";
 
+const YIELD_SCORE_THRESHOLD = 0.3;
+
 const NUMBER_WORDS = WRITTEN_NUMBERS;
 
 const extractNumbersFromSentence = (sentence: string): number[] => {
@@ -60,7 +62,7 @@ const scoreYieldSentence = (sentence: string, numbers: number[]): number => {
 
   if (reasonableNumbers.length === 0) return 0;
 
-  return yieldKeywordRatio * 100;
+  return yieldKeywordRatio;
 };
 
 const selectBestYield = (
@@ -72,7 +74,7 @@ const selectBestYield = (
     current.score > best.score ? current : best
   );
 
-  if (bestCandidate.score === 0) return 0;
+  if (bestCandidate.score < YIELD_SCORE_THRESHOLD) return 0;
 
   const numbers = extractNumbersFromSentence(bestCandidate.text);
   return numbers.length > 0 ? Math.round(numbers[0]) : 0;

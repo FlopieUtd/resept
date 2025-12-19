@@ -1,0 +1,77 @@
+{
+  "ingredients": [
+    {
+      "ingredients": [
+        {
+          "raw": "200 gram koekjes",
+          "parsed": {
+            "rawWithoutAmount": "gram koekjes",
+            "amount": 200
+          }
+        },
+        {
+          "raw": "125 gram ongezouten boter",
+          "parsed": {
+            "rawWithoutAmount": "gram ongezouten boter",
+            "amount": 125
+          }
+        },
+        {
+          "raw": "Bekertje slagroom",
+          "parsed": {
+            "rawWithoutAmount": "Bekertje slagroom"
+          }
+        },
+        {
+          "raw": "Beetje suiker (op smaak)",
+          "parsed": {
+            "rawWithoutAmount": "Beetje suiker (op smaak)"
+          }
+        },
+        {
+          "raw": "Blikje gecondenseerde melk",
+          "parsed": {
+            "rawWithoutAmount": "Blikje gecondenseerde melk"
+          }
+        },
+        {
+          "raw": "Bananen",
+          "parsed": {
+            "rawWithoutAmount": "Bananen"
+          }
+        }
+      ]
+    }
+  ],
+  "instructions": [
+    {
+      "text": "Verkruimel de koekjes."
+    },
+    {
+      "text": "Smelt de boter en roer het door de koekkruimel. Druk het mengsel in een taartvorm en laat de bodem opstijven in de koelkast."
+    },
+    {
+      "text": "Voor de karamel gebruiken we dulce de leche. Dit maak je door een blikje gecondenseerde melk minstens 3 uur lang, ongeopend, in een grote pan met water te koken."
+    },
+    {
+      "text": "Zorg ervoor dat het blikje de hele kooktijd volledig onder water blijft."
+    },
+    {
+      "text": "Laat het blikje daarna afkoelen en verdeel de karamel over de koeklaag."
+    },
+    {
+      "text": "Snijd een paar bananen in plakjes en leg dit op de karamellaag."
+    },
+    {
+      "text": "Klop tot slot een bekertje slagroom stijf met een beetje suiker en spatel dat op de bananen."
+    },
+    {
+      "text": "Decoreer de taart eventueel met chocoladedecoraties. Zoals chocolade vouwen."
+    },
+    {
+      "text": "En dan: smullen maar!"
+    }
+  ],
+  "recipe_yield": 0,
+  "title": "Banoffee pie"
+}

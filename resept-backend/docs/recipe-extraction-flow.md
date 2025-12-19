@@ -25,8 +25,7 @@
      - `groupNodesByDepthAndType` clusters sibling nodes.
      - `calculateProbabilities` scores groups for ingredient vs instruction likelihood.
      - `extractInstructions` chooses the most instruction-like cluster, flattening to ordered steps.
-     - `extractIngredientCandidates` finds ingredient blocks, tracks structural group titles, and parses each line via `parseIngredient`.
-     - `clusterIngredientGroups` merges candidate blocks into the final `IngredientGroup[]`.
+     - Ingredient extraction finds groups matching the best ingredient group's depth and elementType, then parses each line via `parseIngredient`.
 
 5. **Metadata extraction**
 
