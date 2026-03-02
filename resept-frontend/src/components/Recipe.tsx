@@ -105,6 +105,14 @@ export const Recipe = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [recipeId]);
 
+  useEffect(() => {
+    const handlePopState = () => {
+      navigate("/recipes", { replace: true });
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [navigate]);
+
   if (isLoading && !recipe) {
     return <Loading />;
   }
@@ -158,11 +166,6 @@ export const Recipe = () => {
         >
           <div className="flex justify-between items-center py-[6px] sm:py-[12px] gap-[12px]">
             <div className="flex gap-[12px]  items-center">
-              <HeaderIconButton
-                icon={CaretLeft}
-                to="/recipes"
-                className="lg:hidden"
-              />
               <h1 className="font-futura text-[24px] sm:text-[36px] lg:text-[48px] font-bold text-balance py-[8px]">
                 {recipe.title}
               </h1>
@@ -190,7 +193,7 @@ export const Recipe = () => {
         </div>
         <div className="mb-[16px] flex flex-col gap-[16px] px-[2px]">
           {recipe.description && (
-            <div className="font-radley text-[18px] whitespace-pre-line">
+            <div className="font-radley text-[18px] whitespace-pre-line hidden sm:block">
               {recipe.description}
             </div>
           )}

@@ -62,12 +62,16 @@ const getBrowser = async (): Promise<Browser> => {
       ],
     };
 
-    // Set the cache directory for Render
-    process.env.PUPPETEER_CACHE_DIR = "/opt/render/.cache/puppeteer";
+    const isRender = process.env.RENDER === "true";
+    const puppeteerCacheDir = isRender
+      ? "/opt/render/.cache/puppeteer"
+      : undefined;
 
-    // Try to find Chrome in common locations on Render
-    const possiblePaths = [
-      process.env.PUPPETEER_EXECUTABLE_PATH,
+    if (puppeteerCacheDir) {
+      process.env.PUPPETEER_CACHE_DIR = puppeteerCacheDir;
+    }
+
+    const renderPaths = [
       "/opt/render/.cache/puppeteer/chrome/linux-139.0.7258.66/chrome-linux64/chrome",
       "/opt/render/.cache/puppeteer/chrome/linux-139.0.7258.66/chrome-linux64/Google Chrome for Testing",
       "/usr/bin/google-chrome",
@@ -76,6 +80,11 @@ const getBrowser = async (): Promise<Browser> => {
       "/usr/bin/chromium",
       "/opt/google/chrome/chrome",
       "/opt/google/chrome/google-chrome",
+    ];
+
+    const possiblePaths = [
+      process.env.PUPPETEER_EXECUTABLE_PATH,
+      ...(isRender ? renderPaths : []),
     ].filter(Boolean);
 
     for (const path of possiblePaths) {
@@ -85,13 +94,10 @@ const getBrowser = async (): Promise<Browser> => {
           launchOptions.executablePath = path;
           break;
         }
-      } catch (e) {
-        // Continue to next path
-      }
+      } catch (e) {}
     }
 
-    // If no Chrome found, try to install it dynamically
-    if (!launchOptions.executablePath) {
+    if (!launchOptions.executablePath && isRender) {
       try {
         const { execSync } = await import("child_process");
         execSync(
@@ -99,7 +105,6 @@ const getBrowser = async (): Promise<Browser> => {
           { stdio: "inherit" }
         );
 
-        // Try to find the installed Chrome
         const installedPaths = [
           "/opt/render/.cache/puppeteer/chrome/linux-139.0.7258.66/chrome-linux64/chrome",
           "/opt/render/.cache/puppeteer/chrome/linux-139.0.7258.66/chrome-linux64/Google Chrome for Testing",
