@@ -18,7 +18,6 @@ import {
   PencilSimple,
   ArrowsOutSimple,
   ArrowsInSimple,
-  CaretLeft,
 } from "@phosphor-icons/react";
 import { useState, useEffect, useRef } from "react";
 import { useRecipeYield } from "../hooks/useRecipeYield";
