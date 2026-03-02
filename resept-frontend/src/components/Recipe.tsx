@@ -45,6 +45,7 @@ export const Recipe = () => {
   );
   const headerRef = useRef<HTMLDivElement>(null);
   const [headerOffset, setHeaderOffset] = useState(0);
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
 
   const normalizedInstructions =
     (recipe?.instructions as InstructionGroup[]) || [];
@@ -112,6 +113,30 @@ export const Recipe = () => {
     return () => window.removeEventListener("popstate", handlePopState);
   }, [navigate]);
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      touchStartRef.current = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY,
+      };
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (e.changedTouches.length !== 1 || !touchStartRef.current) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartRef.current.x;
+    const deltaY = e.changedTouches[0].clientY - touchStartRef.current.y;
+    touchStartRef.current = null;
+    const threshold = 50;
+    if (deltaX > threshold && deltaX > Math.abs(deltaY)) {
+      navigate("/recipes", { replace: true });
+    }
+  };
+
+  const handleTouchCancel = () => {
+    touchStartRef.current = null;
+  };
+
   if (isLoading && !recipe) {
     return <Loading />;
   }
@@ -156,7 +181,12 @@ export const Recipe = () => {
   };
 
   return (
-    <div className="flex w-full min-h-[100dvh] justify-center items-start">
+    <div
+      className="flex w-full min-h-[100dvh] justify-center items-start"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchCancel}
+    >
       <div className="flex w-full max-w-[1080px] mx-[16px] sm:mx-[24px] lg:justify-center flex-col min-h-[100dvh]">
         <div
           ref={headerRef}
