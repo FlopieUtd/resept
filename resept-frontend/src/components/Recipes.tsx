@@ -122,12 +122,12 @@ export const Recipes = () => {
     <div className="flex w-full h-full justify-center">
       <div className="flex w-full max-w-[1080px] m-[16px] sm:m-[24px] flex-col">
         <div className="flex justify-between items-center mb-[12px] sm:mb-[16px] w-full border-b-2 border-black pb-[12px] sm:pb-[16px]">
-          <h1 className="font-futura text-3xl font-bold">
+          <h1 className="font-futura text-2xl sm:text-3xl font-bold">
             {recipes && recipes.length > 0 ? (
               <span> {recipes ? recipes.length : ""} Recepten</span>
             ) : null}
           </h1>
-          <div className="flex gap-2">
+          <div className="flex gap-2 hidden sm:flex">
             <button
               onClick={() => setIsEditModalOpen(true)}
               className="bg-white text-black p-[8px] rounded-lg hover:bg-gray-200 transition-colors"

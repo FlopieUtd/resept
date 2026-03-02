@@ -199,14 +199,13 @@ export const Recipe = () => {
                 {recipe.title}
               </h1>
             </div>
-            <div className="flex gap-[8px]">
+            <div className="flex gap-[8px] hidden sm:flex">
               <HeaderIconButton
                 icon={PencilSimple}
                 onClick={() => setIsEditModalOpen(true)}
               />
               <HeaderIconButton
                 icon={isFullscreen ? ArrowsInSimple : ArrowsOutSimple}
-                className="hidden sm:flex"
                 onClick={async () => {
                   if (!document.fullscreenElement) {
                     await document.documentElement.requestFullscreen();
