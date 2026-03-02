@@ -175,7 +175,7 @@ export const ExtensionAuth = () => {
         >
           {status === "success" ? "✅" : "❌"}
         </div>
-        <h1 className="text-2xl font-bold mb-4">
+        <h1 className="font-futura text-2xl font-bold mb-4">
           {status === "success" ? "Success!" : "Error"}
         </h1>
         <p className="text-lg mb-6">{message}</p>

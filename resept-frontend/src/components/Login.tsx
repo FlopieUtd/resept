@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Input } from "./Input";
 import garlicImage from "../assets/garlic.png";
 import { Loading } from "./Loading";
+import { Button } from "./Button";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
@@ -35,24 +36,24 @@ export const Login = () => {
 
         if (fromExtension) {
           const extensionRedirectUri = localStorage.getItem(
-            "extension_redirect_uri"
+            "extension_redirect_uri",
           );
           const originalUrl = localStorage.getItem("extension_original_url");
           const originalTabId = localStorage.getItem(
-            "extension_original_tab_id"
+            "extension_original_tab_id",
           );
 
           if (extensionRedirectUri) {
             localStorage.removeItem("extension_redirect_uri");
             let redirectUrl = `/auth/extension?redirect_uri=${encodeURIComponent(
-              extensionRedirectUri
+              extensionRedirectUri,
             )}`;
             if (originalUrl) {
               redirectUrl += `&original_url=${encodeURIComponent(originalUrl)}`;
             }
             if (originalTabId) {
               redirectUrl += `&original_tab_id=${encodeURIComponent(
-                originalTabId
+                originalTabId,
               )}`;
             }
             navigate(redirectUrl);
@@ -68,7 +69,7 @@ export const Login = () => {
       }
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Er is een fout opgetreden"
+        err instanceof Error ? err.message : "Er is een fout opgetreden",
       );
     } finally {
       setLoading(false);
@@ -88,7 +89,7 @@ export const Login = () => {
   return (
     <div className="flex w-full h-full justify-center items-center">
       <div className="w-full max-w-[400px] p-[16px] bg-white">
-        <h2 className="text-[40px] font-bold mb-[24px] text-center tracking-[10px]">
+        <h2 className="font-futura text-[40px] font-bold mb-[24px] text-center tracking-[10px]">
           Resept
         </h2>
         <div className="flex justify-center w-full mb-[24px]">
@@ -123,29 +124,22 @@ export const Login = () => {
             required
           />
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50"
-          >
+          <Button type="submit" disabled={loading} className="w-full ">
             {isSignUp ? "Registreren" : "Inloggen"}
-          </button>
+          </Button>
         </form>
 
         <div className="mt-4 text-center space-y-2">
-          <button
-            onClick={() => setIsSignUp(!isSignUp)}
-            className="text-red-600 hover:text-red-800 block w-full"
-          >
+          <Button onClick={() => setIsSignUp(!isSignUp)} className="w-full">
             {isSignUp
               ? "Heb je al een account? Inloggen"
               : "Nog geen account? Registreren"}
-          </button>
+          </Button>
 
           {!isSignUp && (
             <Link
               to="/password-recovery"
-              className="text-red-600 hover:text-red-800 block w-full"
+              className="hover:underline block w-full"
             >
               Wachtwoord vergeten?
             </Link>

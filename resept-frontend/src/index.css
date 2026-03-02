@@ -1,4 +1,20 @@
 @font-face {
+  font-family: "FuturaPTBook";
+  src: url("/fonts/FuturaPTBook.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "FuturaPTDemi";
+  src: url("/fonts/FuturaPTDemi.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "Radley";
   src: url("/fonts/Radley-Regular.ttf") format("truetype");
   font-weight: normal;
@@ -7,5 +23,11 @@
 }
 
 @tailwind base;
+
+@layer base {
+  html {
+    font-size: 18px;
+  }
+}
 @tailwind components;
 @tailwind utilities;

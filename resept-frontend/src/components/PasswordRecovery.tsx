@@ -42,7 +42,7 @@ export const PasswordRecovery = () => {
               <ArrowLeft size={20} className="mr-2" />
               Back to Login
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="font-futura text-2xl font-bold text-gray-900 mb-2">
               Reset Password
             </h1>
             <p className="text-gray-600">

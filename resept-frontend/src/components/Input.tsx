@@ -8,13 +8,13 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, className = "", ...props }, ref) => {
     const baseClasses =
-      "w-full border border-neutral-400 hover:border-black focus:border-black rounded-[4px] px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black bg-white";
+      "w-full h-[40px] border border-neutral-400 hover:border-black focus:border-black rounded-[4px] px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black bg-white";
     const errorClasses = error ? "border-red-500 focus:ring-red-500" : "";
     const combinedClasses =
       `${baseClasses} ${errorClasses} ${className}`.trim();
 
     return (
-      <div className="w-full text-[14px]">
+      <div className="w-full text-[16px]">
         {label && (
           <label className="block text-sm font-medium text-gray-700 mb-1">
             {label}
@@ -24,7 +24,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = "Input";

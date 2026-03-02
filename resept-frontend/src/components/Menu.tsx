@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { Button } from "./Button";
 
 export const Menu = () => {
   const { user, signOut } = useAuth();
@@ -17,7 +18,7 @@ export const Menu = () => {
       <div className="flex flex-col w-full">
         <Link
           to="/recipes"
-          className="px-[12px] py-[8px] border-b hover:bg-[#f0f0f0] cursor-pointer text-[14px]"
+          className="px-[12px] py-[8px] border-b hover:bg-[#f0f0f0] cursor-pointer text-[16px]"
         >
           Recepten
         </Link>
@@ -26,18 +27,18 @@ export const Menu = () => {
         <div className="flex flex-col w-full">
           <Link
             to="/settings"
-            className="px-[12px] py-[8px] border-t hover:bg-[#f0f0f0] cursor-pointer text-[14px]"
+            className="px-[12px] py-[8px] border-t hover:bg-[#f0f0f0] cursor-pointer text-[16px]"
           >
             Instellingen
           </Link>
           <div className="mt-auto p-3 border-t">
-            <div className="text-[14px] text-gray-600 mb-2">{user.email}</div>
-            <button
+            <div className="text-[16px] text-gray-600 mb-2">{user.email}</div>
+            <Button
               onClick={handleSignOut}
-              className="w-full px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+              className="w-full px-3 py-1 text-sm  rounded "
             >
               Uitloggen
-            </button>
+            </Button>
           </div>
         </div>
       )}

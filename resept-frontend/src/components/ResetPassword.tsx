@@ -64,7 +64,7 @@ export const ResetPassword = () => {
           <div className="bg-white p-8 rounded-lg shadow-lg">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto mb-4"></div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              <h1 className="font-futura text-2xl font-bold text-gray-900 mb-2">
                 Verifying Recovery Link
               </h1>
               <p className="text-gray-600">
@@ -90,7 +90,7 @@ export const ResetPassword = () => {
                 <ArrowLeft size={20} className="mr-2" />
                 Back to Login
               </Link>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              <h1 className="font-futura text-2xl font-bold text-gray-900 mb-2">
                 Invalid Recovery Link
               </h1>
               <p className="text-gray-600">
@@ -123,7 +123,7 @@ export const ResetPassword = () => {
               <ArrowLeft size={20} className="mr-2" />
               Back to Login
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="font-futura text-2xl font-bold text-gray-900 mb-2">
               Set New Password
             </h1>
             <p className="text-gray-600">Enter your new password below.</p>

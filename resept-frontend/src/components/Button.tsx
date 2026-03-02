@@ -15,13 +15,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       disabled,
       ...props
     },
-    ref
+    ref,
   ) => {
     const baseClasses =
       "focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed rounded-[4px] px-[24px] py-[9px] text-sm";
 
     const variantClasses = {
-      primary: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
+      primary: "bg-black text-white hover:bg-gray-800 focus:ring-gray-500",
       secondary:
         "bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500",
       danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
@@ -40,7 +40,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {children}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = "Button";

@@ -25,10 +25,10 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
       disabled,
       ...props
     },
-    ref
+    ref,
   ) => {
     const baseClasses =
-      "w-full border border-neutral-400 hover:border-black focus:border-black rounded-[4px] px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black bg-white h-[39px]";
+      "w-full h-[40px] flex items-center border border-neutral-400 hover:border-black focus:border-black rounded-[4px] px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black bg-white";
     const errorClasses = error ? "border-red-500 focus:ring-red-500" : "";
     const combinedClasses =
       `${baseClasses} ${errorClasses} ${className}`.trim();
@@ -87,9 +87,9 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     };
 
     return (
-      <div className="w-full text-[14px]" ref={containerRef}>
+      <div className="w-full text-[16px]" ref={containerRef}>
         {label && (
-          <label className="block text-sm font-medium text-gray-700 mb-1 text-[14px]">
+          <label className="block text-sm font-medium text-gray-700 mb-1 text-[16px]">
             {label}
           </label>
         )}
@@ -141,7 +141,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
       </div>
     );
-  }
+  },
 );
 
 Select.displayName = "Select";

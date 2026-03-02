@@ -1,8 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef } from "react";
 import { useAutoGrowTextarea } from "../hooks/useAutoGrowTextarea";
 
-interface TextareaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   error?: string;
 }
@@ -15,7 +14,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     useImperativeHandle(ref, () => autoGrowRef.current || internalRef.current!);
 
     const baseClasses =
-      "w-full border border-neutral-400 hover:border-black focus:border-black rounded-[4px] px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black bg-white resize-none overflow-hidden text-[14px]";
+      "w-full border border-neutral-400 hover:border-black focus:border-black rounded-[4px] px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black bg-white resize-none overflow-hidden text-[16px]";
     const errorClasses = error ? "border-red-500 focus:ring-red-500" : "";
     const combinedClasses =
       `${baseClasses} ${errorClasses} ${className}`.trim();
@@ -31,7 +30,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
       </div>
     );
-  }
+  },
 );
 
 Textarea.displayName = "Textarea";

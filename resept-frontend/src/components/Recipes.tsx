@@ -65,12 +65,12 @@ export const Recipes = () => {
       const countA = (a.ingredients || []).reduce(
         (acc: number, g: IngredientGroup) =>
           acc + ((g?.ingredients || []).length || 0),
-        0
+        0,
       );
       const countB = (b.ingredients || []).reduce(
         (acc: number, g: IngredientGroup) =>
           acc + ((g?.ingredients || []).length || 0),
-        0
+        0,
       );
       return countA - countB;
     };
@@ -122,7 +122,7 @@ export const Recipes = () => {
     <div className="flex w-full h-full justify-center">
       <div className="flex w-full max-w-[1080px] m-[16px] sm:m-[24px] flex-col">
         <div className="flex justify-between items-center mb-[12px] sm:mb-[16px] w-full border-b-2 border-black pb-[12px] sm:pb-[16px]">
-          <h1 className="text-3xl font-bold">
+          <h1 className="font-futura text-3xl font-bold">
             {recipes && recipes.length > 0 ? (
               <span> {recipes ? recipes.length : ""} Recepten</span>
             ) : null}
@@ -173,7 +173,7 @@ export const Recipes = () => {
                         | "alpha"
                         | "date"
                         | "ingredients"
-                        | "time"
+                        | "time",
                     )
                   }
                 >
@@ -201,16 +201,16 @@ export const Recipes = () => {
                     to={`/recipes/${recipe.id}`}
                     className="flex flex-col cursor-pointer bg-[#f9f9f9]  hover:bg-white hover:border-black border-2 border-[#f9f9f9] p-[12px] gap-[6px]"
                   >
-                    <h2 className="text-xl text-balance font-semibold line-clamp-3 overflow-hidden">
+                    <h2 className="font-futura text-xl text-balance font-semibold line-clamp-3 overflow-hidden">
                       {recipe.title}
                     </h2>
-                    <div className="flex gap-[6px] items-center text-[14px]">
+                    <div className="flex gap-[6px] items-center text-[16px]">
                       {Array.isArray(recipe.ingredients) && (
                         <div className="">
                           {recipe.ingredients.reduce(
                             (acc: number, g: IngredientGroup) =>
                               acc + ((g?.ingredients || []).length || 0),
-                            0
+                            0,
                           )}{" "}
                           ingrediënten
                         </div>

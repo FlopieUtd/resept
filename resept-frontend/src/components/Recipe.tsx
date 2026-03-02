@@ -42,7 +42,7 @@ export const Recipe = () => {
   const deleteRecipe = useDeleteRecipe();
   const { isFullscreen, setIsFullscreen } = useFullscreen();
   const [activeTab, setActiveTab] = useState<"ingredients" | "instructions">(
-    "ingredients"
+    "ingredients",
   );
   const headerRef = useRef<HTMLDivElement>(null);
   const [headerOffset, setHeaderOffset] = useState(0);
@@ -53,7 +53,7 @@ export const Recipe = () => {
   const detectedLanguage = useLanguageDetection(
     recipe?.title || "",
     recipe?.description || "",
-    normalizedInstructions
+    normalizedInstructions,
   );
 
   const t = LABELS[detectedLanguage];
@@ -163,7 +163,7 @@ export const Recipe = () => {
                 to="/recipes"
                 className="lg:hidden"
               />
-              <h1 className="text-[24px] sm:text-[36px] lg:text-[48px] font-bold text-balance py-[8px]">
+              <h1 className="font-futura text-[24px] sm:text-[36px] lg:text-[48px] font-bold text-balance py-[8px]">
                 {recipe.title}
               </h1>
             </div>
@@ -197,7 +197,7 @@ export const Recipe = () => {
 
           <div className="flex gap-[12px] flex-wrap">
             {recipe.recipe_yield && (
-              <div className="bg-[#f9f9f9] text-[14px] flex">
+              <div className="bg-[#f9f9f9] text-[16px] flex">
                 <button
                   onClick={decrementRecipeYield}
                   className="py-[4px] flex justify-center w-[29px] hover:bg-[#eee]"
@@ -225,23 +225,23 @@ export const Recipe = () => {
               </div>
             )}
             {recipe.prep_time && !isDurationEmpty(recipe.prep_time) && (
-              <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
+              <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[16px]">
                 {t.prep}: {formatTime(recipe.prep_time)}
               </div>
             )}
             {recipe.cook_time && !isDurationEmpty(recipe.cook_time) && (
-              <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
+              <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[16px]">
                 {t.cook}: {formatTime(recipe.cook_time)}
               </div>
             )}
             {recipe.total_time && !isDurationEmpty(recipe.total_time) && (
-              <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[14px]">
+              <div className="bg-[#f9f9f9] py-[4px] px-[16px] text-[16px]">
                 {t.total}: {formatTime(recipe.total_time)}
               </div>
             )}
             {recipe.source_url && (
               <a href={recipe.source_url} target="_blank">
-                <div className="bg-[#f9f9f9] hover:bg-[#eee] py-[4px] px-[16px] text-[14px]">
+                <div className="bg-[#f9f9f9] hover:bg-[#eee] py-[4px] px-[16px] text-[16px]">
                   {t.source}: {extractDomainFromUrl(recipe.source_url)}
                 </div>{" "}
               </a>
@@ -279,7 +279,7 @@ export const Recipe = () => {
               {scaledGroups.map((group, gIndex) => (
                 <div key={gIndex}>
                   {group.title && (
-                    <div className="font-bold text-[18px] mb-[8px] text-[#333]">
+                    <div className="font-futura font-bold text-[18px] mb-[8px] text-[#333]">
                       {group.title}
                     </div>
                   )}
@@ -289,21 +289,21 @@ export const Recipe = () => {
                         <span className="min-w-[60px]">
                           {ingredient.scaledAmountMax !== undefined
                             ? `${formatNumber(
-                                ingredient.scaledAmount!
+                                ingredient.scaledAmount!,
                               )}-${formatNumber(ingredient.scaledAmountMax)}`
                             : ingredient.scaledAmount !== undefined
-                            ? formatNumber(ingredient.scaledAmount)
-                            : ingredient.parsed?.amountMax !== undefined
-                            ? `${formatNumber(
-                                ingredient.parsed.amount!
-                              )}-${formatNumber(ingredient.parsed.amountMax)}`
-                            : ingredient.parsed?.amount !== undefined
-                            ? formatNumber(ingredient.parsed.amount)
-                            : ""}
+                              ? formatNumber(ingredient.scaledAmount)
+                              : ingredient.parsed?.amountMax !== undefined
+                                ? `${formatNumber(
+                                    ingredient.parsed.amount!,
+                                  )}-${formatNumber(ingredient.parsed.amountMax)}`
+                                : ingredient.parsed?.amount !== undefined
+                                  ? formatNumber(ingredient.parsed.amount)
+                                  : ""}
                         </span>
                         <span>
                           {decodeHtmlEntities(
-                            ingredient.parsed?.rawWithoutAmount || ""
+                            ingredient.parsed?.rawWithoutAmount || "",
                           )}
                         </span>
                       </li>
@@ -325,7 +325,7 @@ export const Recipe = () => {
                     return (
                       <div key={groupIndex} className="sm:pb-[16px]">
                         {group.title && (
-                          <div className="font-sans font-bold text-[20px] mb-[12px] text-[#333]">
+                          <div className="font-futura font-bold text-[20px] mb-[12px] text-[#333]">
                             {group.title}
                           </div>
                         )}
@@ -336,7 +336,7 @@ export const Recipe = () => {
                         ))}
                       </div>
                     );
-                  }
+                  },
                 )
               )}
             </div>
@@ -346,7 +346,7 @@ export const Recipe = () => {
         <div className="hidden sm:flex gap-[24px] pb-[36px]">
           <div className="w-1/3 flex flex-col gap-[24px]">
             <div
-              className="text-[22px] py-[12px] font-bold border-b-[2px] border-black tracking-[1px] sticky bg-white z-5"
+              className="font-futura text-[22px] py-[12px] font-bold border-b-[2px] border-black tracking-[1px] sticky bg-white z-5"
               style={{ top: headerOffset }}
             >
               {t.ingredients}
@@ -355,7 +355,7 @@ export const Recipe = () => {
               {scaledGroups.map((group, gIndex) => (
                 <div key={gIndex}>
                   {group.title && (
-                    <div className="font-bold text-[18px] mb-[8px] text-[#333]">
+                    <div className="font-futura font-bold text-[18px] mb-[8px] text-[#333]">
                       {group.title}
                     </div>
                   )}
@@ -365,21 +365,21 @@ export const Recipe = () => {
                         <span className="min-w-[60px]">
                           {ingredient.scaledAmountMax !== undefined
                             ? `${formatNumber(
-                                ingredient.scaledAmount!
+                                ingredient.scaledAmount!,
                               )}-${formatNumber(ingredient.scaledAmountMax)}`
                             : ingredient.scaledAmount !== undefined
-                            ? formatNumber(ingredient.scaledAmount)
-                            : ingredient.parsed?.amountMax !== undefined
-                            ? `${formatNumber(
-                                ingredient.parsed.amount!
-                              )}-${formatNumber(ingredient.parsed.amountMax)}`
-                            : ingredient.parsed?.amount !== undefined
-                            ? formatNumber(ingredient.parsed.amount)
-                            : ""}
+                              ? formatNumber(ingredient.scaledAmount)
+                              : ingredient.parsed?.amountMax !== undefined
+                                ? `${formatNumber(
+                                    ingredient.parsed.amount!,
+                                  )}-${formatNumber(ingredient.parsed.amountMax)}`
+                                : ingredient.parsed?.amount !== undefined
+                                  ? formatNumber(ingredient.parsed.amount)
+                                  : ""}
                         </span>
                         <span>
                           {decodeHtmlEntities(
-                            ingredient.parsed?.rawWithoutAmount || ""
+                            ingredient.parsed?.rawWithoutAmount || "",
                           )}
                         </span>
                       </li>
@@ -391,7 +391,7 @@ export const Recipe = () => {
           </div>
           <div className="w-2/3 flex flex-col gap-[24px]">
             <div
-              className="text-[22px] py-[12px] font-bold border-b-[2px] border-black tracking-[1px] sticky bg-white z-5"
+              className="font-futura text-[22px] py-[12px] font-bold border-b-[2px] border-black tracking-[1px] sticky bg-white z-5"
               style={{ top: headerOffset }}
             >
               {t.instructions}
@@ -408,7 +408,7 @@ export const Recipe = () => {
                     return (
                       <div key={groupIndex} className="sm:pb-[16px]">
                         {group.title && (
-                          <div className="font-sans font-bold text-[18px] mb-[12px] text-[#333]">
+                          <div className="font-futura font-bold text-[18px] mb-[12px] text-[#333]">
                             {group.title}
                           </div>
                         )}
@@ -419,7 +419,7 @@ export const Recipe = () => {
                         ))}
                       </div>
                     );
-                  }
+                  },
                 )
               )}
             </div>

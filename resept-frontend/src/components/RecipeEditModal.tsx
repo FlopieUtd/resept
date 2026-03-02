@@ -485,7 +485,7 @@ export const RecipeEditModal = ({
       <div className="bg-white max-w-[1080px] w-full max-h-[100vh] sm:max-h-[95vh] overflow-y-auto sm:rounded-[8px] shadow-xl">
         <div className="">
           <div className="flex justify-between items-center py-[16px] px-[16px] sticky top-0 bg-white">
-            <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
+            <h2 className="font-futura text-2xl font-bold text-gray-800">{title}</h2>
             <button onClick={onClose} className="">
               <X size={24} weight="bold" />
             </button>
@@ -493,7 +493,7 @@ export const RecipeEditModal = ({
 
           {showImport && (
             <div className="pb-[16px]  border-b mb-[16px] px-[16px]">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              <h3 className="font-futura text-lg font-semibold text-gray-800 mb-4">
                 Recept importeren van URL
               </h3>
               <form onSubmit={handleImportSubmit} className="space-y-4">

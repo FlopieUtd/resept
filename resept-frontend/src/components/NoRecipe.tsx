@@ -20,7 +20,7 @@ const NoRecipe: React.FC = () => {
               />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="font-futura text-2xl font-bold text-gray-900 mb-2">
             No Recipe Detected
           </h1>
           <p className="text-gray-600 mb-6">
