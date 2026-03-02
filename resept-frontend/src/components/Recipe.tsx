@@ -19,7 +19,7 @@ import {
   ArrowsOutSimple,
   ArrowsInSimple,
 } from "@phosphor-icons/react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useRecipeYield } from "../hooks/useRecipeYield";
 import { extractDomainFromUrl } from "../utils/extractDomainFromUrl";
 import { decodeHtmlEntities } from "../utils/decodeHtmlEntities";
@@ -101,8 +101,8 @@ export const Recipe = () => {
     };
   }, []);
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
   }, [recipeId]);
 
   useEffect(() => {
@@ -467,7 +467,6 @@ export const Recipe = () => {
         initialData={recipe}
         isSaving={updateRecipe.isPending}
         isDeleting={deleteRecipe.isPending}
-        showImport={false}
       />
     </div>
   );

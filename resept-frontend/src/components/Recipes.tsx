@@ -245,7 +245,6 @@ export const Recipes = () => {
           source_url: "",
         }}
         isSaving={createRecipe.isPending}
-        showImport={true}
       />
     </div>
   );

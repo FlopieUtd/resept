@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { type CreateRecipeData, type ParsedIngredient } from "../types";
-import { API_URL } from "../utils/constants";
 import { Input } from "./Input";
 import { Textarea } from "./Textarea";
 import { Button } from "./Button";
@@ -163,7 +162,6 @@ interface RecipeEditModalProps {
   isSaving: boolean;
   isDeleting?: boolean;
   title?: string;
-  showImport?: boolean;
 }
 
 export const RecipeEditModal = ({
@@ -175,7 +173,6 @@ export const RecipeEditModal = ({
   isSaving,
   isDeleting = false,
   title = "Bewerk recept",
-  showImport = false,
 }: RecipeEditModalProps) => {
   const [formData, setFormData] = useState<CreateRecipeData>({
     ...initialData,
@@ -189,9 +186,6 @@ export const RecipeEditModal = ({
         : [{ instructions: [{ text: "" }] }],
   });
 
-  const [importUrl, setImportUrl] = useState("");
-  const [importError, setImportError] = useState("");
-  const [isImporting, setIsImporting] = useState(false);
   const prevIsOpen = useRef(isOpen);
   const ingredientInputRefs = useRef<Record<string, HTMLInputElement | null>>(
     {}
@@ -408,67 +402,6 @@ export const RecipeEditModal = ({
     onSave(cleanedData);
   };
 
-  const handleImportSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setImportError("");
-    setIsImporting(true);
-
-    try {
-      const response = await fetch(`${API_URL}/extract-from-url`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ url: importUrl }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        const transformedData: CreateRecipeData = {
-          title: data.title || "Untitled Recipe",
-          recipe_yield: data.recipe_yield || "",
-          recipe_category: data.recipe_category || "Recepten",
-          description: data.description || "",
-          prep_time: data.prep_time || "",
-          cook_time: data.cook_time || "",
-          total_time: data.total_time || "",
-          ingredients: data.ingredients || [],
-          instructions: data.instructions || [],
-          source_url: importUrl,
-        };
-
-        if (
-          transformedData.title &&
-          transformedData.source_url &&
-          (transformedData.ingredients.length > 0 ||
-            transformedData.instructions.length > 0)
-        ) {
-          setFormData({
-            ...transformedData,
-            ingredients:
-              transformedData.ingredients.length > 0
-                ? transformedData.ingredients
-                : [{ ingredients: [{ raw: "" }] }],
-            instructions:
-              transformedData.instructions.length > 0
-                ? transformedData.instructions
-                : [{ instructions: [{ text: "" }] }],
-          });
-          setImportUrl("");
-        } else {
-          setImportError("Could not extract valid recipe data from this URL");
-        }
-      } else {
-        setImportError(data.error || "Failed to extract recipe");
-      }
-    } catch {
-      setImportError("Network error occurred");
-    } finally {
-      setIsImporting(false);
-    }
-  };
-
   if (!isOpen) return null;
 
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -490,35 +423,6 @@ export const RecipeEditModal = ({
               <X size={24} weight="bold" />
             </button>
           </div>
-
-          {showImport && (
-            <div className="pb-[16px]  border-b mb-[16px] px-[16px]">
-              <h3 className="font-futura text-lg font-semibold text-gray-800 mb-4">
-                Recept importeren van URL
-              </h3>
-              <form onSubmit={handleImportSubmit} className="space-y-4">
-                <div className="flex gap-[12px]">
-                  <div className="flex-1">
-                    <Input
-                      type="url"
-                      value={importUrl}
-                      onChange={(e) => setImportUrl(e.target.value)}
-                      placeholder="Recept URL..."
-                      required
-                    />
-                  </div>
-                  <Button type="submit" loading={isImporting}>
-                    Importeren
-                  </Button>
-                </div>
-                {importError && (
-                  <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-                    {importError}
-                  </div>
-                )}
-              </form>
-            </div>
-          )}
 
           <form onSubmit={handleSubmit} className="space-y-6 px-[16px]">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-[12px]">

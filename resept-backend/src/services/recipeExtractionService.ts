@@ -1,6 +1,3 @@
-import { fetchHtmlFromUrl as fetchHtmlFromUrlUtil } from "../utils/fetchHtmlFromUrl";
-import { fetchHtmlWithBrowser } from "../utils/fetchHtmlWithBrowser";
-import { detectSiteType } from "../utils/detectSiteType";
 import { detectRecipeJsonLd } from "../utils/detectRecipeJsonLd";
 import { transformJsonLdToRecipe } from "../utils/transformJsonLdToRecipe";
 import { extractTextNodes } from "../utils/extractTextNodes";
@@ -13,12 +10,6 @@ export interface RecipeResult {
   success: boolean;
   error: string | null;
   data: any | null;
-}
-
-interface BrowserOptions {
-  waitForTimeout: number;
-  waitForNetworkIdle: boolean;
-  maxWaitTime: number;
 }
 
 export const processRecipeExtraction = async (
@@ -102,49 +93,6 @@ export const processRecipeExtraction = async (
     return {
       success: false,
       error: error.message || "Failed to extract recipe",
-      data: null,
-    };
-  }
-};
-
-export const fetchHtmlFromUrl = async (
-  url: string
-): Promise<{
-  success: boolean;
-  error: string | null;
-  data: { html: string } | null;
-}> => {
-  try {
-    // Step 1: Try fast HTML fetch first
-    let html: string = await fetchHtmlFromUrlUtil(url);
-
-    // Step 1.5: If site needs browser rendering, use headless browser
-    const siteAnalysis = detectSiteType(html);
-    if (siteAnalysis.needsBrowser) {
-      try {
-        const browserOptions: BrowserOptions = {
-          waitForTimeout: 5000,
-          waitForNetworkIdle: true,
-          maxWaitTime: 15000,
-        };
-        html = await fetchHtmlWithBrowser(url, browserOptions);
-      } catch (browserError: any) {
-        console.log(
-          "Headless browser failed, continuing with original HTML:",
-          browserError.message
-        );
-      }
-    }
-
-    return {
-      success: true,
-      error: null,
-      data: { html },
-    };
-  } catch (error: any) {
-    return {
-      success: false,
-      error: error.message || "Failed to fetch HTML from URL",
       data: null,
     };
   }

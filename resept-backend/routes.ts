@@ -1,6 +1,5 @@
 import express, { Request, Response, Router } from "express";
 import {
-  fetchHtmlFromUrl,
   extractRecipeFromHtml,
 } from "./src/services/recipeExtractionService";
 import { updateRecipe } from "./src/services/updateRecipe";
@@ -9,10 +8,6 @@ import { authenticateToken } from "./src/middleware/auth";
 import { supabase } from "./src/lib/supabase";
 
 const router: Router = express.Router();
-
-interface ExtractFromUrlRequest {
-  url: string;
-}
 
 interface ExtractFromHtmlRequest {
   html: string;
@@ -128,35 +123,6 @@ router.post("/auth/refresh", async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     return res.status(500).json({ error: "Token refresh failed" });
-  }
-});
-
-router.post("/extract-from-url", async (req: any, res: Response) => {
-  try {
-    const { url } = req.body || {};
-    if (!url) return res.status(400).json({ error: "Missing URL" });
-
-    // Fetch HTML from URL
-    const htmlResult = await fetchHtmlFromUrl(url);
-
-    if (!htmlResult.success) {
-      return res.status(404).json({ error: htmlResult.error });
-    }
-
-    // Extract recipe data from HTML (no persistence)
-    const extractionResult = await extractRecipeFromHtml(
-      htmlResult.data!.html,
-      url
-    );
-
-    if (!extractionResult.success) {
-      return res.status(400).json({ error: extractionResult.error });
-    }
-
-    // Return the extracted recipe data to frontend
-    return res.status(200).json(extractionResult.data);
-  } catch (err) {
-    return res.status(500).json({ error: "Extract from URL failed" });
   }
 });
 

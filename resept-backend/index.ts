@@ -3,7 +3,6 @@ import express, { Application } from "express";
 import { Server } from "http";
 import cors from "cors";
 import routes from "./routes";
-import { closeBrowser } from "./src/utils/fetchHtmlWithBrowser";
 import {
   createServerWithPortLock,
   setupGracefulShutdown,
@@ -43,11 +42,3 @@ const server: Server = createServerWithPortLock(app, PORT);
 // Setup graceful shutdown with browser cleanup
 setupGracefulShutdown(server, PORT);
 
-// Additional cleanup for browser
-process.on("SIGINT", async () => {
-  await closeBrowser();
-});
-
-process.on("SIGTERM", async () => {
-  await closeBrowser();
-});
