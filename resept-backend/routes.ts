@@ -42,7 +42,7 @@ router.get("/auth/extension", (req: Request, res: Response) => {
   // Always redirect to frontend - frontend will check if user is logged in
   // and either get tokens directly or redirect to login
   let frontendUrl = `${
-    process.env.FRONTEND_URL || "http://localhost:5173"
+    process.env.FRONTEND_URL || "https://flopieutd.github.io/resept"
   }/auth/extension?redirect_uri=${encodeURIComponent(redirectUri)}`;
 
   if (originalUrl) {
