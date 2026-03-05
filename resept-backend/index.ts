@@ -15,6 +15,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173", // Frontend dev server
+      "https://flopieutd.github.io", // Hosted frontend
       /^moz-extension:\/\/.*/, // Firefox extensions
       /^chrome-extension:\/\/.*/, // Chrome extensions
     ],
