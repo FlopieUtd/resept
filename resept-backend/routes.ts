@@ -134,6 +134,9 @@ router.post(
       const { html, url, metadata } = req.body || {};
       if (!html) return res.status(400).json({ error: "Missing HTML content" });
 
+      const sizeKb = (Buffer.byteLength(html, "utf8") / 1024).toFixed(1);
+      console.log(`[extract-from-html] incoming HTML: ${sizeKb} KB (${url ?? "no url"})`);
+
       // Process and save the recipe directly
       const result = await processAndSaveRecipe({
         html: html,
