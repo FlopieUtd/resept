@@ -29,6 +29,22 @@ router.get("/test", (req: Request, res: Response) => {
   res.json({ message: "Backend routing is working!" });
 });
 
+// Supabase pauses free-tier projects after a week without database activity,
+// so a scheduled job pings this to run a cheap real query.
+router.get("/keepalive", async (req: Request, res: Response) => {
+  const { error } = await supabase
+    .from("recipes")
+    .select("id", { head: true, count: "exact" })
+    .limit(1);
+
+  if (error) {
+    console.error("Keepalive query failed:", error);
+    return res.status(500).json({ ok: false, error: error.message });
+  }
+
+  return res.json({ ok: true, timestamp: new Date().toISOString() });
+});
+
 // OAuth endpoint for extension authentication
 router.get("/auth/extension", (req: Request, res: Response) => {
   const redirectUri = req.query.redirect_uri as string;
