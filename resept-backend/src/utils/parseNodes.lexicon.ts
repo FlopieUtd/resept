@@ -37,8 +37,9 @@ export const containsUnitKeyword = (text: string): boolean => {
   const allUnitKeywords = getAllUnitKeywords();
 
   return allUnitKeywords.some((keyword) => {
+    // \b alone misses units glued to the amount ("720g", "400ml"): digit→letter is no word boundary.
     const regex = new RegExp(
-      `\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
+      `(?:\\b|(?<=\\d))${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
       "i"
     );
     return regex.test(normalizedText);

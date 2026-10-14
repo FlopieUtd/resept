@@ -7,6 +7,25 @@ export interface TextNode {
   elementType: string;
 }
 
+// Always merged into the surrounding line, matching how links and spans read inline.
+const INLINE_TAGS = new Set(["span", "a"]);
+
+// Only merged when the parent also has its own text, so "<strong>Cream cheese</strong> 720g<br>"
+// stays one ingredient line while a block holding just "<strong>For the dough</strong>" keeps
+// its own element type and still reads as a section heading.
+const INLINE_FORMATTING_TAGS = new Set([
+  "strong",
+  "b",
+  "em",
+  "i",
+  "u",
+  "small",
+  "mark",
+  "sup",
+  "sub",
+  "abbr",
+]);
+
 const parseBrTags = (html: string): string => {
   return html;
 };
@@ -110,6 +129,11 @@ export const extractTextNodes = (html: string): TextNode[] => {
       const hasBrTags = $el.find("br").length > 0;
       const adjustedDepth = hasBrTags ? depth + 1 : depth;
 
+      const hasOwnText = $el
+        .contents()
+        .toArray()
+        .some((node) => node.type === "text" && ((node as any).data as string).trim());
+
       let buffer = "";
       $el.contents().each((_, node) => {
         if (node.type === "text") {
@@ -135,7 +159,10 @@ export const extractTextNodes = (html: string): TextNode[] => {
               });
             }
             buffer = "";
-          } else if (name === "span" || name === "a") {
+          } else if (
+            INLINE_TAGS.has(name) ||
+            (hasOwnText && INLINE_FORMATTING_TAGS.has(name))
+          ) {
             const content = collectInlineText(node as cheerio.Element);
             if (content) {
               if (buffer && !buffer.endsWith(" ")) {

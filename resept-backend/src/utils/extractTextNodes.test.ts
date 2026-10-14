@@ -79,6 +79,32 @@ describe("extractTextNodes", () => {
     expect(result).toEqual([]);
   });
 
+  it("should keep inline-formatted ingredient lines split by <br> together", () => {
+    const html = `
+      <div>
+        <p><strong>Springform cake tin</strong> 20cm</p>
+        <p><strong>Butter </strong>for greasing<br />
+        <strong>Cream cheese</strong> 720g<br />
+        <b>Caster sugar</b> 240g<br />
+        <em>Medium eggs</em> 5</p>
+      </div>
+    `;
+
+    const result = extractTextNodes(html);
+
+    expect(result.map((node) => node.text)).toEqual([
+      "Springform cake tin 20cm",
+      "Butter for greasing",
+      "Cream cheese 720g",
+      "Caster sugar 240g",
+      "Medium eggs 5",
+    ]);
+    result.forEach((node) => expect(node.elementType).toBe("p"));
+
+    const brLines = result.slice(1);
+    brLines.forEach((node) => expect(node.depth).toBe(brLines[0].depth));
+  });
+
   it("should create text nodes with proper depth and element type", () => {
     const html = "<div><p>Text in <strong>paragraph</strong></p></div>";
     const result = extractTextNodes(html);
