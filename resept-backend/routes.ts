@@ -5,7 +5,7 @@ import {
 import { updateRecipe } from "./src/services/updateRecipe";
 import { processAndSaveRecipe } from "./src/services/processAndSaveRecipe";
 import { authenticateToken } from "./src/middleware/auth";
-import { supabase } from "./src/lib/supabase";
+import { supabase, supabaseAdmin } from "./src/lib/supabase";
 
 const router: Router = express.Router();
 
@@ -29,13 +29,13 @@ router.get("/test", (req: Request, res: Response) => {
   res.json({ message: "Backend routing is working!" });
 });
 
-// Supabase pauses free-tier projects after a week without database activity,
-// so a scheduled job pings this to run a cheap real query.
+// Supabase pauses free-tier projects after a week without database activity.
+// A read-only HEAD count didn't prevent that, so a scheduled job pings this to
+// perform a real write.
 router.get("/keepalive", async (req: Request, res: Response) => {
-  const { error } = await supabase
-    .from("recipes")
-    .select("id", { head: true, count: "exact" })
-    .limit(1);
+  const { error } = await supabaseAdmin
+    .from("keepalive")
+    .upsert({ id: 1, pinged_at: new Date().toISOString() });
 
   if (error) {
     console.error("Keepalive query failed:", error);
